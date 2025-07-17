@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
+
+    <!-- header -->
     <header class="header">
         <div class="logo-section">
             <div class="logo">📅</div>
@@ -22,10 +24,11 @@
         </div>
     </header>
 
+    <!-- main body -->
     <main class="main-content">
         <section class="welcome-section">
             <h1 class="welcome-title">
-                Welcome back, John!
+                Welcome back, User!
                 <span class="new-events-badge">● 3 new events</span>
             </h1>
             <p class="welcome-description">
@@ -33,7 +36,7 @@
                 Software Engineering, and Information Systems departments.
             </p>
         </section>
-
+        <!-- month tab -->
         <div class="stats-grid">
             <div class="stat-card upcoming-events">
                 <div class="stat-info">
@@ -42,6 +45,8 @@
                 </div>
                 <div class="stat-icon">📅</div>
             </div>
+
+            <!-- event tab -->
             <div class="stat-card registrations">
                 <div class="stat-info">
                     <h3>3</h3>
@@ -49,6 +54,8 @@
                 </div>
                 <div class="stat-icon">👥</div>
             </div>
+
+            <!-- department tab -->
             <div class="stat-card department">
                 <div class="stat-info">
                     <h3>CS</h3>
@@ -58,8 +65,11 @@
             </div>
         </div>
 
+        <!-- Event Section -->
         <div class="content-grid">
             <section class="events-section">
+
+                <!-- Search bar and droupdown box -->
                 <div class="search-filter">
                     <input type="text" class="search-input" placeholder="Search events...">
                     <select class="filter-select">
@@ -69,7 +79,7 @@
                         <option>Information Systems</option>
                     </select>
                 </div>
-
+                <!-- Upcomming Event Tab -->
                 <h2 class="section-title">Upcoming Events</h2>
 
                 <div class="event-card">
@@ -134,12 +144,14 @@
             </section>
 
             <aside class="sidebar">
+                <!-- Calendar Tab -->
                 <div class="calendar-widget">
                     <h3 class="section-title">Quick Calendar</h3>
                     <div class="calendar-month">June 2025</div>
                     <a href="" class="calendar-link">Click to view full calendar</a>
                 </div>
 
+                <!-- Department Tab -->
                 <div class="departments-widget">
                     <h3 class="section-title">Departments</h3>
                     <div class="department-item">
