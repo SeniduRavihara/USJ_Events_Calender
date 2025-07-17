@@ -3,304 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Modern PHP API App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>University Event Calendar</title>
+    <!-- Tailwind CSS CDN -->
     <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="styles/index.css" />
+    <!-- <style>
+      
+    </style> -->
   </head>
-  <body class="bg-gray-100 min-h-screen">
-    <nav class="bg-white shadow-lg">
-      <div class="max-w-6xl mx-auto px-4">
-        <div class="flex justify-between items-center py-4">
-          <div class="text-xl font-semibold text-gray-800">Modern PHP App</div>
-          <div class="space-x-4">
-            <button
-              onclick="showSection('register')"
-              class="nav-btn px-4 py-2 rounded-md hover:bg-blue-600 hover:text-white transition-colors"
-            >
-              Register
-            </button>
-            <button
-              onclick="showSection('login')"
-              class="nav-btn px-4 py-2 rounded-md hover:bg-blue-600 hover:text-white transition-colors"
-            >
-              Login
-            </button>
-            <button
-              onclick="showSection('profile')"
-              class="nav-btn px-4 py-2 rounded-md hover:bg-blue-600 hover:text-white transition-colors"
-            >
-              Profile
-            </button>
-            <button
-              onclick="showSection('dashboard')"
-              class="nav-btn px-4 py-2 rounded-md hover:bg-blue-600 hover:text-white transition-colors"
-            >
-              Dashboard
-            </button>
-          </div>
-        </div>
+  <body>
+    <div class="home-container">
+      <div class="home-title">Welcome to Faculty Events</div>
+      <div class="home-subtitle">
+        Discover, register, and participate in exciting university events,
+        workshops, and activities. Stay connected with your faculty community!
       </div>
-    </nav>
-
-    <main class="max-w-6xl mx-auto px-4 py-8">
-      <!-- Register Section -->
-      <div
-        id="register"
-        class="section bg-white rounded-lg shadow-md p-6 max-w-md mx-auto"
-      >
-        <h2 class="text-2xl font-bold mb-6 text-gray-800">Create Account</h2>
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Name</label>
-            <input
-              type="text"
-              id="regName"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Enter your name"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              id="regEmail"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Enter your email"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Password</label
-            >
-            <input
-              type="password"
-              id="regPassword"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Create a password"
-            />
-          </div>
-          <button
-            onclick="register()"
-            class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-          >
-            Create Account
-          </button>
-          <p id="regResult" class="mt-2 text-sm"></p>
-        </div>
+      <div class="home-actions">
+        <a href="login/" class="home-btn">Login</a>
+        <a
+          href="register/"
+          class="home-btn"
+          style="background: linear-gradient(135deg, #764ba2 0%, #667eea 100%)"
+          >Sign Up</a
+        >
       </div>
-
-      <!-- Login Section -->
-      <div
-        id="login"
-        class="section bg-white rounded-lg shadow-md p-6 max-w-md mx-auto"
-      >
-        <h2 class="text-2xl font-bold mb-6 text-gray-800">Welcome Back</h2>
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              id="logEmail"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Enter your email"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Password</label
-            >
-            <input
-              type="password"
-              id="logPassword"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Enter your password"
-            />
-          </div>
-          <button
-            onclick="login()"
-            class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-          >
-            Sign In
-          </button>
-          <p id="logResult" class="mt-2 text-sm"></p>
-        </div>
-      </div>
-
-      <!-- Profile Section -->
-      <div
-        id="profile"
-        class="section hidden bg-white rounded-lg shadow-md p-6 max-w-md mx-auto"
-      >
-        <h2 class="text-2xl font-bold mb-6 text-gray-800">Your Profile</h2>
-        <div class="space-y-4">
-          <div id="profileData" class="text-gray-600">
-            You must be logged in to see this.
-          </div>
-          <button
-            onclick="logout()"
-            class="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors"
-          >
-            Sign Out
-          </button>
-        </div>
-      </div>
-
-      <!-- Dashboard Section -->
-      <div id="dashboard" class="section hidden">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- Stats Card -->
-          <div class="bg-white rounded-lg shadow-md p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Statistics</h3>
-            <div class="space-y-2">
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Total Posts</span>
-                <span class="text-blue-600 font-semibold" id="totalPosts"
-                  >0</span
-                >
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Comments</span>
-                <span class="text-blue-600 font-semibold" id="totalComments"
-                  >0</span
-                >
-              </div>
-            </div>
-          </div>
-
-          <!-- Recent Activity Card -->
-          <div class="bg-white rounded-lg shadow-md p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">
-              Recent Activity
-            </h3>
-            <div id="recentActivity" class="space-y-3">
-              <p class="text-gray-600">No recent activity</p>
-            </div>
-          </div>
-
-          <!-- Quick Actions Card -->
-          <div class="bg-white rounded-lg shadow-md p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">
-              Quick Actions
-            </h3>
-            <div class="space-y-3">
-              <button
-                onclick="showSection('newPost')"
-                class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-              >
-                Create New Post
-              </button>
-              <button
-                onclick="showSection('settings')"
-                class="w-full bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition-colors"
-              >
-                Settings
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- New Post Section -->
-      <div
-        id="newPost"
-        class="section hidden bg-white rounded-lg shadow-md p-6 max-w-2xl mx-auto"
-      >
-        <h2 class="text-2xl font-bold mb-6 text-gray-800">Create New Post</h2>
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Title</label>
-            <input
-              type="text"
-              id="postTitle"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Enter post title"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Content</label
-            >
-            <textarea
-              id="postContent"
-              rows="6"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Write your post content here..."
-            ></textarea>
-          </div>
-          <div class="flex space-x-4">
-            <button
-              onclick="createPost()"
-              class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-            >
-              Publish Post
-            </button>
-            <button
-              onclick="showSection('dashboard')"
-              class="flex-1 bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition-colors"
-            >
-              Cancel
-            </button>
-          </div>
-          <p id="postResult" class="mt-2 text-sm"></p>
-        </div>
-      </div>
-
-      <!-- Settings Section -->
-      <div
-        id="settings"
-        class="section hidden bg-white rounded-lg shadow-md p-6 max-w-md mx-auto"
-      >
-        <h2 class="text-2xl font-bold mb-6 text-gray-800">Settings</h2>
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Change Password</label
-            >
-            <input
-              type="password"
-              id="currentPassword"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Current password"
-            />
-          </div>
-          <div>
-            <input
-              type="password"
-              id="newPassword"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="New password"
-            />
-          </div>
-          <div>
-            <input
-              type="password"
-              id="confirmPassword"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Confirm new password"
-            />
-          </div>
-          <div class="flex space-x-4">
-            <button
-              onclick="updatePassword()"
-              class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-            >
-              Update Password
-            </button>
-            <button
-              onclick="showSection('dashboard')"
-              class="flex-1 bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition-colors"
-            >
-              Cancel
-            </button>
-          </div>
-          <p id="settingsResult" class="mt-2 text-sm"></p>
-        </div>
-      </div>
-    </main>
-
-    <script src="script.js"></script>
+    </div>
   </body>
 </html>

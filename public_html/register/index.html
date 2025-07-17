@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account - University Events</title>
+    <link rel="stylesheet" href="signin.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Create Account</h1>
+      <p class="subtitle">Join the Faculty Events community</p>
+
+      <form id="signup-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">First Name <span class="required">*</span></label>
+            <input
+              type="text"
+              id="firstName"
+              placeholder="First name"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name <span class="required">*</span></label>
+            <input type="text" id="lastName" placeholder="Last name" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address <span class="required">*</span></label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Enter your university email"
+            required
+          />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="department">Department <span class="optional">(Optional)</span></label>
+            <select id="department">
+              <option value="">Select department</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Electrical Engineering">Electrical Engineering</option>
+              <option value="Mechanical Engineering">Mechanical Engineering</option>
+              <option value="Business">Business</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Physics">Physics</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="Biology">Biology</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="studentId">Student ID <span class="optional">(Optional)</span></label>
+            <input type="text" id="studentId" placeholder="FC221XXX" />
+          </div>
+        </div>
+
+        <div class="form-group password-group">
+          <label for="password">Password <span class="required">*</span></label>
+          <div class="password-input">
+            <input
+              type="password"
+              id="password"
+              placeholder="Create a password (min 8 characters)"
+              required
+              minlength="8"
+            />
+            <span class="toggle-password" data-target="password">&#128065;</span>
+          </div>
+        </div>
+
+        <div class="form-group password-group">
+          <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
+          <div class="password-input">
+            <input
+              type="password"
+              id="confirmPassword"
+              placeholder="Confirm your password"
+              required
+            />
+            <span class="toggle-password" data-target="confirmPassword">&#128065;</span>
+          </div>
+        </div>
+
+        <div class="checkbox-group">
+          <label>
+            <input type="checkbox" id="agreeTerms" required />
+            I agree to the <a href="#" target="_blank">Terms of Service</a> and
+            <a href="#" target="_blank">Privacy Policy</a>
+          </label>
+        </div>
+
+        <button type="submit">Create Account</button>
+
+        <p id="regResult" class="message-display"></p>
+      </form>
+
+      <div class="toggle">
+        Already have an account? <a href="../login/">Sign in here</a>
+      </div>
+    </div>
+
+    <script src="register.js" defer></script>
+  </body>
+</html>
