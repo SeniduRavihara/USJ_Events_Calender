@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Department Events Calendar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="calendar.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Calendar Header -->
+    <div class="flex flex-col items-center justify-between mb-6 gap-4">
+      <div class="flex items-center gap-4">
+        <h2 class="text-2xl font-bold flex items-center gap-2">
+          <span class="calendar-icon"></span>
+          Events Calendar
+        </h2>
+        <button class="btn-outline" id="todayBtn">Today</button>
+      </div>
+      <div class="flex items-center gap-4">
+        <select class="w-48" id="departmentFilter">
+          <option value="all">All Departments</option>
+          <option value="CS">Computer Science</option>
+          <option value="SE">Software Engineering</option>
+          <option value="IS">Information Systems</option>
+        </select>
+        <div class="flex border rounded-lg" id="viewSelector">
+          <button class="btn-default btn-sm" data-view="month" id="monthBtn">Month</button>
+          <button class="btn-ghost btn-sm" data-view="week" id="weekBtn">Week</button>
+          <button class="btn-ghost btn-sm" data-view="day" id="dayBtn">Day</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="flex items-center justify-between mb-6">
+      <button class="btn-outline" id="prevBtn">&lt;</button>
+      <h3 class="text-xl font-semibold" id="calendarTitle"></h3>
+      <button class="btn-outline" id="nextBtn">&gt;</button>
+    </div>
+
+    <!-- Calendar Content -->
+    <div id="calendarContent"></div>
+
+    <!-- Legend -->
+    <div class="mt-6 flex flex-wrap gap-4 justify-center">
+      <div class="flex items-center gap-2">
+        <div class="w-4 h-4 legend-yellow rounded"></div>
+        <span class="text-sm">Computer Science</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-4 h-4 legend-green rounded"></div>
+        <span class="text-sm">Software Engineering</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-4 h-4 legend-pink rounded"></div>
+        <span class="text-sm">Information Systems</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-4 h-4 legend-purple rounded"></div>
+        <span class="text-sm">More than 2 Departments</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
