@@ -6,13 +6,13 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #f8fafc;
+    background-color: #e2ebf5;
     color: #334155;
     line-height: 1.6;
 }
 
 .header {
-    background: white;
+    background: rgb(136, 212, 253);
     border-bottom: 1px solid #e2e8f0;
     padding: 1rem 2rem;
     display: flex;
@@ -149,7 +149,7 @@ body {
     background: rgb(225, 255, 247);
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 12px rgba(0, 0, 0, 0.15);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -196,7 +196,7 @@ body {
     background: rgb(203, 227, 253);
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 12px rgba(0, 0, 0, 0.15);
 }
 
 .admin-actions {
@@ -246,6 +246,12 @@ body {
     align-items: center;
     gap: 1rem;
 }
+.event-card:hover{
+    border: 3px solid rgb(114, 114, 219);
+    transform: translateY(-2px); 
+    box-shadow: 0 10px 12px rgba(0, 0, 0, 0.15);
+}
+
 
 .event-icon {
     width: 48px;
@@ -311,9 +317,11 @@ body {
     transition: all 0.2s;
 }
 
-.btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+.btn:hover{
+    border: 2px solid rgb(78, 78, 184);
+    transform: translateY(-2px); 
+    box-shadow: 0 10px 12px rgba(0, 0, 0, 0.15);
 }
 
 .btn-primary {
@@ -372,10 +380,21 @@ body {
 }
 
 .calendar-widget, .departments-widget {
-    background: white;
+    background: rgb(225, 255, 232);
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 12px rgba(0, 0, 0, 0.15);
+}
+.calendar-widget:hover{
+    border: 2px solid rgb(42, 189, 79);
+    transform: translateY(-2px); 
+    box-shadow: 0 10px 12px rgba(0, 0, 0, 0.15);
+}
+
+.departments-widget:hover{
+    border: 2px solid rgb(42, 189, 79);
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .calendar-month {
