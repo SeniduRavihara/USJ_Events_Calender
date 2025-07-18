@@ -4,6 +4,8 @@ body {
   background: #f8fafc;
   margin: 0;
   color: #222;
+  background-image: url('calander images/bg.jpg');
+  background-size: cover;
 }
 
 .container {
@@ -37,7 +39,6 @@ body {
 /* Borders and Radius */
 .rounded { border-radius: 0.25rem; }
 .rounded-lg { border-radius: 0.5rem; }
-.border { border: 1px solid #e5e7eb; }
 .border-b { border-bottom: 1px solid #e5e7eb; }
 .border-gray-200 { border-color: #e5e7eb; }
 .border-gray-100 { border-color: #f3f4f6; }
@@ -290,4 +291,40 @@ body {
   text-decoration: none !important;
   font-style: normal !important;
   text-transform: none !important;
+}
+
+/* Background for empty boxes */
+.bg-calendar-cell {
+  background-color: #baffd9; /* Light gray background */
+  background-size: 160px 120px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.event-card {
+  background-image: 
+  url('calander images/day.jpg');
+  background-size:  cover;
+  background-position: right bottom, center;
+  background-repeat: no-repeat;
+  border-left: 3px solid #3b82f6;
+}
+
+.hour-slot {
+  background-color: #007ffd;
+  background-size: 160px 120px;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 60px;
+  border-bottom: 1px solid #0046d3;
+}
+
+.month-year-box {
+  background: linear-gradient(135deg, #2f00ff, #ff00d4);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  display: inline-block;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
