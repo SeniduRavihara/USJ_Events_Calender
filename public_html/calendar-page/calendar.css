@@ -4,7 +4,7 @@ body {
   background: #f8fafc;
   margin: 0;
   color: #222;
-  background-image: url('calander images/bg.jpg');
+  background: linear-gradient(135deg, #b8a6ff, #ffffff);
   background-size: cover;
 }
 
