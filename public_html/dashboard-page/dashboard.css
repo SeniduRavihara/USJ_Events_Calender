@@ -176,9 +176,9 @@
             font-size: 20px;
         }
 
-        .upcoming-events .stat-icon { background: #3b82f6; }
-        .registrations .stat-icon { background: #10b981; }
-        .department .stat-icon { background: #8b5cf6; }
+        .upcoming-events .stat-icon { background: #f7fafe; }
+        .registrations .stat-icon { background: #bcefde; }
+        .department .stat-icon { background: #e0d5fb; }
 
         .content-grid {
             display: grid;
