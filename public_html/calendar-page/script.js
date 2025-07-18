@@ -24,13 +24,13 @@ const mockEvents = [
     attendees: 32,
     maxAttendees: 100,
     type: "Seminar",
-    color: "legend-green",
+    color: "legend-blue",
   },
   {
     id: 3,
     title: "Database Design Competition",
     department: "IS",
-    date: "2025-07-02",
+    date: "2025-07-18",
     startTime: "09:00",
     endTime: "17:00",
     location: "Computer Lab 2",
@@ -69,6 +69,19 @@ const mockEvents = [
     id: 6,
     title: "Normal Presentation and Viva",
     department: "CS",
+    date: "2025-06-26",
+    startTime: "15:30",
+    endTime: "17:30",
+    location: "Main Hall",
+    attendees: 67,
+    maxAttendees: 80,
+    type: "Presentation",
+    color: "legend-red",
+  },
+    {
+    id: 6,
+    title: "Normal Presentation and Viva",
+    department: "IS",
     date: "2025-06-26",
     startTime: "15:30",
     endTime: "17:30",
@@ -184,7 +197,7 @@ function updateViewButtons() {
     view === "day" ? "btn-default btn-sm" : "btn-ghost btn-sm";
 }
 
-// Updated renderMonthView function with event-title class
+// Update the renderMonthView function - replace the day headers section
 function renderMonthView() {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -197,15 +210,17 @@ function renderMonthView() {
   for (let i = 0; i < firstDayOfWeek; i++) days.push(null);
   for (let d = 1; d <= daysInMonth; d++) days.push(new Date(year, month, d));
 
-  let html = `<div class="grid grid-cols-7 gap-1">`;
+  let html = `<div class="grid grid-cols-7 gap-2">`;
 
-  ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].forEach(w => {
-    html += `<div class="p-2 text-center font-semibold text-gray-600 bg-gray-50">${w}</div>`;
+  // UPDATED: Enhanced day headers with colors and rounded borders
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  dayNames.forEach((dayName, index) => {
+    const isWeekend = index === 0 || index === 6;
+    html += `<div class="day-header ${isWeekend ? 'weekend' : ''}">${dayName}</div>`;
   });
 
   days.forEach(day => {
     if (!day) {
-      // CHANGED: Make empty days invisible instead of showing white boxes
       html += `<div class="p-2 h-24" style="visibility: hidden;"></div>`;
       return;
     }
@@ -228,8 +243,8 @@ function renderMonthView() {
 
     html += `
       <div
-        class="${imageClass} p-1 h-24 border border-gray-200 cursor-pointer hover:bg-gray-50
-               ${isToday ? "border-blue-300" : ""} flex flex-col"
+        class="${imageClass} p-1 h-24 cursor-pointer hover:bg-gray-50 flex flex-col
+               ${isToday ? "today-glow" : ""}"
         onclick="onDayClick(${day.getFullYear()}, ${day.getMonth()}, ${day.getDate()})"
       >
         <div class="date-number
@@ -325,7 +340,6 @@ function renderDayView() {
     <div class="grid grid-cols-1 gap-1 max-h-96 overflow-y-auto">`;
 
   hours.forEach(hour => {
-    // ✅ Updated filtering logic for multi-hour events
     const hourEvents = dayEvents.filter(event => {
       const eventStart = parseInt(event.startTime.split(":")[0], 10);
       const eventEnd = parseInt(event.endTime.split(":")[0], 10);
