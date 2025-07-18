@@ -146,13 +146,18 @@ body {
 }
 
 .stat-card {
-    background: white;
+    background: rgb(225, 255, 247);
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+.stat-card:hover{
+    border: 2px solid rgb(80, 157, 112);
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .stat-info h3 {
@@ -177,9 +182,9 @@ body {
     font-size: 20px;
 }
 
-.upcoming-events .stat-icon { background: #3b82f6; }
-.registrations .stat-icon { background: #10b981; }
-.department .stat-icon { background: #8b5cf6; }
+.upcoming-events .stat-icon { background: #f7fafe; }
+.registrations .stat-icon { background: #bcefde; }
+.department .stat-icon { background: #e0d5fb; }
 
 .content-grid {
     display: grid;
@@ -188,7 +193,7 @@ body {
 }
 
 .events-section {
-    background: white;
+    background: rgb(203, 227, 253);
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -210,14 +215,14 @@ body {
 .search-input {
     flex: 1;
     padding: 0.75rem;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #679fe9;
     border-radius: 8px;
     font-size: 14px;
 }
 
 .filter-select {
     padding: 0.75rem;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #679fe9;
     border-radius: 8px;
     font-size: 14px;
     background: white;
@@ -233,6 +238,7 @@ body {
 
 .event-card {
     border: 1px solid #e2e8f0;
+    background-color: #aadaf7;
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 1rem;
