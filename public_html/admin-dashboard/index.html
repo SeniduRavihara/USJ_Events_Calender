@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Events Admin - University of Sri Jayewardenepura</title>
+    <link rel="stylesheet" href="admin-dashboard.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo-section">
+            <div class="logo">📅</div>
+            <div class="logo-text">
+                <div class="logo-title">Faculty Events Admin</div>
+                <div class="logo-subtitle">University of Sri Jayewardenepura</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="#" class="full-calendar-btn">📅 Full Calendar</a>
+            <div class="notification-icon">🔔</div>
+            <div class="profile-icon">👤</div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="welcome-section">
+            <h1 class="welcome-title">
+                Welcome back, Admin John!
+                <span class="admin-badge">● Admin</span>
+                <span class="new-events-badge">● 3 new events</span>
+            </h1>
+            <p class="welcome-description">
+                Manage events, workshops, and activities across Computer Science, 
+                Software Engineering, and Information Systems departments.
+            </p>
+        </section>
+
+        <div class="stats-grid">
+            <div class="stat-card upcoming-events">
+                <div class="stat-info">
+                    <h3>3</h3>
+                    <p>This month</p>
+                </div>
+                <div class="stat-icon">📅</div>
+            </div>
+            <div class="stat-card registrations">
+                <div class="stat-info">
+                    <h3>3</h3>
+                    <p>Active events</p>
+                </div>
+                <div class="stat-icon">👥</div>
+            </div>
+            <div class="stat-card department">
+                <div class="stat-info">
+                    <h3>CS</h3>
+                    <p>FC221001</p>
+                </div>
+                <div class="stat-icon">🎓</div>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <section class="events-section">
+                <div class="admin-panel">
+                    <h3>🔧 Admin Controls</h3>
+                    <p>You have full access to create, edit, and delete events. Changes will be reflected immediately.</p>
+                </div>
+
+                <div class="admin-actions">
+                    <button class="btn btn-create-event" onclick="openCreateModal()">+ Create Event</button>
+                </div>
+
+                <div class="search-filter">
+                    <input type="text" class="search-input" placeholder="Search events...">
+                    <select class="filter-select">
+                        <option>All Departments</option>
+                        <option>Computer Science</option>
+                        <option>Software Engineering</option>
+                        <option>Information Systems</option>
+                    </select>
+                </div>
+
+                <h2 class="section-title">Upcoming Events</h2>
+
+                <div class="event-card" data-event-id="1">
+                    <div class="event-icon">🤖</div>
+                    <div class="event-content">
+                        <h3 class="event-title">
+                            AI Workshop Series ⭐
+                            <span class="department-tag tag-cs">CS</span>
+                        </h3>
+                        <p class="event-subtitle">Introduction to Machine Learning fundamentals</p>
+                        <div class="event-details">
+                            <span>📅 2025-06-25 at 2:00 PM</span>
+                            <span>📍 Lab 301</span>
+                            <span>👥 45/50 registered</span>
+                        </div>
+                    </div>
+                    <div class="event-actions">
+                        <button class="btn btn-secondary" onclick="viewEvent(1)">View Details</button>
+                        <button class="btn btn-edit" onclick="editEvent(1)">✏️ Edit</button>
+                        <button class="btn btn-delete" onclick="deleteEvent(1)">🗑️ Delete</button>
+                    </div>
+                </div>
+
+                <div class="event-card" data-event-id="2">
+                    <div class="event-icon">🏗️</div>
+                    <div class="event-content">
+                        <h3 class="event-title">
+                            Software Architecture Seminar
+                            <span class="department-tag tag-se">SE</span>
+                        </h3>
+                        <p class="event-subtitle">Best practices in modern software architecture</p>
+                        <div class="event-details">
+                            <span>📅 2025-06-28 at 10:00 AM</span>
+                            <span>📍 Auditorium A</span>
+                            <span>👥 32/100 registered</span>
+                        </div>
+                    </div>
+                    <div class="event-actions">
+                        <button class="btn btn-secondary" onclick="viewEvent(2)">View Details</button>
+                        <button class="btn btn-edit" onclick="editEvent(2)">✏️ Edit</button>
+                        <button class="btn btn-delete" onclick="deleteEvent(2)">🗑️ Delete</button>
+                    </div>
+                </div>
+
+                <div class="event-card" data-event-id="3">
+                    <div class="event-icon">🗃️</div>
+                    <div class="event-content">
+                        <h3 class="event-title">
+                            Database Design Competition 🏆
+                            <span class="department-tag tag-is">IS</span>
+                        </h3>
+                        <p class="event-subtitle">Annual database design challenge</p>
+                        <div class="event-details">
+                            <span>📅 2025-07-02 at 9:00 AM</span>
+                            <span>📍 Computer Lab 2</span>
+                            <span>👥 28/30 registered</span>
+                        </div>
+                    </div>
+                    <div class="event-actions">
+                        <button class="btn btn-secondary" onclick="viewEvent(3)">View Details</button>
+                        <button class="btn btn-edit" onclick="editEvent(3)">✏️ Edit</button>
+                        <button class="btn btn-delete" onclick="deleteEvent(3)">🗑️ Delete</button>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="sidebar">
+                <div class="calendar-widget">
+                    <h3 class="section-title">Quick Calendar</h3>
+                    <div class="calendar-month">June 2025</div>
+                    <a href="#" class="calendar-link">Click to view full calendar</a>
+                </div>
+
+                <div class="departments-widget">
+                    <h3 class="section-title">Departments</h3>
+                    <div class="department-item">
+                        <div class="department-name">
+                            <span class="department-dot dot-cs"></span>
+                            Computer Science
+                        </div>
+                        <span class="event-count">12 events</span>
+                    </div>
+                    <div class="department-item">
+                        <div class="department-name">
+                            <span class="department-dot dot-se"></span>
+                            Software Engineering
+                        </div>
+                        <span class="event-count">8 events</span>
+                    </div>
+                    <div class="department-item">
+                        <div class="department-name">
+                            <span class="department-dot dot-is"></span>
+                            Information Systems
+                        </div>
+                        <span class="event-count">6 events</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Create/Edit Event Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Create New Event</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="eventForm">
+                <div class="form-group">
+                    <label class="form-label">Event Title</label>
+                    <input type="text" class="form-input" id="eventTitle" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Department</label>
+                    <select class="form-select" id="eventDepartment" required>
+                        <option value="">Select Department</option>
+                        <option value="cs">Computer Science</option>
+                        <option value="se">Software Engineering</option>
+                        <option value="is">Information Systems</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Event Description</label>
+                    <textarea class="form-textarea" id="eventDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date</label>
+                    <input type="date" class="form-input" id="eventDate" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Time</label>
+                    <input type="time" class="form-input" id="eventTime" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Location</label>
+                    <input type="text" class="form-input" id="eventLocation" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Max Registrations</label>
+                    <input type="number" class="form-input" id="eventMaxReg" min="1" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-success" id="submitBtn">Create Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin-dashboard.js"></script>
+</body>
+</html>
