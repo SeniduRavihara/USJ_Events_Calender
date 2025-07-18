@@ -147,6 +147,13 @@
             justify-content: space-between;
         }
 
+        .stat-card:hover{
+            border: 2px solid gray;
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+       
+
         .stat-info h3 {
             font-size: 2rem;
             font-weight: 700;
@@ -224,6 +231,11 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+        }
+        .event-card:hover{
+            border: 2px solid rgb(114, 114, 219);
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .event-icon {
@@ -326,6 +338,18 @@
             border-radius: 12px;
             padding: 1.5rem;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-widget:hover{
+            border: 2px solid rgb(42, 189, 79);
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .departments-widget:hover{
+            border: 2px solid rgb(42, 189, 79);
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .calendar-month {
