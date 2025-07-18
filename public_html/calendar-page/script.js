@@ -148,10 +148,11 @@ function renderCalendar() {
   const title = document.getElementById("calendarTitle");
 
   if (view === "month") {
-    title.textContent = currentDate.toLocaleDateString("en-US", {
+    const monthYear = currentDate.toLocaleDateString("en-US", {
       month: "long",
       year: "numeric",
     });
+    title.innerHTML = `<span class="month-year-box">${monthYear}</span>`;
   } else if (view === "week") {
     title.textContent = `Week of ${currentDate.toLocaleDateString("en-US", {
       month: "short",
@@ -204,7 +205,8 @@ function renderMonthView() {
 
   days.forEach(day => {
     if (!day) {
-      html += `<div class="p-2 h-24 bg-gray-50"></div>`;
+      // CHANGED: Make empty days invisible instead of showing white boxes
+      html += `<div class="p-2 h-24" style="visibility: hidden;"></div>`;
       return;
     }
 
@@ -254,7 +256,6 @@ function renderMonthView() {
   return html;
 }
 
-// Week view (unchanged)
 function renderWeekView() {
   const startOfWeek = new Date(currentDate);
   startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
@@ -265,11 +266,13 @@ function renderWeekView() {
     d.setDate(startOfWeek.getDate() + i);
     weekDays.push(d);
   }
+
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
   let html = `<div class="flex flex-col">
     <div class="grid grid-cols-8 gap-1 mb-2">
       <div class="p-2"></div>`;
+
   weekDays.forEach(day => {
     const isToday = day.toDateString() === new Date().toDateString();
     html += `<div class="p-2 text-center font-semibold ${
@@ -279,28 +282,37 @@ function renderWeekView() {
       <div class="text-lg">${day.getDate()}</div>
     </div>`;
   });
+
   html += `</div><div class="grid grid-cols-8 gap-1 max-h-96 overflow-y-auto">`;
+
   hours.forEach(hour => {
     html += `<div class="contents">
       <div class="p-2 text-xs text-gray-500 bg-gray-50 text-right">${formatHour(hour)}</div>`;
+
     weekDays.forEach(day => {
-      const dayEvents = getEventsForDate(day).filter(event =>
-        parseInt(event.startTime.split(":")[0], 10) === hour
-      );
-      html += `<div class="p-1 h-12 border border-gray-100 bg-white">`;
+      const dayEvents = getEventsForDate(day).filter(event => {
+        const eventStart = parseInt(event.startTime.split(":")[0], 10);
+        const eventEnd = parseInt(event.endTime.split(":")[0], 10);
+        return hour >= eventStart && hour < eventEnd;
+      });
+
+      html += `<div class="p-1 h-12 border border-gray-100 bg-calendar-cell">`;
+
       dayEvents.forEach(event => {
         html += `<div class="text-xs p-1 rounded text-white truncate ${event.color}"
                  title="${event.title} - ${formatTime(event.startTime)}">${event.title}</div>`;
       });
+
       html += `</div>`;
     });
+
     html += `</div>`;
   });
+
   html += `</div></div>`;
   return html;
 }
 
-// Day view (unchanged)
 function renderDayView() {
   const dayEvents = getEventsForDate(currentDate);
   const hours = Array.from({ length: 24 }, (_, i) => i);
@@ -311,15 +323,21 @@ function renderDayView() {
       <p class="text-sm text-gray-600">${dayEvents.length} events scheduled</p>
     </div>
     <div class="grid grid-cols-1 gap-1 max-h-96 overflow-y-auto">`;
+
   hours.forEach(hour => {
-    const hourEvents = dayEvents.filter(event =>
-      parseInt(event.startTime.split(":")[0], 10) === hour
-    );
+    // ✅ Updated filtering logic for multi-hour events
+    const hourEvents = dayEvents.filter(event => {
+      const eventStart = parseInt(event.startTime.split(":")[0], 10);
+      const eventEnd = parseInt(event.endTime.split(":")[0], 10);
+      return hour >= eventStart && hour < eventEnd;
+    });
+
     html += `<div class="flex border-b border-gray-100">
       <div class="w-20 p-2 text-sm text-gray-500 bg-gray-50">${formatHour(hour)}</div>
       <div class="flex-1 p-2 min-h-16">`;
+
     hourEvents.forEach(event => {
-      html += `<div class="card mb-2">
+      html += `<div class="event-card mb-2">
         <div class="card-content p-3">
           <div class="flex items-start justify-between">
             <div class="flex-1">
@@ -344,11 +362,14 @@ function renderDayView() {
         </div>
       </div>`;
     });
+
     html += `</div></div>`;
   });
+
   html += `</div></div>`;
   return html;
 }
+
 
 // Event Handlers
 
