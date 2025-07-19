@@ -21,7 +21,13 @@ final class CreateEventsTable extends AbstractMigration
     {
         $table = $this->table('events');
         $table->addColumn('user_id', 'integer', ['null' => false])
-            
+            ->addColumn('title', 'string', ['limit' => 255, 'null' => false])
+            ->addColumn('cover_image', 'string', ['limit' => 500, 'null' => true])
+            ->addColumn('cover_color', 'string', ['limit' => 50, 'null' => true])
+            ->addColumn('event_date', 'date', ['null' => false])
+            ->addColumn('event_time', 'time', ['null' => false])
+            ->addColumn('location', 'string', ['limit' => 255, 'null' => false])
+            ->addColumn('departments', 'text', ['null' => false])
             ->create();
     }
 }
