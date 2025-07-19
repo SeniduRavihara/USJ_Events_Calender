@@ -63,8 +63,11 @@ function filterAndSearchEvents() {
 
   let filteredEvents = allEvents;
 
-  // Apply department filter
-  if (selectedDepartment !== "All Departments") {
+  // Apply department filter (case-insensitive for 'All Departments')
+  if (
+    selectedDepartment &&
+    selectedDepartment.toLowerCase() !== "all departments"
+  ) {
     filteredEvents = filteredEvents.filter((event) => {
       // event.departments is an array
       return (

@@ -30,7 +30,9 @@
       <section class="welcome-section">
         <h1 class="welcome-title">
           Welcome back, John!
-          <span class="new-events-badge">● <span id="new-events-count">3</span> new events</span>
+          <span class="new-events-badge"
+            >● <span id="new-events-count">3</span> new events</span
+          >
         </h1>
         <p class="welcome-description">
           Discover exciting events, workshops, and activities across Computer
@@ -72,9 +74,6 @@
             />
             <select class="filter-select">
               <option value="All Departments">All Departments</option>
-              <option value="Computer Science">Computer Science</option>
-              <option value="Software Engineering">Software Engineering</option>
-              <option value="Information Systems">Information Systems</option>
               <option value="CS">CS</option>
               <option value="SE">SE</option>
               <option value="IS">IS</option>
@@ -85,8 +84,8 @@
 
           <!-- Event cards will be rendered by JS -->
           <div class="loading-message" id="loading-message">
-            <div style="text-align: center; padding: 2rem; color: #64748b;">
-              <div style="font-size: 2rem; margin-bottom: 1rem;">⏳</div>
+            <div style="text-align: center; padding: 2rem; color: #64748b">
+              <div style="font-size: 2rem; margin-bottom: 1rem">⏳</div>
               <p>Loading events...</p>
             </div>
           </div>
@@ -96,7 +95,9 @@
           <div class="calendar-widget">
             <h3 class="section-title">Quick Calendar</h3>
             <div class="calendar-month" id="current-month">July 2025</div>
-            <a href="../calendar-page/" class="calendar-link">Click to view full calendar</a>
+            <a href="../calendar-page/" class="calendar-link"
+              >Click to view full calendar</a
+            >
           </div>
 
           <div class="departments-widget">
@@ -126,7 +127,7 @@
         </aside>
       </div>
     </main>
-    
+
     <!-- Scripts -->
     <script src="mock-events.js"></script>
     <script src="dashboard.js"></script>
@@ -141,13 +142,26 @@
 
     <script>
       // Set current month
-      document.addEventListener("DOMContentLoaded", function() {
-        const currentMonthElement = document.getElementById('current-month');
+      document.addEventListener("DOMContentLoaded", function () {
+        const currentMonthElement = document.getElementById("current-month");
         if (currentMonthElement) {
           const now = new Date();
-          const monthNames = ["January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"];
-          currentMonthElement.textContent = monthNames[now.getMonth()] + " " + now.getFullYear();
+          const monthNames = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
+          currentMonthElement.textContent =
+            monthNames[now.getMonth()] + " " + now.getFullYear();
         }
       });
     </script>
