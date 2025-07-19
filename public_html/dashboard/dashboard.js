@@ -307,6 +307,27 @@ function updateDepartmentStats(events) {
   }
 }
 
+// Fetch and set the logged-in user's name in the welcome message
+function updateWelcomeUserName() {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+  fetch("http://localhost/USJ_Events_Calender/api/profile.php", {
+    headers: { Authorization: "Bearer " + token },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data && data.name) {
+        const welcomeTitle = document.querySelector(".welcome-title");
+        if (welcomeTitle) {
+          welcomeTitle.innerHTML = `Welcome back, <span id="user-name">${data.name}</span>! <span class="new-events-badge">● <span id="new-events-count">3</span> new events</span>`;
+        }
+      }
+    })
+    .catch((err) => {
+      // Optionally handle error
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -348,4 +369,5 @@ document.addEventListener("DOMContentLoaded", function () {
         renderUpcomingEvents(allEvents);
       }
     });
+  updateWelcomeUserName();
 });
