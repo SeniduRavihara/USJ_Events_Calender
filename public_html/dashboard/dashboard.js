@@ -257,11 +257,17 @@ function setupSearchAndFilter() {
 }
 
 function updateDepartmentStats(events) {
-  // Count events by department
-  const departmentCounts = {};
+  // Count events by department (CS, SE, IS only)
+  const departmentCounts = { CS: 0, SE: 0, IS: 0 };
   events.forEach((event) => {
-    const dept = event.department || "Other";
-    departmentCounts[dept] = (departmentCounts[dept] || 0) + 1;
+    if (event.departments && Array.isArray(event.departments)) {
+      event.departments.forEach((dep) => {
+        const depCode = dep.toUpperCase();
+        if (departmentCounts.hasOwnProperty(depCode)) {
+          departmentCounts[depCode] += 1;
+        }
+      });
+    }
   });
 
   // Update department widget
@@ -273,14 +279,12 @@ function updateDepartmentStats(events) {
     const eventCountSpan = item.querySelector(".event-count");
 
     let count = 0;
-    Object.keys(departmentCounts).forEach((dept) => {
-      if (
-        departmentName.toLowerCase().includes(dept.toLowerCase()) ||
-        dept.toLowerCase().includes(departmentName.toLowerCase())
-      ) {
-        count += departmentCounts[dept];
-      }
-    });
+    if (departmentName.includes("Computer Science"))
+      count = departmentCounts["CS"];
+    else if (departmentName.includes("Software Engineering"))
+      count = departmentCounts["SE"];
+    else if (departmentName.includes("Information Systems"))
+      count = departmentCounts["IS"];
 
     if (eventCountSpan) {
       eventCountSpan.textContent = `${count} events`;
