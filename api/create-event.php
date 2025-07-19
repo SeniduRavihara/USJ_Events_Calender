@@ -50,7 +50,7 @@ try {
     // Handle file upload (cover image)
     $cover_image_path = null;
     if (isset($_FILES['cover-image']) && $_FILES['cover-image']['error'] === UPLOAD_ERR_OK) {
-        $upload_dir = '../uploads/event-covers/';
+        $upload_dir = __DIR__ . '/../public_html/uploads/event-covers/';
         if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0777, true);
         }

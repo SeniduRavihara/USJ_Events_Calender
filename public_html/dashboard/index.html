@@ -30,7 +30,7 @@
       <section class="welcome-section">
         <h1 class="welcome-title">
           Welcome back, John!
-          <span class="new-events-badge">● 3 new events</span>
+          <span class="new-events-badge">● <span id="new-events-count">3</span> new events</span>
         </h1>
         <p class="welcome-description">
           Discover exciting events, workshops, and activities across Computer
@@ -41,14 +41,14 @@
       <div class="stats-grid">
         <div class="stat-card upcoming-events">
           <div class="stat-info">
-            <h3>3</h3>
+            <h3>0</h3>
             <p>This month</p>
           </div>
           <div class="stat-icon">📅</div>
         </div>
         <div class="stat-card registrations">
           <div class="stat-info">
-            <h3>3</h3>
+            <h3>0</h3>
             <p>Active events</p>
           </div>
           <div class="stat-icon">👥</div>
@@ -68,26 +68,35 @@
             <input
               type="text"
               class="search-input"
-              placeholder="Search events..."
+              placeholder="Search events by title, description, location..."
             />
             <select class="filter-select">
-              <option>All Departments</option>
-              <option>Computer Science</option>
-              <option>Software Engineering</option>
-              <option>Information Systems</option>
+              <option value="All Departments">All Departments</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Software Engineering">Software Engineering</option>
+              <option value="Information Systems">Information Systems</option>
+              <option value="CS">CS</option>
+              <option value="SE">SE</option>
+              <option value="IS">IS</option>
             </select>
           </div>
 
           <h2 class="section-title">Upcoming Events</h2>
 
           <!-- Event cards will be rendered by JS -->
+          <div class="loading-message" id="loading-message">
+            <div style="text-align: center; padding: 2rem; color: #64748b;">
+              <div style="font-size: 2rem; margin-bottom: 1rem;">⏳</div>
+              <p>Loading events...</p>
+            </div>
+          </div>
         </section>
 
         <aside class="sidebar">
           <div class="calendar-widget">
             <h3 class="section-title">Quick Calendar</h3>
-            <div class="calendar-month">June 2025</div>
-            <a href="" class="calendar-link">Click to view full calendar</a>
+            <div class="calendar-month" id="current-month">July 2025</div>
+            <a href="../calendar-page/" class="calendar-link">Click to view full calendar</a>
           </div>
 
           <div class="departments-widget">
@@ -97,27 +106,50 @@
                 <span class="department-dot dot-cs"></span>
                 Computer Science
               </div>
-              <span class="event-count">12 events</span>
+              <span class="event-count">0 events</span>
             </div>
             <div class="department-item">
               <div class="department-name">
                 <span class="department-dot dot-se"></span>
                 Software Engineering
               </div>
-              <span class="event-count">8 events</span>
+              <span class="event-count">0 events</span>
             </div>
             <div class="department-item">
               <div class="department-name">
                 <span class="department-dot dot-is"></span>
                 Information Systems
               </div>
-              <span class="event-count">6 events</span>
+              <span class="event-count">0 events</span>
             </div>
           </div>
         </aside>
       </div>
     </main>
+    
+    <!-- Scripts -->
     <script src="mock-events.js"></script>
     <script src="dashboard.js"></script>
+
+    <!-- Event Details Modal -->
+    <div id="event-modal" class="event-modal" style="display: none">
+      <div class="event-modal-content">
+        <span class="event-modal-close" id="event-modal-close">&times;</span>
+        <div id="event-modal-body"></div>
+      </div>
+    </div>
+
+    <script>
+      // Set current month
+      document.addEventListener("DOMContentLoaded", function() {
+        const currentMonthElement = document.getElementById('current-month');
+        if (currentMonthElement) {
+          const now = new Date();
+          const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"];
+          currentMonthElement.textContent = monthNames[now.getMonth()] + " " + now.getFullYear();
+        }
+      });
+    </script>
   </body>
 </html>
