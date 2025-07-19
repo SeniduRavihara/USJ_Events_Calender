@@ -28,6 +28,14 @@ final class CreateEventsTable extends AbstractMigration
             ->addColumn('event_time', 'time', ['null' => false])
             ->addColumn('location', 'string', ['limit' => 255, 'null' => false])
             ->addColumn('departments', 'text', ['null' => false])
+            ->addColumn('description', 'text', ['null' => true])
+            ->addColumn('registration_needed', 'boolean', ['default' => false, 'null' => false])
+            ->addColumn('registration_link', 'string', ['limit' => 500, 'null' => true])
+            ->addColumn('created_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'null' => false])
+            ->addColumn('updated_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'on_update' => 'CURRENT_TIMESTAMP', 'null' => false])
+            ->addIndex(['user_id'])
+            ->addIndex(['event_date'])
+            ->addIndex(['departments'])
             ->create();
     }
 }
