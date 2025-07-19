@@ -51,6 +51,12 @@ body::after {
   width: 100%;
   max-width: 500px;
   backdrop-filter: blur(10px);
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+.container:hover {
+  transform: translateY(-5px);
 }
 
 h1 {
@@ -323,6 +329,11 @@ button[type="submit"]:disabled::after {
   opacity: 0;
   transform: translateY(-10px);
   animation: slideIn 0.3s ease forwards;
+  display: none;
+}
+
+.message-display:not(:empty) {
+  display: block;
 }
 
 /* Slide in animation */
