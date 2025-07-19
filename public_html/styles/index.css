@@ -1,11 +1,39 @@
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: url("../assets/images/home-background.png") no-repeat center
+    center fixed;
+  background-size: cover;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("../assets/images/home-background.png") no-repeat center
+    center fixed;
+  background-size: cover;
+  filter: blur(4px);
+  z-index: -1;
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: -1;
 }
 .home-container {
   background: white;
@@ -15,6 +43,21 @@ body {
   width: 100%;
   max-width: 420px;
   text-align: center;
+}
+
+.home-logo {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-logo img {
+  max-width: 120px;
+  max-height: 120px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
 .home-title {
   font-size: 2.2rem;
