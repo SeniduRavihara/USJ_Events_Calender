@@ -1,171 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Faculty Events - University of Sri Jayewardenepura</title>
-    <link rel="stylesheet" href="dashboard.css">
-</head>
-<body>
+    <link rel="stylesheet" href="dashboard.css" />
+  </head>
+  <body>
     <header class="header">
-        <div class="logo-section">
-            <div class="logo">📅</div>
-            <a href=""><div class="logo-text">
-                <div class="logo-title">Faculty Events</div>
-                <div class="logo-subtitle">University of Sri Jayewardenepura</div>
-            </div></a>
-        </div>
-        <div class="header-actions">
-            <a href="../calendar-page/" class="full-calendar-btn">📅 Full Calendar</a>
-            <div class="notification-icon"><a href="">🔔</a></div>
-            <div class="profile-icon"><a href="">👤</a></div>
-        </div>
+      <div class="logo-section">
+        <div class="logo">📅</div>
+        <a href=""
+          ><div class="logo-text">
+            <div class="logo-title">Faculty Events</div>
+            <div class="logo-subtitle">University of Sri Jayewardenepura</div>
+          </div></a
+        >
+      </div>
+      <div class="header-actions">
+        <a href="../calendar-page/" class="full-calendar-btn"
+          >📅 Full Calendar</a
+        >
+        <div class="notification-icon"><a href="">🔔</a></div>
+        <div class="profile-icon"><a href="">👤</a></div>
+      </div>
     </header>
 
     <main class="main-content">
-        <section class="welcome-section">
-            <h1 class="welcome-title">
-                Welcome back, John!
-                <span class="new-events-badge">● 3 new events</span>
-            </h1>
-            <p class="welcome-description">
-                Discover exciting events, workshops, and activities across Computer Science, 
-                Software Engineering, and Information Systems departments.
-            </p>
+      <section class="welcome-section">
+        <h1 class="welcome-title">
+          Welcome back, John!
+          <span class="new-events-badge">● 3 new events</span>
+        </h1>
+        <p class="welcome-description">
+          Discover exciting events, workshops, and activities across Computer
+          Science, Software Engineering, and Information Systems departments.
+        </p>
+      </section>
+
+      <div class="stats-grid">
+        <div class="stat-card upcoming-events">
+          <div class="stat-info">
+            <h3>3</h3>
+            <p>This month</p>
+          </div>
+          <div class="stat-icon">📅</div>
+        </div>
+        <div class="stat-card registrations">
+          <div class="stat-info">
+            <h3>3</h3>
+            <p>Active events</p>
+          </div>
+          <div class="stat-icon">👥</div>
+        </div>
+        <div class="stat-card department">
+          <div class="stat-info">
+            <h3>CS</h3>
+            <p>FC221001</p>
+          </div>
+          <div class="stat-icon">🎓</div>
+        </div>
+      </div>
+
+      <div class="content-grid">
+        <section class="events-section">
+          <div class="search-filter">
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Search events..."
+            />
+            <select class="filter-select">
+              <option>All Departments</option>
+              <option>Computer Science</option>
+              <option>Software Engineering</option>
+              <option>Information Systems</option>
+            </select>
+          </div>
+
+          <h2 class="section-title">Upcoming Events</h2>
+
+          <!-- Event cards will be rendered by JS -->
         </section>
 
-        <div class="stats-grid">
-            <div class="stat-card upcoming-events">
-                <div class="stat-info">
-                    <h3>3</h3>
-                    <p>This month</p>
-                </div>
-                <div class="stat-icon">📅</div>
+        <aside class="sidebar">
+          <div class="calendar-widget">
+            <h3 class="section-title">Quick Calendar</h3>
+            <div class="calendar-month">June 2025</div>
+            <a href="" class="calendar-link">Click to view full calendar</a>
+          </div>
+
+          <div class="departments-widget">
+            <h3 class="section-title">Departments</h3>
+            <div class="department-item">
+              <div class="department-name">
+                <span class="department-dot dot-cs"></span>
+                Computer Science
+              </div>
+              <span class="event-count">12 events</span>
             </div>
-            <div class="stat-card registrations">
-                <div class="stat-info">
-                    <h3>3</h3>
-                    <p>Active events</p>
-                </div>
-                <div class="stat-icon">👥</div>
+            <div class="department-item">
+              <div class="department-name">
+                <span class="department-dot dot-se"></span>
+                Software Engineering
+              </div>
+              <span class="event-count">8 events</span>
             </div>
-            <div class="stat-card department">
-                <div class="stat-info">
-                    <h3>CS</h3>
-                    <p>FC221001</p>
-                </div>
-                <div class="stat-icon">🎓</div>
+            <div class="department-item">
+              <div class="department-name">
+                <span class="department-dot dot-is"></span>
+                Information Systems
+              </div>
+              <span class="event-count">6 events</span>
             </div>
-        </div>
-
-        <div class="content-grid">
-            <section class="events-section">
-                <div class="search-filter">
-                    <input type="text" class="search-input" placeholder="Search events...">
-                    <select class="filter-select">
-                        <option>All Departments</option>
-                        <option>Computer Science</option>
-                        <option>Software Engineering</option>
-                        <option>Information Systems</option>
-                    </select>
-                </div>
-
-                <h2 class="section-title">Upcoming Events</h2>
-
-                <div class="event-card">
-                    <div class="event-icon">🤖</div>
-                    <div class="event-content">
-                        <a href=""><h3 class="event-title">
-                            AI Workshop Series ⭐</a>
-                            <span class="department-tag tag-cs">CS</span>
-                        </h3>
-                        <p class="event-subtitle">Introduction to Machine Learning fundamentals</p>
-                        <div class="event-details">
-                            <span>📅 2025-06-25 at 2:00 PM</span>
-                            <span>📍 Lab 301</span>
-                            <span>👥 45/50 registered</span>
-                        </div>
-                    </div>
-                    <div class="event-actions">
-                        <button class="btn btn-secondary"><a href="">View Details</a></button>
-                        <button class="btn btn-primary"><a href="">Register</a></button>
-                    </div>
-                </div>
-
-                <div class="event-card">
-                    <div class="event-icon">🏗️</div>
-                    <div class="event-content">
-                        <a href=""><h3 class="event-title">
-                            Software Architecture Seminar</a>
-                            <span class="department-tag tag-se">SE</span>
-                        </h3>
-                        <p class="event-subtitle">Best practices in modern software architecture</p>
-                        <div class="event-details">
-                            <span>📅 2025-06-28 at 10:00 AM</span>
-                            <span>📍 Auditorium A</span>
-                            <span>👥 32/100 registered</span>
-                        </div>
-                    </div>
-                    <div class="event-actions">
-                        <button class="btn btn-secondary"><a href="">View Details</a></button>
-                        <button class="btn btn-primary"><a href="">Register</a></button>
-                    </div>
-                </div>
-
-                <div class="event-card">
-                    <div class="event-icon">🗃️</div>
-                    <div class="event-content">
-                        <a href=""><h3 class="event-title">
-                            Database Design Competition 🏆</a>
-                            <span class="department-tag tag-is">IS</span>
-                        </h3>
-                        <p class="event-subtitle">Annual database design challenge</p>
-                        <div class="event-details">
-                            <span>📅 2025-07-02 at 9:00 AM</span>
-                            <span>📍 Computer Lab 2</span>
-                            <span>👥 28/30 registered</span>
-                        </div>
-                    </div>
-                    <div class="event-actions">
-                        <button class="btn btn-secondary"><a href="">View Details</a></button>
-                        <button class="btn btn-primary"><a href="">Register</a></button>
-                    </div>
-                </div>
-            </section>
-
-            <aside class="sidebar">
-                <div class="calendar-widget">
-                    <h3 class="section-title">Quick Calendar</h3>
-                    <div class="calendar-month">June 2025</div>
-                    <a href="" class="calendar-link">Click to view full calendar</a>
-                </div>
-
-                <div class="departments-widget">
-                    <h3 class="section-title">Departments</h3>
-                    <div class="department-item">
-                        <div class="department-name">
-                            <span class="department-dot dot-cs"></span>
-                            Computer Science
-                        </div>
-                        <span class="event-count">12 events</span>
-                    </div>
-                    <div class="department-item">
-                        <div class="department-name">
-                            <span class="department-dot dot-se"></span>
-                            Software Engineering
-                        </div>
-                        <span class="event-count">8 events</span>
-                    </div>
-                    <div class="department-item">
-                        <div class="department-name">
-                            <span class="department-dot dot-is"></span>
-                            Information Systems
-                        </div>
-                        <span class="event-count">6 events</span>
-                    </div>
-                </div>
-            </aside>
-        </div>
+          </div>
+        </aside>
+      </div>
     </main>
-</body>
+    <script src="mock-events.js"></script>
+    <script src="dashboard.js"></script>
+  </body>
 </html>
