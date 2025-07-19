@@ -25,7 +25,7 @@ if (!$user || !password_verify($data['password'], $user['password'])) {
 
 $payload = [
     'iss' => 'localhost',
-    'exp' => time() + 3600,
+    'exp' => time() + 3600*24,
     'data' => ['id' => $user['id'], 'name' => $user['name']]
 ];
 

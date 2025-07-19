@@ -39,3 +39,4 @@ final class CreateEventsTable extends AbstractMigration
             ->create();
     }
 }
+ 
