@@ -228,9 +228,9 @@ document.addEventListener("DOMContentLoaded", function () {
       updateRegLink(); // Reset registration link visibility
       
       // Redirect after a brief delay to show success message
-      // setTimeout(() => {
-      //   window.location.href = "../dashboard/";
-      // }, 2000);
+      setTimeout(() => {
+        window.location.href = "../dashboard/";
+      }, 2000);
       
     } catch (error) {
       console.error("Error creating event:", error);
