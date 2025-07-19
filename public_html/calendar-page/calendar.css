@@ -14,64 +14,160 @@ body {
 }
 
 /* Layout Utilities */
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.justify-center { justify-content: center; }
-.gap-4 { gap: 1rem; }
-.gap-2 { gap: 0.5rem; }
-.gap-1 { gap: 0.25rem; }
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.items-center {
+  align-items: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.justify-center {
+  justify-content: center;
+}
+.gap-4 {
+  gap: 1rem;
+}
+.gap-2 {
+  gap: 0.5rem;
+}
+.gap-1 {
+  gap: 0.25rem;
+}
 
 /* Spacing */
-.mb-6 { margin-bottom: 1.5rem; }
-.mb-2 { margin-bottom: 0.5rem; }
-.mb-1 { margin-bottom: 0.25rem; }
-.mt-6 { margin-top: 1.5rem; }
-.mt-1 { margin-top: 0.25rem; }
-.p-6 { padding: 1.5rem; }
-.p-4 { padding: 1rem; }
-.p-3 { padding: 0.75rem; }
-.p-2 { padding: 0.5rem; }
-.p-1 { padding: 0.25rem; }
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+.mt-6 {
+  margin-top: 1.5rem;
+}
+.mt-1 {
+  margin-top: 0.25rem;
+}
+.p-6 {
+  padding: 1.5rem;
+}
+.p-4 {
+  padding: 1rem;
+}
+.p-3 {
+  padding: 0.75rem;
+}
+.p-2 {
+  padding: 0.5rem;
+}
+.p-1 {
+  padding: 0.25rem;
+}
 
 /* Borders and Radius */
-.rounded { border-radius: 0.25rem; }
-.rounded-lg { border-radius: 0.5rem; }
-.border-b { border-bottom: 1px solid #e5e7eb; }
-.border-gray-200 { border-color: #e5e7eb; }
-.border-gray-100 { border-color: #f3f4f6; }
-.border-blue-300 { border-color: #93c5fd; }
+.rounded {
+  border-radius: 0.25rem;
+}
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+.border-b {
+  border-bottom: 1px solid #e5e7eb;
+}
+.border-gray-200 {
+  border-color: #e5e7eb;
+}
+.border-gray-100 {
+  border-color: #f3f4f6;
+}
+.border-blue-300 {
+  border-color: #93c5fd;
+}
 
 /* Background Colors */
-.bg-white { background: #fff; }
-.bg-gray-50 { background: #f9fafb; }
-.bg-gray-100 { background: #f3f4f6; }
-.bg-blue-50 { background: #eff6ff; }
-.bg-blue-100 { background: #dbeafe; }
-.bg-blue-500 { background: #3b82f6; }
-.bg-green-500 { background: #22c55e; }
-.bg-purple-500 { background: #a21caf; }
-.bg-orange-500 { background: #f97316; }
-.bg-red-500 { background: #ef4444; }
+.bg-white {
+  background: #fff;
+}
+.bg-gray-50 {
+  background: #f9fafb;
+}
+.bg-gray-100 {
+  background: #f3f4f6;
+}
+.bg-blue-50 {
+  background: #eff6ff;
+}
+.bg-blue-100 {
+  background: #dbeafe;
+}
+.bg-blue-500 {
+  background: #3b82f6;
+}
+.bg-green-500 {
+  background: #22c55e;
+}
+.bg-purple-500 {
+  background: #a21caf;
+}
+.bg-orange-500 {
+  background: #f97316;
+}
+.bg-red-500 {
+  background: #ef4444;
+}
 
 /* Text Colors */
-.text-blue-600 { color: #2563eb; }
-.text-gray-600 { color: #4b5563; }
-.text-gray-500 { color: #6b7280; }
-.text-gray-900 { color: #111827; }
+.text-blue-600 {
+  color: #2563eb;
+}
+.text-gray-600 {
+  color: #4b5563;
+}
+.text-gray-500 {
+  color: #6b7280;
+}
+.text-gray-900 {
+  color: #111827;
+}
 
 /* Typography */
-.text-sm { font-size: 0.875rem; }
-.text-xs { font-size: 0.75rem; }
-.text-lg { font-size: 1.125rem; }
-.text-xl { font-size: 1.25rem; }
-.text-2xl { font-size: 1.5rem; }
-.font-bold { font-weight: bold; }
-.font-semibold { font-weight: 600; }
-.font-medium { font-weight: 500; }
-.text-center { text-align: center; }
-.text-right { text-align: right; }
+.text-sm {
+  font-size: 0.875rem;
+}
+.text-xs {
+  font-size: 0.75rem;
+}
+.text-lg {
+  font-size: 1.125rem;
+}
+.text-xl {
+  font-size: 1.25rem;
+}
+.text-2xl {
+  font-size: 1.5rem;
+}
+.font-bold {
+  font-weight: bold;
+}
+.font-semibold {
+  font-weight: 600;
+}
+.font-medium {
+  font-weight: 500;
+}
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
 
 /* Truncate */
 .truncate {
@@ -81,29 +177,59 @@ body {
 }
 
 /* Sizing */
-.w-4 { width: 1rem; height: 1rem; }
-.w-6 { width: 1.5rem; height: 1.5rem; }
-.w-20 { width: 5rem; }
-.w-48 { width: 12rem; }
-.h-24 { height: 6rem; }
-.h-12 { height: 3rem; }
-.min-h-16 { min-height: 4rem; }
-.max-h-96 { max-height: 24rem; }
-.flex-1 { flex: 1; }
+.w-4 {
+  width: 1rem;
+  height: 1rem;
+}
+.w-6 {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.w-20 {
+  width: 5rem;
+}
+.w-48 {
+  width: 12rem;
+}
+.h-24 {
+  height: 6rem;
+}
+.h-12 {
+  height: 3rem;
+}
+.min-h-16 {
+  min-height: 4rem;
+}
+.max-h-96 {
+  max-height: 24rem;
+}
+.flex-1 {
+  flex: 1;
+}
 
 /* Overflow */
-.overflow-y-auto { overflow-y: auto; }
-.overflow-hidden { overflow: hidden; }
+.overflow-y-auto {
+  overflow-y: auto;
+}
+.overflow-hidden {
+  overflow: hidden;
+}
 
 /* Spacing Between Elements */
-.space-y-1 > * + * { margin-top: 0.25rem; }
-.space-y-4 > * + * { margin-top: 1rem; }
+.space-y-1 > * + * {
+  margin-top: 0.25rem;
+}
+.space-y-4 > * + * {
+  margin-top: 1rem;
+}
 
 /* Cursor */
-.cursor-pointer { cursor: pointer; }
+.cursor-pointer {
+  cursor: pointer;
+}
 
 /* Hover Effects */
-.hover\:bg-gray-50:hover { 
+.hover\:bg-gray-50:hover {
   background-size: 160px 120px;
   background-position: center;
   background-repeat: no-repeat;
@@ -111,14 +237,23 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-
 }
 
-.bg-calendar-default:hover { background-image: url('calander images/calendar1.png'); }
-.bg-cs:hover               { background-image: url('calander images/cs1.png'); }
-.bg-se:hover               { background-image: url('calander images/se1.png'); }
-.bg-is:hover               { background-image: url('calander images/is1.png'); }
-.bg-multi:hover            { background-image: url('calander images/multi1.png'); }
+.bg-calendar-default:hover {
+  background-image: url("calander images/calendar1.png");
+}
+.bg-cs:hover {
+  background-image: url("calander images/cs1.png");
+}
+.bg-se:hover {
+  background-image: url("calander images/se1.png");
+}
+.bg-is:hover {
+  background-image: url("calander images/is1.png");
+}
+.bg-multi:hover {
+  background-image: url("calander images/multi1.png");
+}
 
 /* Button Styles */
 .btn-outline,
@@ -178,6 +313,27 @@ body {
   color: #3730a3;
 }
 
+/* Department-specific badge colors */
+.badge-secondary.cs {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.badge-secondary.se {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-secondary.is {
+  background: #fed7aa;
+  color: #92400e;
+}
+
+.badge-secondary.multi {
+  background: #e9d5ff;
+  color: #581c87;
+}
+
 /* Card */
 .card {
   background: #fff;
@@ -196,7 +352,8 @@ body {
   display: inline-block;
   width: 2rem;
   height: 2rem;
-  background: url('data:image/svg+xml;utf8,<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="18" x="3" y="4" rx="2" stroke="currentColor"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>') no-repeat center/contain;
+  background: url('data:image/svg+xml;utf8,<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect width="18" height="18" x="3" y="4" rx="2" stroke="currentColor"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>')
+    no-repeat center/contain;
   vertical-align: middle;
 }
 
@@ -207,25 +364,55 @@ body {
 }
 
 /* Grid */
-.grid { display: grid; }
-.grid-cols-7 { grid-template-columns: repeat(7, 1fr); }
-.grid-cols-8 { grid-template-columns: repeat(8, 1fr); }
-.grid-cols-1 { grid-template-columns: 1fr; }
-.contents { display: contents; }
+.grid {
+  display: grid;
+}
+.grid-cols-7 {
+  grid-template-columns: repeat(7, 1fr);
+}
+.grid-cols-8 {
+  grid-template-columns: repeat(8, 1fr);
+}
+.grid-cols-1 {
+  grid-template-columns: 1fr;
+}
+.contents {
+  display: contents;
+}
 
 /* Legend Colors */
-.legend-purple { background: #8F5CD2; }
-.legend-green { background: #00BB60; }
-.legend-pink { background: #FF1BD6; }
-.legend-yellow { background: #D7B009; }
-.legend-blue { background: #3b82f6; }
-.legend-red { background: #ef4444; }
-.legend-orange { background: #f97316; }
+.legend-purple {
+  background: #8f5cd2;
+}
+.legend-green {
+  background: #00bb60;
+}
+.legend-pink {
+  background: #ff1bd6;
+}
+.legend-yellow {
+  background: #d7b009;
+}
+.legend-blue {
+  background: #3b82f6;
+}
+.legend-red {
+  background: #ef4444;
+}
+.legend-orange {
+  background: #f97316;
+}
 
 /* Utility Classes */
-.hidden { display: none; }
-.flex-wrap { flex-wrap: wrap; }
-.items-start { align-items: flex-start; }
+.hidden {
+  display: none;
+}
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.items-start {
+  align-items: flex-start;
+}
 
 .date-box {
   background-size: 160px 120px;
@@ -237,11 +424,21 @@ body {
   justify-content: center;
 }
 
-.bg-calendar-default { background-image: url('calander images/calendar.png'); }
-.bg-cs               { background-image: url('calander images/cs.png'); }
-.bg-se               { background-image: url('calander images/se.png'); }
-.bg-is               { background-image: url('calander images/is.png'); }
-.bg-multi          { background-image: url('calander images/multi.png'); }
+.bg-calendar-default {
+  background-image: url("calander images/calendar.png");
+}
+.bg-cs {
+  background-image: url("calander images/cs.png");
+}
+.bg-se {
+  background-image: url("calander images/se.png");
+}
+.bg-is {
+  background-image: url("calander images/is.png");
+}
+.bg-multi {
+  background-image: url("calander images/multi.png");
+}
 
 /* Default date number styling */
 .date-number {
@@ -249,7 +446,7 @@ body {
   font-family: Georgia, serif;
   font-weight: bold;
   font-size: 1.5rem;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   z-index: 10;
   position: relative;
   top: +30px; /* Default position */
@@ -272,26 +469,69 @@ body {
 
 .event-title {
   font-family: Arial, sans-serif !important;
-  font-size: 0.75rem !important;
-  font-weight: bold !important;
-  color: black !important;
-  background: transparent !important;
-  text-shadow: none !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+  background: #3b82f6 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
   text-align: center;
   border: none !important;
   outline: none !important;
   text-decoration: none !important;
-  padding: 0.25rem !important;
-  border-radius: 0.25rem !important;
+  padding: 3px 6px !important;
+  border-radius: 4px !important;
   display: block !important;
+  margin-bottom: 2px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.2s ease !important;
 
   /* Allow multiline */
   white-space: normal !important;
   word-break: break-word !important;
   overflow: hidden !important;
   max-height: 2.5em; /* ~2 lines depending on font */
+  cursor: pointer !important;
 }
 
+/* Hover effect for better UX */
+.event-title:hover {
+  background: #2563eb !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Department-specific event colors */
+.event-title.cs {
+  background: #6366f1 !important;
+}
+
+.event-title.cs:hover {
+  background: #4f46e5 !important;
+}
+
+.event-title.se {
+  background: #10b981 !important;
+}
+
+.event-title.se:hover {
+  background: #059669 !important;
+}
+
+.event-title.is {
+  background: #f59e42 !important;
+}
+
+.event-title.is:hover {
+  background: #d97706 !important;
+}
+
+.event-title.multi {
+  background: #8b5cf6 !important;
+}
+
+.event-title.multi:hover {
+  background: #7c3aed !important;
+}
 
 /* Remove any special highlighting for event types */
 .event-title.presentation,
@@ -316,9 +556,8 @@ body {
 }
 
 .event-card {
-  background-image: 
-  url('calander images/day.jpg');
-  background-size:  cover;
+  background-image: url("calander images/day.jpg");
+  background-size: cover;
   background-position: right bottom, center;
   background-repeat: no-repeat;
   border-left: 3px solid #3b82f6;
@@ -340,7 +579,7 @@ body {
   border-radius: 0.5rem;
   font-weight: bold;
   display: inline-block;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* ENHANCED: Day Headers with Rounded Borders and Colors */
@@ -375,13 +614,9 @@ body {
 .today-glow {
   border: 3px solid #32ff7e !important;
   border-radius: 0.75rem !important;
-  box-shadow: 
-    0 0 0 4px rgba(50, 255, 126, 0.2),
-    0 0 20px rgba(0, 255, 100, 0.4),
-    0 0 40px rgba(0, 255, 100, 0.2),
-    0 0 15px rgba(255, 0, 0, 0.4),
-    0 0 30px rgba(255, 0, 0, 0.2),
-    inset 0 0 0 2px rgba(0, 255, 100, 0.1);
+  box-shadow: 0 0 0 4px rgba(50, 255, 126, 0.2), 0 0 20px rgba(0, 255, 100, 0.4),
+    0 0 40px rgba(0, 255, 100, 0.2), 0 0 15px rgba(255, 0, 0, 0.4),
+    0 0 30px rgba(255, 0, 0, 0.2), inset 0 0 0 2px rgba(0, 255, 100, 0.1);
   animation: todayPulse 2s ease-in-out infinite;
   transform: scale(1.02);
   z-index: 10;
@@ -391,44 +626,42 @@ body {
 
 /* Add a neon green + red overlay for today's date */
 .today-glow::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -3px;
   left: -3px;
   right: -3px;
   bottom: -3px;
-  background: linear-gradient(45deg, 
-    rgba(0, 255, 100, 0.1), 
-    rgba(255, 0, 0, 0.08), 
-    rgba(50, 255, 126, 0.1));
+  background: linear-gradient(
+    45deg,
+    rgba(0, 255, 100, 0.1),
+    rgba(255, 0, 0, 0.08),
+    rgba(50, 255, 126, 0.1)
+  );
   border-radius: 0.75rem;
   z-index: -1;
   animation: greenRedShimmer 3s ease-in-out infinite;
 }
 
 @keyframes todayPulse {
-  0%, 100% {
-    box-shadow: 
-      0 0 0 4px rgba(0, 255, 100, 0.2),
-      0 0 20px rgba(0, 255, 100, 0.4),
-      0 0 40px rgba(0, 255, 100, 0.2),
-      0 0 15px rgba(255, 0, 0, 0.4),
-      0 0 30px rgba(255, 0, 0, 0.2),
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px rgba(0, 255, 100, 0.2),
+      0 0 20px rgba(0, 255, 100, 0.4), 0 0 40px rgba(0, 255, 100, 0.2),
+      0 0 15px rgba(255, 0, 0, 0.4), 0 0 30px rgba(255, 0, 0, 0.2),
       inset 0 0 0 2px rgba(0, 255, 100, 0.1);
   }
   50% {
-    box-shadow: 
-      0 0 0 6px rgba(0, 255, 100, 0.3),
-      0 0 30px rgba(0, 255, 100, 0.6),
-      0 0 60px rgba(0, 255, 100, 0.3),
-      0 0 25px rgba(255, 0, 0, 0.6),
-      0 0 50px rgba(255, 0, 0, 0.3),
+    box-shadow: 0 0 0 6px rgba(0, 255, 100, 0.3),
+      0 0 30px rgba(0, 255, 100, 0.6), 0 0 60px rgba(0, 255, 100, 0.3),
+      0 0 25px rgba(255, 0, 0, 0.6), 0 0 50px rgba(255, 0, 0, 0.3),
       inset 0 0 0 2px rgba(0, 255, 100, 0.2);
   }
 }
 
 @keyframes greenRedShimmer {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.3;
   }
   50% {
@@ -439,9 +672,7 @@ body {
 /* Keep today's date number visible but default color */
 .today-glow .date-number {
   font-weight: bold !important;
-  text-shadow: 
-    0 0 10px rgba(0, 255, 100, 0.5),
-    0 0 8px rgba(255, 0, 0, 0.4),
+  text-shadow: 0 0 10px rgba(0, 255, 100, 0.5), 0 0 8px rgba(255, 0, 0, 0.4),
     1px 1px 2px rgba(0, 0, 0, 0.3) !important;
   z-index: 20;
 }

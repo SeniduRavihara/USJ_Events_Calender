@@ -145,14 +145,17 @@ function renderMonthView() {
         <div class="flex-1 space-y-1 overflow-hidden">
           ${uniqueEvents
             .slice(0, 2)
-            .map(
-              (evt) => `
-            <div class="event-title ${evt.color}"
+            .map((evt) => {
+              const deptClass = evt.department
+                ? evt.department.toLowerCase()
+                : "";
+              return `
+            <div class="event-title ${evt.color} ${deptClass}"
                  title="${evt.title}">
               ${evt.title}
             </div>
-          `
-            )
+          `;
+            })
             .join("")}
           ${
             uniqueEvents.length > 2
@@ -207,9 +210,12 @@ function renderWeekView() {
       });
       html += `<div class="p-1 h-12 border border-gray-100 bg-calendar-cell">`;
       dayEvents.forEach((event) => {
+        const deptClass = event.department
+          ? event.department.toLowerCase()
+          : "";
         html += `<div class="text-xs p-1 rounded text-white truncate ${
           event.color
-        }"
+        } ${deptClass}"
                  title="${event.title} - ${formatTime(event.startTime)}">${
           event.title
         }</div>`;
@@ -243,6 +249,7 @@ function renderDayView() {
       )}</div>
       <div class="flex-1 p-2 min-h-16">`;
     hourEvents.forEach((event) => {
+      const deptClass = event.department ? event.department.toLowerCase() : "";
       html += `<div class="event-card mb-2">
         <div class="card-content p-3">
           <div class="flex items-start justify-between">
@@ -263,7 +270,9 @@ function renderDayView() {
                 </span>
               </div>  
             </div>
-            <span class="badge badge-secondary">${event.department}</span>
+            <span class="badge badge-secondary ${deptClass}">${
+        event.department
+      }</span>
           </div>
         </div>
       </div>`;
