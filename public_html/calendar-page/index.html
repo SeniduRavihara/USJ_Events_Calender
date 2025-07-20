@@ -1,68 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Department Events Calendar</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="calendar.css">
-</head>
-<body>
-  <div class="container">
-    <!-- Calendar Header -->
-    <div class="flex flex-col items-center justify-between mb-6 gap-4">
-      <div class="flex items-center gap-4">
-        <h2 class="text-2xl font-bold flex items-center gap-2">
-          <span class="calendar-icon"></span>
-          Events Calendar
-        </h2>
-        <button class="btn-outline" id="todayBtn">Today</button>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Department Events Calendar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="calendar.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Modern Header -->
+    <header class="modern-header">
+      <div class="header-content">
+        <div class="header-left">
+          <div class="logo-section">
+            <i class="fas fa-calendar-alt logo-icon"></i>
+            <h1 class="logo-text">Events Calendar</h1>
+          </div>
+        </div>
+        <div class="header-right">
+          <button class="header-btn" id="todayBtn">
+            <i class="fas fa-home"></i>
+            Today
+          </button>
+          <div class="user-menu">
+            <i class="fas fa-user-circle"></i>
+          </div>
+        </div>
       </div>
-      <div class="flex items-center gap-4">
-        <select class="w-48" id="departmentFilter">
-          <option value="all">All Departments</option>
-          <option value="CS">Computer Science</option>
-          <option value="SE">Software Engineering</option>
-          <option value="IS">Information Systems</option>
-        </select>
-        <div class="flex border rounded-lg" id="viewSelector">
-          <button class="btn-default btn-sm" data-view="month" id="monthBtn">Month</button>
-          <button class="btn-ghost btn-sm" data-view="week" id="weekBtn">Week</button>
-          <button class="btn-ghost btn-sm" data-view="day" id="dayBtn">Day</button>
+    </header>
+
+    <div class="main-container">
+      <!-- Control Panel -->
+      <div class="control-panel">
+        <div class="control-left">
+          <div class="view-selector">
+            <button class="view-btn active" data-view="month" id="monthBtn">
+              <i class="fas fa-calendar-alt"></i>
+              Month
+            </button>
+            <button class="view-btn" data-view="week" id="weekBtn">
+              <i class="fas fa-calendar-week"></i>
+              Week
+            </button>
+            <button class="view-btn" data-view="day" id="dayBtn">
+              <i class="fas fa-calendar-day"></i>
+              Day
+            </button>
+          </div>
+        </div>
+
+        <div class="control-center">
+          <div class="navigation">
+            <button class="nav-btn" id="prevBtn">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <h2 class="calendar-title" id="calendarTitle"></h2>
+            <button class="nav-btn" id="nextBtn">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="control-right">
+          <div class="filter-section">
+            <select class="modern-select" id="departmentFilter">
+              <option value="all">All Departments</option>
+              <option value="CS">Computer Science</option>
+              <option value="SE">Software Engineering</option>
+              <option value="IS">Information Systems</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calendar Content -->
+      <div class="calendar-wrapper">
+        <div id="calendarContent" class="calendar-content"></div>
+      </div>
+
+      <!-- Modern Legend -->
+      <div class="legend-section">
+        <h3 class="legend-title">Event Categories</h3>
+        <div class="legend-grid">
+          <div class="legend-item">
+            <div class="legend-color cs-color"></div>
+            <span class="legend-label">Computer Science</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color se-color"></div>
+            <span class="legend-label">Software Engineering</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color is-color"></div>
+            <span class="legend-label">Information Systems</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color multi-color"></div>
+            <span class="legend-label">Multi-Department</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Navigation -->
-    <div class="flex items-center justify-between mb-6">
-      <button class="btn-outline" id="prevBtn">&lt;</button>
-      <h3 class="text-xl font-semibold" id="calendarTitle"></h3>
-      <button class="btn-outline" id="nextBtn">&gt;</button>
-    </div>
-
-    <!-- Calendar Content -->
-    <div id="calendarContent"></div>
-
-    <!-- Legend -->
-    <div class="mt-6 flex flex-wrap gap-4 justify-center">
-      <div class="flex items-center gap-2">
-        <div class="w-4 h-4 legend-yellow rounded"></div>
-        <span class="text-sm">Computer Science</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <div class="w-4 h-4 legend-green rounded"></div>
-        <span class="text-sm">Software Engineering</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <div class="w-4 h-4 legend-pink rounded"></div>
-        <span class="text-sm">Information Systems</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <div class="w-4 h-4 legend-purple rounded"></div>
-        <span class="text-sm">More than 2 Departments</span>
+    <!-- Event Modal -->
+    <div id="eventModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modalTitle"></h3>
+          <button class="modal-close" onclick="closeEventModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- Event details will be populated here -->
+        </div>
       </div>
     </div>
-  </div>
 
-  <script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>

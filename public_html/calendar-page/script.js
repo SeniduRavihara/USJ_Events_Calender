@@ -1,6 +1,97 @@
+// Real Events Data - Will be loaded from database
+let mockEvents = [];
+
+// Function to fetch events from database
+async function fetchEvents() {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.warn("No authentication token found");
+      return;
+    }
+
+    const response = await fetch("/USJ_Events_Calender/api/get-events.php", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Transform database events to match mock events structure exactly
+    mockEvents = data.map((event) => {
+      // Handle departments as JSON array or string
+      let departments;
+      if (typeof event.departments === "string") {
+        try {
+          departments = JSON.parse(event.departments);
+        } catch (e) {
+          // If it's not JSON, treat as comma-separated string
+          departments = event.departments.split(",").map((d) => d.trim());
+        }
+      } else if (Array.isArray(event.departments)) {
+        departments = event.departments;
+      } else {
+        departments = [];
+      }
+
+      return {
+        id: event.id,
+        title: event.title,
+        department: departments, // Now it's always an array
+        date: event.event_date,
+        startTime: event.event_time,
+        endTime: event.event_time, // Using same as start time
+        location: event.location,
+        attendees: 0, // Default value
+        maxAttendees: 100, // Default value
+        type: "Event", // Default type
+        color: getEventColor(departments),
+      };
+    });
+
+    console.log("Events loaded from database:", mockEvents);
+    renderCalendar(); // Re-render calendar with new data
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    // Fallback to empty events array
+    mockEvents = [];
+  }
+}
+
+// Function to determine event color based on department
+function getEventColor(departments) {
+  if (!departments || !Array.isArray(departments) || departments.length === 0) {
+    return "legend-blue";
+  }
+
+  const deptArray = departments.map((d) => d.trim().toUpperCase());
+
+  if (deptArray.length > 1) {
+    return "legend-purple"; // Multi-department
+  }
+
+  const dept = deptArray[0];
+  switch (dept) {
+    case "CS":
+      return "legend-yellow";
+    case "SE":
+      return "legend-green";
+    case "IS":
+      return "legend-pink";
+    default:
+      return "legend-blue";
+  }
+}
+
 // Global Variables
-let realEvents = [];
-let currentDate = new Date();
+let currentDate = new Date(); // Current date (current month and year)
 let view = "month";
 let selectedDepartment = "all";
 
@@ -36,25 +127,49 @@ function getEventsForDate(date) {
   const d = String(date.getDate()).padStart(2, "0");
   const dateKey = `${y}-${m}-${d}`;
 
-  return realEvents.filter(
-    (event) =>
-      (selectedDepartment === "all" ||
-        event.department === selectedDepartment) &&
-      event.date === dateKey
-  );
+  return mockEvents.filter((event) => {
+    // Check if event is on the specified date
+    if (event.date !== dateKey) return false;
+
+    // If no department filter is selected, show all events
+    if (selectedDepartment === "all") return true;
+
+    // Check if the event's departments include the selected department
+    if (event.department && Array.isArray(event.department)) {
+      return event.department.some(
+        (dept) => dept.trim().toLowerCase() === selectedDepartment.toLowerCase()
+      );
+    }
+
+    return false;
+  });
 }
 
 function getBackgroundClassForEvents(dayEvents) {
   if (dayEvents.length === 0) {
     return "bg-calendar-default";
   }
-  const uniqueDepartments = [
-    ...new Set(dayEvents.map((event) => event.department)),
-  ];
+
+  // Get all departments from all events (handle arrays)
+  const allDepartments = [];
+  dayEvents.forEach((event) => {
+    if (event.department && Array.isArray(event.department)) {
+      allDepartments.push(
+        ...event.department.map((d) => d.trim().toLowerCase())
+      );
+    }
+  });
+
+  // Get unique departments
+  const uniqueDepartments = [...new Set(allDepartments)];
+
+  // If multiple departments are involved, use multi background
   if (uniqueDepartments.length > 1) {
     return "bg-multi";
   }
-  const dept = uniqueDepartments[0].toLowerCase();
+
+  // Single department - use department-specific background
+  const dept = uniqueDepartments[0];
   const map = { cs: "bg-cs", se: "bg-se", is: "bg-is" };
   return map[dept] || "bg-calendar-default";
 }
@@ -89,11 +204,11 @@ function renderCalendar() {
 
 function updateViewButtons() {
   document.getElementById("monthBtn").className =
-    view === "month" ? "btn-default btn-sm" : "btn-ghost btn-sm";
+    view === "month" ? "view-btn active" : "view-btn";
   document.getElementById("weekBtn").className =
-    view === "week" ? "btn-default btn-sm" : "btn-ghost btn-sm";
+    view === "week" ? "view-btn active" : "view-btn";
   document.getElementById("dayBtn").className =
-    view === "day" ? "btn-default btn-sm" : "btn-ghost btn-sm";
+    view === "day" ? "view-btn active" : "view-btn";
 }
 
 function renderMonthView() {
@@ -114,6 +229,7 @@ function renderMonthView() {
       isWeekend ? "weekend" : ""
     }">${dayName}</div>`;
   });
+
   days.forEach((day) => {
     if (!day) {
       html += `<div class="p-2 h-24" style="visibility: hidden;"></div>`;
@@ -125,6 +241,7 @@ function renderMonthView() {
     const imageClass = `date-box ${bgClass}`;
     const uniqueEvents = [];
     const seenTitles = new Set();
+
     dayEvents.forEach((event) => {
       if (!seenTitles.has(event.title)) {
         seenTitles.add(event.title);
@@ -133,7 +250,7 @@ function renderMonthView() {
     });
     html += `
       <div
-        class="${imageClass} p-1 h-24 cursor-pointer hover:bg-gray-50 flex flex-col
+        class="${imageClass} p-1 h-24 cursor-pointer flex flex-col
                ${isToday ? "today-glow" : ""}"
         onclick="onDayClick(${day.getFullYear()}, ${day.getMonth()}, ${day.getDate()})"
       >
@@ -144,24 +261,40 @@ function renderMonthView() {
         </div>
         <div class="flex-1 space-y-1 overflow-hidden">
           ${uniqueEvents
-            .slice(0, 2)
+            .slice(0, 3)
             .map((evt) => {
-              const deptClass = evt.department
-                ? evt.department.toLowerCase()
-                : "";
+              // Get department class for consistent styling
+              let deptClass = "";
+              if (evt.department && Array.isArray(evt.department)) {
+                if (evt.department.length > 1) {
+                  deptClass = "multi";
+                } else if (evt.department.length === 1) {
+                  deptClass = evt.department[0].toLowerCase();
+                }
+              }
+
+              // Truncate long titles for better display
+              const displayTitle =
+                evt.title.length > 20
+                  ? evt.title.substring(0, 20) + "..."
+                  : evt.title;
+
               return `
-            <div class="event-title ${evt.color} ${deptClass}"
-                 title="${evt.title}">
-              ${evt.title}
-            </div>
-          `;
+                <div class="event-title ${deptClass}"
+                     title="${evt.title} - ${formatTime(evt.startTime)}"
+                     onclick="event.stopPropagation(); showEventModal(${JSON.stringify(
+                       evt
+                     ).replace(/"/g, "&quot;")})">
+                  ${displayTitle}
+                </div>
+              `;
             })
             .join("")}
           ${
-            uniqueEvents.length > 2
-              ? `<div class="text-xs text-gray-500">+${
-                  uniqueEvents.length - 2
-                } more</div>`
+            uniqueEvents.length > 3
+              ? `<div class="text-xs text-gray-500 font-medium">+${
+                  uniqueEvents.length - 3
+                } more events</div>`
               : ""
           }
         </div>
@@ -182,43 +315,61 @@ function renderWeekView() {
     weekDays.push(d);
   }
   const hours = Array.from({ length: 24 }, (_, i) => i);
-  let html = `<div class="flex flex-col">
-    <div class="grid grid-cols-8 gap-1 mb-2">
-      <div class="p-2"></div>`;
+
+  let html = `<div class="week-view-container">
+    <div class="week-header">
+      <div class="week-header-cell" style="background: transparent; box-shadow: none;"></div>`;
+
   weekDays.forEach((day) => {
     const isToday = day.toDateString() === new Date().toDateString();
-    html += `<div class="p-2 text-center font-semibold ${
-      isToday ? "bg-blue-100 text-blue-600" : "bg-gray-50 text-gray-600"
-    }">
-      <div class="text-sm">${day.toLocaleDateString("en-US", {
+    html += `<div class="week-header-cell ${isToday ? "today" : ""}">
+      <div class="day-name">${day.toLocaleDateString("en-US", {
         weekday: "short",
       })}</div>
-      <div class="text-lg">${day.getDate()}</div>
+      <div class="day-number">${day.getDate()}</div>
     </div>`;
   });
-  html += `</div><div class="grid grid-cols-8 gap-1 max-h-96 overflow-y-auto">`;
+
+  html += `</div>
+    <div class="week-grid">
+      <div class="time-column">`;
+
   hours.forEach((hour) => {
-    html += `<div class="contents">
-      <div class="p-2 text-xs text-gray-500 bg-gray-50 text-right">${formatHour(
-        hour
-      )}</div>`;
-    weekDays.forEach((day) => {
-      // Only show events at their start hour
+    html += `<div class="time-slot">${formatHour(hour)}</div>`;
+  });
+
+  html += `</div>`;
+
+  weekDays.forEach((day) => {
+    html += `<div class="day-column">`;
+    hours.forEach((hour) => {
       const dayEvents = getEventsForDate(day).filter((event) => {
         const eventStart = parseInt(event.startTime.split(":")[0], 10);
         return hour === eventStart;
       });
-      html += `<div class="p-1 h-12 border border-gray-100 bg-calendar-cell">`;
+
+      const hasEvents = dayEvents.length > 0;
+      html += `<div class="hour-slot ${hasEvents ? "has-events" : ""}">`;
+
       dayEvents.forEach((event) => {
-        const deptClass = event.department
-          ? event.department.toLowerCase()
-          : "";
-        html += `<div class="text-xs p-1 rounded text-white truncate ${
-          event.color
-        } ${deptClass}"
-                 title="${event.title} - ${formatTime(event.startTime)}">${
-          event.title
-        }</div>`;
+        // Get the first department for CSS class (or use 'multi' if multiple)
+        let deptClass = "";
+        if (event.department && Array.isArray(event.department)) {
+          if (event.department.length > 1) {
+            deptClass = "multi";
+          } else if (event.department.length === 1) {
+            deptClass = event.department[0].toLowerCase();
+          }
+        }
+
+        html += `<div class="event-item ${deptClass}" 
+                 onclick="showEventModal(${JSON.stringify(event).replace(
+                   /"/g,
+                   "&quot;"
+                 )})"
+                 title="${event.title} - ${formatTime(event.startTime)}">
+          ${event.title}
+        </div>`;
       });
       html += `</div>`;
     });
@@ -231,48 +382,57 @@ function renderWeekView() {
 function renderDayView() {
   const dayEvents = getEventsForDate(currentDate);
   const hours = Array.from({ length: 24 }, (_, i) => i);
-  let html = `<div class="space-y-4">
-    <div class="text-center p-4 bg-gray-50 rounded-lg">
-      <h3 class="text-lg font-semibold">${formatDate(currentDate)}</h3>
-      <p class="text-sm text-gray-600">${dayEvents.length} events scheduled</p>
+
+  let html = `<div class="week-view-container">
+    <div class="day-header-info">
+      <h3 class="day-title">${formatDate(currentDate)}</h3>
+      <p class="day-subtitle">${dayEvents.length} events scheduled</p>
     </div>
-    <div class="grid grid-cols-1 gap-1 max-h-96 overflow-y-auto">`;
+    <div class="day-timeline">`;
+
   hours.forEach((hour) => {
-    // Only show events at their start hour
     const hourEvents = dayEvents.filter((event) => {
       const eventStart = parseInt(event.startTime.split(":")[0], 10);
       return hour === eventStart;
     });
-    html += `<div class="flex border-b border-gray-100">
-      <div class="w-20 p-2 text-sm text-gray-500 bg-gray-50">${formatHour(
-        hour
-      )}</div>
-      <div class="flex-1 p-2 min-h-16">`;
+
+    const hasEvents = hourEvents.length > 0;
+    html += `<div class="timeline-hour ${hasEvents ? "has-events" : ""}">
+      <div class="time-label">${formatHour(hour)}</div>
+      <div class="events-container">`;
+
     hourEvents.forEach((event) => {
-      const deptClass = event.department ? event.department.toLowerCase() : "";
-      html += `<div class="event-card mb-2">
-        <div class="card-content p-3">
-          <div class="flex items-start justify-between">
-            <div class="flex-1">
-              <h4 class="font-semibold text-sm">${event.title}</h4>
-              <div class="flex items-center gap-4 mt-1 text-xs text-gray-600">
-                <span class="flex items-center gap-1">
-                  <span class="icon">&#128337;</span>
-                  ${formatTime(event.startTime)}
-                </span>
-                <span class="flex items-center gap-1">
-                  <span class="icon">&#128205;</span>
-                  ${event.location}
-                </span>
-                <span class="flex items-center gap-1">
-                  <span class="icon">&#128101;</span>
-                  ${event.attendees}/${event.maxAttendees}
-                </span>
-              </div>  
-            </div>
-            <span class="badge badge-secondary ${deptClass}">${
-        event.department
-      }</span>
+      // Get the first department for CSS class (or use 'multi' if multiple)
+      let deptClass = "";
+      if (event.department && Array.isArray(event.department)) {
+        if (event.department.length > 1) {
+          deptClass = "multi";
+        } else if (event.department.length === 1) {
+          deptClass = event.department[0].toLowerCase();
+        }
+      }
+
+      // Format departments for display
+      const deptDisplay =
+        event.department && Array.isArray(event.department)
+          ? event.department.join(", ")
+          : "";
+
+      html += `<div class="event-card ${deptClass}" onclick="showEventModal(${JSON.stringify(
+        event
+      ).replace(/"/g, "&quot;")})">
+        <div class="event-card-header">
+          <h4 class="event-title">${event.title}</h4>
+          <span class="event-time">${formatTime(event.startTime)}</span>
+        </div>
+        <div class="event-card-body">
+          <div class="event-detail">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>${event.location}</span>
+          </div>
+          <div class="event-detail">
+            <i class="fas fa-users"></i>
+            <span>${deptDisplay}</span>
           </div>
         </div>
       </div>`;
@@ -357,6 +517,70 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("monthBtn").onclick = () => changeView("month");
   document.getElementById("weekBtn").onclick = () => changeView("week");
   document.getElementById("dayBtn").onclick = () => changeView("day");
+
   document.getElementById("departmentFilter").onchange = (e) =>
     changeDepartmentFilter(e.target.value);
+
+  // Fetch events from database and then render calendar
+  fetchEvents()
+    .then(() => {
+      renderCalendar();
+    })
+    .catch((error) => {
+      console.error("Failed to fetch events:", error);
+      renderCalendar(); // Render with empty events
+    });
 });
+
+// Modal Functions
+function showEventModal(event) {
+  const modal = document.getElementById("eventModal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalBody = document.getElementById("modalBody");
+
+  modalTitle.textContent = event.title;
+
+  modalBody.innerHTML = `
+    <div class="event-details">
+      <div class="detail-item">
+        <i class="fas fa-clock"></i>
+        <span><strong>Time:</strong> ${formatTime(
+          event.startTime
+        )} - ${formatTime(event.endTime)}</span>
+      </div>
+      <div class="detail-item">
+        <i class="fas fa-map-marker-alt"></i>
+        <span><strong>Location:</strong> ${event.location}</span>
+      </div>
+      <div class="detail-item">
+        <i class="fas fa-users"></i>
+        <span><strong>Department:</strong> ${event.department}</span>
+      </div>
+      ${
+        event.description
+          ? `
+        <div class="detail-item">
+          <i class="fas fa-info-circle"></i>
+          <span><strong>Description:</strong> ${event.description}</span>
+        </div>
+      `
+          : ""
+      }
+    </div>
+  `;
+
+  modal.style.display = "block";
+}
+
+function closeEventModal() {
+  const modal = document.getElementById("eventModal");
+  modal.style.display = "none";
+}
+
+// Close modal when clicking outside
+window.onclick = function (event) {
+  const modal = document.getElementById("eventModal");
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+};
