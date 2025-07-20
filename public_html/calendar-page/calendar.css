@@ -139,11 +139,54 @@ body::before {
   transition: color 0.3s ease;
   padding: 0.5rem;
   border-radius: 12px;
+  position: relative;
 }
 
 .user-menu:hover {
   color: #667eea;
   background: rgba(102, 126, 234, 0.1);
+}
+
+/* User Dropdown Styles */
+.user-dropdown {
+  display: none;
+  position: absolute;
+  top: 120%;
+  right: 0;
+  min-width: 160px;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  padding: 0.5rem 0;
+  z-index: 200;
+  border: 1.5px solid rgba(102, 126, 234, 0.12);
+  backdrop-filter: blur(10px);
+}
+.user-menu.open .user-dropdown {
+  display: block;
+}
+.user-dropdown button {
+  width: 100%;
+  background: none;
+  border: none;
+  color: #e53e3e;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.user-dropdown button:hover {
+  background: #f8fafc;
+  color: #b91c1c;
+}
+.user-dropdown i {
+  font-size: 1.1rem;
 }
 
 /* Main Container */
@@ -153,6 +196,39 @@ body::before {
   padding: 2rem;
   position: relative;
   z-index: 1;
+}
+
+/* Back to Dashboard Button */
+.back-dashboard-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: #667eea;
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.back-dashboard-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  color: #5a6fd8;
+  border-color: rgba(102, 126, 234, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+  text-decoration: none;
+}
+
+.back-dashboard-btn i {
+  font-size: 1rem;
 }
 
 /* Control Panel */

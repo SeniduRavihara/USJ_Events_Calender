@@ -379,13 +379,16 @@ body {
   color: white;
 }
 
-.tag-cs, .tag-computer {
+.tag-cs,
+.tag-computer {
   background: #3b82f6;
 }
-.tag-se, .tag-software {
+.tag-se,
+.tag-software {
   background: #10b981;
 }
-.tag-is, .tag-information {
+.tag-is,
+.tag-information {
   background: #8b5cf6;
 }
 
@@ -575,4 +578,50 @@ a {
   border-radius: 8px;
   margin-bottom: 1.5rem;
   border: 1px solid #e2e8f0;
+}
+
+/* User Dropdown Styles */
+.user-menu {
+  position: relative;
+  display: inline-block;
+}
+.user-dropdown {
+  display: none;
+  position: absolute;
+  top: 120%;
+  right: 0;
+  min-width: 160px;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  padding: 0.5rem 0;
+  z-index: 200;
+  border: 1.5px solid rgba(102, 126, 234, 0.12);
+  backdrop-filter: blur(10px);
+}
+.user-menu.open .user-dropdown {
+  display: block;
+}
+.user-dropdown button {
+  width: 100%;
+  background: none;
+  border: none;
+  color: #e53e3e;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.user-dropdown button:hover {
+  background: #f8fafc;
+  color: #b91c1c;
+}
+.user-dropdown i {
+  font-size: 1.1rem;
 }

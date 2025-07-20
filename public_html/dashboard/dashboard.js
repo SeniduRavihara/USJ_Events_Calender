@@ -328,6 +328,81 @@ function updateWelcomeUserName() {
     });
 }
 
+// --- User Dropdown Menu Logic ---
+document.addEventListener("DOMContentLoaded", function () {
+  const userMenu = document.getElementById("userMenu");
+  const userDropdown = document.getElementById("userDropdown");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const profileBtn = document.getElementById("profileBtn");
+
+  if (userMenu && userDropdown && logoutBtn) {
+    // Toggle dropdown on icon click
+    userMenu.addEventListener("click", function (e) {
+      e.stopPropagation();
+      userMenu.classList.toggle("open");
+    });
+
+    // Logout logic
+    // logoutBtn.addEventListener("click", function (e) {
+    //   e.preventDefault();
+    //   localStorage.clear();
+    //   window.location.href = "../login/";
+    // });
+
+    // Profile logic (for now, just close the dropdown)
+    if (profileBtn) {
+      profileBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        userMenu.classList.remove("open");
+        console.log("FILLAFDM");
+
+        window.location.href = "../user-profile";
+        // You can add profile navigation here
+      });
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", function (e) {
+      if (userMenu.classList.contains("open")) {
+        userMenu.classList.remove("open");
+      }
+    });
+  }
+});
+
+// --- Simple Account Dropdown Logic ---
+document.addEventListener("DOMContentLoaded", function () {
+  const accountBtn = document.getElementById("accountBtn");
+  const accountDropdown = document.getElementById("accountDropdown");
+  const logoutSimple = document.getElementById("logoutSimple");
+  const profileSimple = document.getElementById("profileSimple");
+
+  if (accountBtn && accountDropdown) {
+    accountBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      accountDropdown.style.display =
+        accountDropdown.style.display === "block" ? "none" : "block";
+    });
+    document.addEventListener("click", function () {
+      accountDropdown.style.display = "none";
+    });
+    if (logoutSimple) {
+      logoutSimple.addEventListener("click", function (e) {
+        e.preventDefault();
+        localStorage.clear();
+        window.location.href = "../login/";
+      });
+    }
+    if (profileSimple) {
+      profileSimple.addEventListener("click", function (e) {
+        e.preventDefault();
+        accountDropdown.style.display = "none";
+        window.location.href = "../user-profile";
+      });
+    }
+  }
+});
+
 document.addEventListener("DOMContentLoaded", function () {
   const token = localStorage.getItem("token");
   if (!token) {

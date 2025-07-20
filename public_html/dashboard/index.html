@@ -22,7 +22,52 @@
           >📅 Full Calendar</a
         >
         <div class="notification-icon"><a href="">🔔</a></div>
-        <div class="profile-icon"><a href="">👤</a></div>
+        <div
+          class="user-menu-simple"
+          style="position: relative; display: inline-block"
+        >
+          <span id="accountBtn" style="font-size: 1.7rem; cursor: pointer"
+            >👤</span
+          >
+          <div
+            id="accountDropdown"
+            style="
+              display: none;
+              position: absolute;
+              right: 0;
+              top: 120%;
+              background: #fff;
+              border: 1px solid #ddd;
+              border-radius: 8px;
+              box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+              min-width: 140px;
+            "
+          >
+            <a
+              href="#"
+              id="profileSimple"
+              style="
+                display: block;
+                padding: 0.75rem 1.25rem;
+                color: #222;
+                text-decoration: none;
+                border-bottom: 1px solid #eee;
+              "
+              >Profile</a
+            >
+            <a
+              href="#"
+              id="logoutSimple"
+              style="
+                display: block;
+                padding: 0.75rem 1.25rem;
+                color: #e53e3e;
+                text-decoration: none;
+              "
+              >Logout</a
+            >
+          </div>
+        </div>
       </div>
     </header>
 

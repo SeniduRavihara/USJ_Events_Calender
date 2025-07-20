@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background: linear-gradient(
+          135deg,
+          #e0f2f7 0%,
+          #c5e1ed 100%
+        ); /* Lighter blue gradient for background */
+        min-height: 100vh;
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        color: #333;
+      }
+      .header {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem 2rem 1rem 2rem;
+        box-sizing: border-box;
+        max-width: 768px; /* Match card max-width for alignment */
+      }
+      .back-btn {
+        background: white;
+        color: #4a90e2; /* A slightly softer blue */
+        border: none;
+        border-radius: 12px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        text-decoration: none;
+        transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      }
+      .back-btn:hover {
+        background: #e6f0ff; /* Light blue hover */
+        color: #3a7bd5; /* Darker blue on hover */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      }
+      .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .profile-header i {
+        font-size: 1.8rem; /* Slightly smaller icon */
+        color: #4a90e2;
+      }
+      .profile-header span {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #333;
+      }
+      .profile-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        padding: 2.5rem 2rem 2rem 2rem;
+        margin-top: 2.5rem;
+        max-width: 420px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-sizing: border-box;
+      }
+      .card-title {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 1.5rem;
+      }
+      .profile-form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        box-sizing: border-box;
+      }
+      .form-row {
+        display: flex;
+        gap: 1rem;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        flex: 1;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+      label {
+        font-size: 0.9rem;
+        color: #555;
+        font-weight: 600;
+      }
+      input,
+      select {
+        padding: 0.7rem 1rem;
+        border-radius: 8px; /* Slightly less rounded */
+        border: 1px solid #e0e0e0;
+        font-size: 1rem;
+        background: #fcfcfc;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        width: 100%;
+        box-sizing: border-box;
+        max-width: 100%;
+      }
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: #4a90e2;
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2); /* Blue focus ring */
+        background: #fff;
+      }
+      .save-btn {
+        margin-top: 1.5rem;
+        background: linear-gradient(
+          135deg,
+          #4a90e2 0%,
+          #764ba2 100%
+        ); /* Blue to purple gradient */
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 0.9rem 1.5rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(74, 144, 226, 0.2);
+        transition: background 0.3s ease, box-shadow 0.2s;
+      }
+      .save-btn:hover {
+        background: linear-gradient(
+          135deg,
+          #3a7bd5 0%,
+          #6a4090 100%
+        ); /* Darker gradient on hover */
+        box-shadow: 0 6px 20px rgba(74, 144, 226, 0.3);
+      }
+      .save-btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        background: linear-gradient(
+          135deg,
+          #a0c4f0 0%,
+          #b8a0d0 100%
+        ); /* Lighter gradient when disabled */
+        box-shadow: none;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 600px) {
+        .profile-card {
+          padding: 1.5rem 1rem;
+          margin-top: 1.5rem;
+          border-radius: 15px;
+        }
+        .header {
+          padding: 1rem 1rem 0.5rem 1rem;
+        }
+        .form-row {
+          flex-direction: column;
+          gap: 0.8rem;
+        }
+        .form-group {
+          min-width: 0;
+        }
+        .back-btn {
+          padding: 0.5rem 1rem;
+          font-size: 0.9rem;
+        }
+        .profile-header i {
+          font-size: 1.5rem;
+        }
+        .profile-header span {
+          font-size: 1rem;
+        }
+        .card-title {
+          font-size: 1.75rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <a href="../dashboard/" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Dashboard
+      </a>
+      <div class="profile-header">
+        <i class="fas fa-user-circle"></i>
+        <span>My Profile</span>
+      </div>
+    </div>
+    <div class="profile-card">
+      <h2 class="card-title">Edit Profile</h2>
+      <form class="profile-form" id="profileForm">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" value="" />
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" value="" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="department">Department</label>
+            <select id="department" name="department">
+              <option value="">Select department</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Software Engineering">Software Engineering</option>
+              <option value="Information Systems">Information Systems</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="studentId">Student ID</label>
+            <input type="text" id="studentId" name="studentId" value="" />
+          </div>
+        </div>
+        <button type="submit" class="save-btn" id="saveButton">
+          Save Changes
+        </button>
+      </form>
+      <div id="profileMsg"></div>
+    </div>
+
+    <script>
+      function showMessage(msg, type = "success") {
+        let msgDiv = document.getElementById("profileMsg");
+        if (!msgDiv) {
+          msgDiv = document.createElement("div");
+          msgDiv.id = "profileMsg";
+          msgDiv.style.marginTop = "1.2rem";
+          msgDiv.style.fontWeight = "600";
+          msgDiv.style.textAlign = "center";
+          msgDiv.style.borderRadius = "8px";
+          msgDiv.style.padding = "0.7rem 1rem";
+          msgDiv.style.fontSize = "1rem";
+          document.querySelector(".profile-card").appendChild(msgDiv);
+        }
+        msgDiv.textContent = msg;
+        msgDiv.style.background = type === "success" ? "#e6f9f0" : "#ffe6e6";
+        msgDiv.style.color = type === "success" ? "#1a7f5a" : "#b91c1c";
+        msgDiv.style.border =
+          type === "success" ? "1.5px solid #1a7f5a" : "1.5px solid #b91c1c";
+      }
+      function clearMessage() {
+        const msgDiv = document.getElementById("profileMsg");
+        if (msgDiv) msgDiv.remove();
+      }
+
+      async function fetchProfile() {
+        clearMessage();
+        const token = localStorage.getItem("token");
+        if (!token) {
+          showMessage("Not authenticated. Please log in.", "error");
+          return;
+        }
+        try {
+          const res = await fetch("/USJ_Events_Calender/api/profile.php", {
+            method: "GET",
+            headers: { Authorization: "Bearer " + token },
+          });
+          if (!res.ok) throw new Error("Failed to fetch profile");
+          const data = await res.json();
+          document.getElementById("name").value = data.name || "";
+          document.getElementById("email").value = data.email || "";
+          document.getElementById("department").value = data.department || "";
+          document.getElementById("studentId").value = data.studentId || "";
+        } catch (err) {
+          showMessage("Could not load profile. " + err.message, "error");
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        fetchProfile();
+        const form = document.getElementById("profileForm");
+        const saveButton = document.getElementById("saveButton");
+        form.addEventListener("submit", async function (event) {
+          event.preventDefault();
+          clearMessage();
+          saveButton.textContent = "Saving...";
+          saveButton.disabled = true;
+          const token = localStorage.getItem("token");
+          if (!token) {
+            showMessage("Not authenticated. Please log in.", "error");
+            saveButton.textContent = "Save Changes";
+            saveButton.disabled = false;
+            return;
+          }
+          const payload = {
+            name: document.getElementById("name").value.trim(),
+            email: document.getElementById("email").value.trim(),
+            department: document.getElementById("department").value,
+            studentId: document.getElementById("studentId").value.trim(),
+          };
+          try {
+            const res = await fetch(
+              "/USJ_Events_Calender/api/user_profile.php",
+              {
+                method: "POST",
+                headers: {
+                  Authorization: "Bearer " + token,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+              }
+            );
+            const data = await res.json();
+            if (res.ok && data.success) {
+              showMessage("Profile updated successfully!", "success");
+            } else {
+              showMessage(data.error || "Failed to update profile.", "error");
+            }
+          } catch (err) {
+            showMessage("Could not update profile. " + err.message, "error");
+          }
+          saveButton.textContent = "Save Changes";
+          saveButton.disabled = false;
+        });
+      });
+    </script>
+  </body>
+</html>

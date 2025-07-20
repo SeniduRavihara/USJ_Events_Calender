@@ -149,7 +149,7 @@ function getBackgroundClassForEvents(dayEvents) {
   if (dayEvents.length === 0) {
     return "bg-calendar-default";
   }
-
+  
   // Get all departments from all events (handle arrays)
   const allDepartments = [];
   dayEvents.forEach((event) => {
@@ -162,12 +162,12 @@ function getBackgroundClassForEvents(dayEvents) {
 
   // Get unique departments
   const uniqueDepartments = [...new Set(allDepartments)];
-
+  
   // If multiple departments are involved, use multi background
   if (uniqueDepartments.length > 1) {
     return "bg-multi";
   }
-
+  
   // Single department - use department-specific background
   const dept = uniqueDepartments[0];
   const map = { cs: "bg-cs", se: "bg-se", is: "bg-is" };
@@ -241,7 +241,7 @@ function renderMonthView() {
     const imageClass = `date-box ${bgClass}`;
     const uniqueEvents = [];
     const seenTitles = new Set();
-
+    
     dayEvents.forEach((event) => {
       if (!seenTitles.has(event.title)) {
         seenTitles.add(event.title);
@@ -286,7 +286,7 @@ function renderMonthView() {
                        evt
                      ).replace(/"/g, "&quot;")})">
                   ${displayTitle}
-                </div>
+            </div>
               `;
             })
             .join("")}
@@ -424,12 +424,12 @@ function renderDayView() {
         <div class="event-card-header">
           <h4 class="event-title">${event.title}</h4>
           <span class="event-time">${formatTime(event.startTime)}</span>
-        </div>
+              </div>  
         <div class="event-card-body">
           <div class="event-detail">
             <i class="fas fa-map-marker-alt"></i>
             <span>${event.location}</span>
-          </div>
+            </div>
           <div class="event-detail">
             <i class="fas fa-users"></i>
             <span>${deptDisplay}</span>
@@ -524,7 +524,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Fetch events from database and then render calendar
   fetchEvents()
     .then(() => {
-      renderCalendar();
+  renderCalendar();
     })
     .catch((error) => {
       console.error("Failed to fetch events:", error);
@@ -584,3 +584,32 @@ window.onclick = function (event) {
     modal.style.display = "none";
   }
 };
+
+// --- User Dropdown Menu Logic ---
+document.addEventListener("DOMContentLoaded", function () {
+  const userMenu = document.getElementById("userMenu");
+  const userDropdown = document.getElementById("userDropdown");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  if (userMenu && userDropdown && logoutBtn) {
+    // Toggle dropdown on icon click
+    userMenu.addEventListener("click", function (e) {
+      e.stopPropagation();
+      userMenu.classList.toggle("open");
+    });
+
+    // Logout logic
+    logoutBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      localStorage.clear();
+      window.location.href = "../login/";
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", function (e) {
+      if (userMenu.classList.contains("open")) {
+        userMenu.classList.remove("open");
+      }
+    });
+  }
+});

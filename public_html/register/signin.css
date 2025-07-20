@@ -250,12 +250,12 @@ button[type="submit"]:disabled {
     padding: 30px 20px;
     margin: 10px;
   }
-
+  
   .form-row {
     flex-direction: column;
     gap: 0;
   }
-
+  
   h1 {
     font-size: 1.6rem;
   }
@@ -265,13 +265,13 @@ button[type="submit"]:disabled {
   .container {
     padding: 25px 15px;
   }
-
+  
   .form-group input,
   .form-group select {
     padding: 10px 12px;
     font-size: 0.9rem;
   }
-
+  
   button[type="submit"] {
     padding: 12px;
     font-size: 0.9rem;
@@ -488,11 +488,11 @@ button[type="submit"]:disabled::after {
     padding: 10px 14px;
     margin-top: 12px;
   }
-
+  
   .message-display.closeable {
     padding-right: 35px;
   }
-
+  
   .message-display.closeable::after {
     right: 10px;
     font-size: 1.1rem;
@@ -505,7 +505,7 @@ button[type="submit"]:disabled::after {
     padding: 8px 12px;
     border-radius: 8px;
   }
-
+  
   .message-display::before {
     font-size: 0.9rem;
     margin-right: 6px;
@@ -519,19 +519,19 @@ button[type="submit"]:disabled::after {
     color: #feb2b2;
     border-color: #e53e3e;
   }
-
+  
   .message-display.success {
     background: linear-gradient(135deg, #1a2e1a 0%, #2d4a2d 100%);
     color: #9ae6b4;
     border-color: #38a169;
   }
-
+  
   .message-display.warning {
     background: linear-gradient(135deg, #2d2416 0%, #3c3322 100%);
     color: #fbd38d;
     border-color: #f59e0b;
   }
-
+  
   .message-display.info {
     background: linear-gradient(135deg, #1a2332 0%, #2d3748 100%);
     color: #90cdf4;
