@@ -65,7 +65,7 @@ const mockEvents = [
     type: "Presentation",
     color: "legend-red",
   },
-    {
+  {
     id: 6,
     title: "Normal Presentation and Viva",
     department: "CS",
@@ -78,7 +78,7 @@ const mockEvents = [
     type: "Presentation",
     color: "legend-red",
   },
-    {
+  {
     id: 6,
     title: "Normal Presentation and Viva",
     department: "IS",
@@ -90,7 +90,7 @@ const mockEvents = [
     maxAttendees: 80,
     type: "Presentation",
     color: "legend-red",
-  }
+  },
 ];
 
 // Global Variables
@@ -130,9 +130,11 @@ function getEventsForDate(date) {
   const d = String(date.getDate()).padStart(2, "0");
   const dateKey = `${y}-${m}-${d}`;
 
-  return mockEvents.filter(event =>
-    (selectedDepartment === "all" || event.department === selectedDepartment) &&
-    event.date === dateKey
+  return mockEvents.filter(
+    (event) =>
+      (selectedDepartment === "all" ||
+        event.department === selectedDepartment) &&
+      event.date === dateKey
   );
 }
 
@@ -141,15 +143,17 @@ function getBackgroundClassForEvents(dayEvents) {
   if (dayEvents.length === 0) {
     return "bg-calendar-default";
   }
-  
+
   // Get unique departments from all events
-  const uniqueDepartments = [...new Set(dayEvents.map(event => event.department))];
-  
+  const uniqueDepartments = [
+    ...new Set(dayEvents.map((event) => event.department)),
+  ];
+
   // If multiple departments are involved, use multi background
   if (uniqueDepartments.length > 1) {
     return "bg-multi";
   }
-  
+
   // Single department - use department-specific background
   const dept = uniqueDepartments[0].toLowerCase(); // "cs","se","is"
   const map = { cs: "bg-cs", se: "bg-se", is: "bg-is" };
@@ -190,11 +194,11 @@ function renderCalendar() {
 
 function updateViewButtons() {
   document.getElementById("monthBtn").className =
-    view === "month" ? "btn-default btn-sm" : "btn-ghost btn-sm";
+    view === "month" ? "view-btn active" : "view-btn";
   document.getElementById("weekBtn").className =
-    view === "week" ? "btn-default btn-sm" : "btn-ghost btn-sm";
+    view === "week" ? "view-btn active" : "view-btn";
   document.getElementById("dayBtn").className =
-    view === "day" ? "btn-default btn-sm" : "btn-ghost btn-sm";
+    view === "day" ? "view-btn active" : "view-btn";
 }
 
 // Update the renderMonthView function - replace the day headers section
@@ -216,10 +220,12 @@ function renderMonthView() {
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   dayNames.forEach((dayName, index) => {
     const isWeekend = index === 0 || index === 6;
-    html += `<div class="day-header ${isWeekend ? 'weekend' : ''}">${dayName}</div>`;
+    html += `<div class="day-header ${
+      isWeekend ? "weekend" : ""
+    }">${dayName}</div>`;
   });
 
-  days.forEach(day => {
+  days.forEach((day) => {
     if (!day) {
       html += `<div class="p-2 h-24" style="visibility: hidden;"></div>`;
       return;
@@ -233,8 +239,8 @@ function renderMonthView() {
     // Group events by title to show unique titles only
     const uniqueEvents = [];
     const seenTitles = new Set();
-    
-    dayEvents.forEach(event => {
+
+    dayEvents.forEach((event) => {
       if (!seenTitles.has(event.title)) {
         seenTitles.add(event.title);
         uniqueEvents.push(event);
@@ -253,15 +259,24 @@ function renderMonthView() {
           ${day.getDate()}
         </div>
         <div class="flex-1 space-y-1 overflow-hidden">
-          ${uniqueEvents.slice(0, 2).map(evt => `
+          ${uniqueEvents
+            .slice(0, 2)
+            .map(
+              (evt) => `
             <div class="event-title ${evt.color}"
                  title="${evt.title}">
               ${evt.title}
             </div>
-          `).join("")}
-          ${uniqueEvents.length > 2
-            ? `<div class="text-xs text-gray-500">+${uniqueEvents.length - 2} more</div>`
-            : ""}
+          `
+            )
+            .join("")}
+          ${
+            uniqueEvents.length > 2
+              ? `<div class="text-xs text-gray-500">+${
+                  uniqueEvents.length - 2
+                } more</div>`
+              : ""
+          }
         </div>
       </div>
     `;
@@ -284,43 +299,57 @@ function renderWeekView() {
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
-  let html = `<div class="flex flex-col">
-    <div class="grid grid-cols-8 gap-1 mb-2">
-      <div class="p-2"></div>`;
+  let html = `<div class="week-view-container">
+    <div class="week-header">
+      <div class="week-header-cell" style="background: transparent; box-shadow: none;"></div>`;
 
-  weekDays.forEach(day => {
+  weekDays.forEach((day) => {
     const isToday = day.toDateString() === new Date().toDateString();
-    html += `<div class="p-2 text-center font-semibold ${
-      isToday ? "bg-blue-100 text-blue-600" : "bg-gray-50 text-gray-600"
-    }">
-      <div class="text-sm">${day.toLocaleDateString("en-US", { weekday: "short" })}</div>
-      <div class="text-lg">${day.getDate()}</div>
+    html += `<div class="week-header-cell ${isToday ? "today" : ""}">
+      <div class="day-name">${day.toLocaleDateString("en-US", {
+        weekday: "short",
+      })}</div>
+      <div class="day-number">${day.getDate()}</div>
     </div>`;
   });
 
-  html += `</div><div class="grid grid-cols-8 gap-1 max-h-96 overflow-y-auto">`;
+  html += `</div>
+    <div class="week-grid">
+      <div class="time-column">`;
 
-  hours.forEach(hour => {
-    html += `<div class="contents">
-      <div class="p-2 text-xs text-gray-500 bg-gray-50 text-right">${formatHour(hour)}</div>`;
+  hours.forEach((hour) => {
+    html += `<div class="time-slot">${formatHour(hour)}</div>`;
+  });
 
-    weekDays.forEach(day => {
-      const dayEvents = getEventsForDate(day).filter(event => {
+  html += `</div>`;
+
+  weekDays.forEach((day) => {
+    html += `<div class="day-column">`;
+    hours.forEach((hour) => {
+      const dayEvents = getEventsForDate(day).filter((event) => {
         const eventStart = parseInt(event.startTime.split(":")[0], 10);
-        const eventEnd = parseInt(event.endTime.split(":")[0], 10);
-        return hour >= eventStart && hour < eventEnd;
+        return hour === eventStart;
       });
 
-      html += `<div class="p-1 h-12 border border-gray-100 bg-calendar-cell">`;
+      const hasEvents = dayEvents.length > 0;
+      html += `<div class="hour-slot ${hasEvents ? "has-events" : ""}">`;
 
-      dayEvents.forEach(event => {
-        html += `<div class="text-xs p-1 rounded text-white truncate ${event.color}"
-                 title="${event.title} - ${formatTime(event.startTime)}">${event.title}</div>`;
+      dayEvents.forEach((event) => {
+        const deptClass = event.department
+          ? event.department.toLowerCase()
+          : "";
+        html += `<div class="event-item ${deptClass}" 
+                 onclick="showEventModal(${JSON.stringify(event).replace(
+                   /"/g,
+                   "&quot;"
+                 )})"
+                 title="${event.title} - ${formatTime(event.startTime)}">
+          ${event.title}
+        </div>`;
       });
 
       html += `</div>`;
     });
-
     html += `</div>`;
   });
 
@@ -332,46 +361,41 @@ function renderDayView() {
   const dayEvents = getEventsForDate(currentDate);
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
-  let html = `<div class="space-y-4">
-    <div class="text-center p-4 bg-gray-50 rounded-lg">
-      <h3 class="text-lg font-semibold">${formatDate(currentDate)}</h3>
-      <p class="text-sm text-gray-600">${dayEvents.length} events scheduled</p>
+  let html = `<div class="week-view-container">
+    <div class="day-header-info">
+      <h3 class="day-title">${formatDate(currentDate)}</h3>
+      <p class="day-subtitle">${dayEvents.length} events scheduled</p>
     </div>
-    <div class="grid grid-cols-1 gap-1 max-h-96 overflow-y-auto">`;
+    <div class="day-timeline">`;
 
-  hours.forEach(hour => {
-    const hourEvents = dayEvents.filter(event => {
+  hours.forEach((hour) => {
+    const hourEvents = dayEvents.filter((event) => {
       const eventStart = parseInt(event.startTime.split(":")[0], 10);
-      const eventEnd = parseInt(event.endTime.split(":")[0], 10);
-      return hour >= eventStart && hour < eventEnd;
+      return hour === eventStart;
     });
 
-    html += `<div class="flex border-b border-gray-100">
-      <div class="w-20 p-2 text-sm text-gray-500 bg-gray-50">${formatHour(hour)}</div>
-      <div class="flex-1 p-2 min-h-16">`;
+    const hasEvents = hourEvents.length > 0;
+    html += `<div class="timeline-hour ${hasEvents ? "has-events" : ""}">
+      <div class="time-label">${formatHour(hour)}</div>
+      <div class="events-container">`;
 
-    hourEvents.forEach(event => {
-      html += `<div class="event-card mb-2">
-        <div class="card-content p-3">
-          <div class="flex items-start justify-between">
-            <div class="flex-1">
-              <h4 class="font-semibold text-sm">${event.title}</h4>
-              <div class="flex items-center gap-4 mt-1 text-xs text-gray-600">
-                <span class="flex items-center gap-1">
-                  <span class="icon">&#128337;</span>
-                  ${formatTime(event.startTime)} - ${formatTime(event.endTime)}
-                </span>
-                <span class="flex items-center gap-1">
-                  <span class="icon">&#128205;</span>
-                  ${event.location}
-                </span>
-                <span class="flex items-center gap-1">
-                  <span class="icon">&#128101;</span>
-                  ${event.attendees}/${event.maxAttendees}
-                </span>
-              </div>  
-            </div>
-            <span class="badge badge-secondary">${event.department}</span>
+    hourEvents.forEach((event) => {
+      const deptClass = event.department ? event.department.toLowerCase() : "";
+      html += `<div class="event-card ${deptClass}" onclick="showEventModal(${JSON.stringify(
+        event
+      ).replace(/"/g, "&quot;")})">
+        <div class="event-card-header">
+          <h4 class="event-title">${event.title}</h4>
+          <span class="event-time">${formatTime(event.startTime)}</span>
+        </div>
+        <div class="event-card-body">
+          <div class="event-detail">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>${event.location}</span>
+          </div>
+          <div class="event-detail">
+            <i class="fas fa-users"></i>
+            <span>${event.department}</span>
           </div>
         </div>
       </div>`;
@@ -383,7 +407,6 @@ function renderDayView() {
   html += `</div></div>`;
   return html;
 }
-
 
 // Event Handlers
 
@@ -441,10 +464,61 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("weekBtn").onclick = () => changeView("week");
   document.getElementById("dayBtn").onclick = () => changeView("day");
 
-  document.getElementById("departmentFilter").onchange = e =>
+  document.getElementById("departmentFilter").onchange = (e) =>
     changeDepartmentFilter(e.target.value);
 
   renderCalendar();
 });
 
+// Modal Functions
+function showEventModal(event) {
+  const modal = document.getElementById("eventModal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalBody = document.getElementById("modalBody");
 
+  modalTitle.textContent = event.title;
+
+  modalBody.innerHTML = `
+    <div class="event-details">
+      <div class="detail-item">
+        <i class="fas fa-clock"></i>
+        <span><strong>Time:</strong> ${formatTime(
+          event.startTime
+        )} - ${formatTime(event.endTime)}</span>
+      </div>
+      <div class="detail-item">
+        <i class="fas fa-map-marker-alt"></i>
+        <span><strong>Location:</strong> ${event.location}</span>
+      </div>
+      <div class="detail-item">
+        <i class="fas fa-users"></i>
+        <span><strong>Department:</strong> ${event.department}</span>
+      </div>
+      ${
+        event.description
+          ? `
+        <div class="detail-item">
+          <i class="fas fa-info-circle"></i>
+          <span><strong>Description:</strong> ${event.description}</span>
+        </div>
+      `
+          : ""
+      }
+    </div>
+  `;
+
+  modal.style.display = "block";
+}
+
+function closeEventModal() {
+  const modal = document.getElementById("eventModal");
+  modal.style.display = "none";
+}
+
+// Close modal when clicking outside
+window.onclick = function (event) {
+  const modal = document.getElementById("eventModal");
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+};
