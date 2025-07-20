@@ -1,100 +1,97 @@
-// Mock Events Data
-const mockEvents = [
-  {
-    id: 1,
-    title: "AI Workshop Series",
-    department: "IS",
-    date: "2025-06-11",
-    startTime: "14:00",
-    endTime: "16:00",
-    location: "Lab 301",
-    attendees: 45,
-    maxAttendees: 50,
-    type: "Workshop",
-    color: "legend-blue",
-  },
-  {
-    id: 2,
-    title: "Software Architecture Seminar",
-    department: "SE",
-    date: "2025-06-28",
-    startTime: "10:00",
-    endTime: "12:00",
-    location: "Auditorium A",
-    attendees: 32,
-    maxAttendees: 100,
-    type: "Seminar",
-    color: "legend-blue",
-  },
-  {
-    id: 3,
-    title: "Database Design Competition",
-    department: "IS",
-    date: "2025-07-18",
-    startTime: "09:00",
-    endTime: "17:00",
-    location: "Computer Lab 2",
-    attendees: 28,
-    maxAttendees: 30,
-    type: "Competition",
-    color: "legend-purple",
-  },
-  {
-    id: 4,
-    title: "Team Meeting",
-    department: "CS",
-    date: "2025-06-25",
-    startTime: "10:00",
-    endTime: "11:00",
-    location: "Room 205",
-    attendees: 12,
-    maxAttendees: 15,
-    type: "Meeting",
-    color: "legend-orange",
-  },
-  {
-    id: 5,
-    title: "Project Presentation",
-    department: "SE",
-    date: "2025-06-26",
-    startTime: "15:30",
-    endTime: "17:30",
-    location: "Main Hall",
-    attendees: 67,
-    maxAttendees: 80,
-    type: "Presentation",
-    color: "legend-red",
-  },
-  {
-    id: 6,
-    title: "Normal Presentation and Viva",
-    department: "CS",
-    date: "2025-06-26",
-    startTime: "15:30",
-    endTime: "17:30",
-    location: "Main Hall",
-    attendees: 67,
-    maxAttendees: 80,
-    type: "Presentation",
-    color: "legend-red",
-  },
-  {
-    id: 6,
-    title: "Normal Presentation and Viva",
-    department: "IS",
-    date: "2025-06-26",
-    startTime: "15:30",
-    endTime: "17:30",
-    location: "Main Hall",
-    attendees: 67,
-    maxAttendees: 80,
-    type: "Presentation",
-    color: "legend-red",
-  },
-];
+// Real Events Data - Will be loaded from database
+let mockEvents = [];
+
+// Function to fetch events from database
+async function fetchEvents() {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.warn("No authentication token found");
+      return;
+    }
+
+    const response = await fetch("/USJ_Events_Calender/api/get-events.php", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Transform database events to match mock events structure exactly
+    mockEvents = data.map((event) => {
+      // Handle departments as JSON array or string
+      let departments;
+      if (typeof event.departments === "string") {
+        try {
+          departments = JSON.parse(event.departments);
+        } catch (e) {
+          // If it's not JSON, treat as comma-separated string
+          departments = event.departments.split(",").map((d) => d.trim());
+        }
+      } else if (Array.isArray(event.departments)) {
+        departments = event.departments;
+      } else {
+        departments = [];
+      }
+
+      return {
+        id: event.id,
+        title: event.title,
+        department: departments, // Now it's always an array
+        date: event.event_date,
+        startTime: event.event_time,
+        endTime: event.event_time, // Using same as start time
+        location: event.location,
+        attendees: 0, // Default value
+        maxAttendees: 100, // Default value
+        type: "Event", // Default type
+        color: getEventColor(departments),
+      };
+    });
+
+    console.log("Events loaded from database:", mockEvents);
+    renderCalendar(); // Re-render calendar with new data
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    // Fallback to empty events array
+    mockEvents = [];
+  }
+}
+
+// Function to determine event color based on department
+function getEventColor(departments) {
+  if (!departments || !Array.isArray(departments) || departments.length === 0) {
+    return "legend-blue";
+  }
+
+  const deptArray = departments.map((d) => d.trim().toUpperCase());
+
+  if (deptArray.length > 1) {
+    return "legend-purple"; // Multi-department
+  }
+
+  const dept = deptArray[0];
+  switch (dept) {
+    case "CS":
+      return "legend-yellow";
+    case "SE":
+      return "legend-green";
+    case "IS":
+      return "legend-pink";
+    default:
+      return "legend-blue";
+  }
+}
 
 // Global Variables
-let currentDate = new Date(2025, 5, 25); // June 25, 2025 (month is 0-indexed)
+let currentDate = new Date(); // Current date (current month and year)
 let view = "month";
 let selectedDepartment = "all";
 
@@ -130,12 +127,22 @@ function getEventsForDate(date) {
   const d = String(date.getDate()).padStart(2, "0");
   const dateKey = `${y}-${m}-${d}`;
 
-  return mockEvents.filter(
-    (event) =>
-      (selectedDepartment === "all" ||
-        event.department === selectedDepartment) &&
-      event.date === dateKey
-  );
+  return mockEvents.filter((event) => {
+    // Check if event is on the specified date
+    if (event.date !== dateKey) return false;
+
+    // If no department filter is selected, show all events
+    if (selectedDepartment === "all") return true;
+
+    // Check if the event's departments include the selected department
+    if (event.department && Array.isArray(event.department)) {
+      return event.department.some(
+        (dept) => dept.trim().toLowerCase() === selectedDepartment.toLowerCase()
+      );
+    }
+
+    return false;
+  });
 }
 
 // Updated function to handle background selection with unique events
@@ -144,10 +151,18 @@ function getBackgroundClassForEvents(dayEvents) {
     return "bg-calendar-default";
   }
 
-  // Get unique departments from all events
-  const uniqueDepartments = [
-    ...new Set(dayEvents.map((event) => event.department)),
-  ];
+  // Get all departments from all events (handle arrays)
+  const allDepartments = [];
+  dayEvents.forEach((event) => {
+    if (event.department && Array.isArray(event.department)) {
+      allDepartments.push(
+        ...event.department.map((d) => d.trim().toLowerCase())
+      );
+    }
+  });
+
+  // Get unique departments
+  const uniqueDepartments = [...new Set(allDepartments)];
 
   // If multiple departments are involved, use multi background
   if (uniqueDepartments.length > 1) {
@@ -155,7 +170,7 @@ function getBackgroundClassForEvents(dayEvents) {
   }
 
   // Single department - use department-specific background
-  const dept = uniqueDepartments[0].toLowerCase(); // "cs","se","is"
+  const dept = uniqueDepartments[0];
   const map = { cs: "bg-cs", se: "bg-se", is: "bg-is" };
   return map[dept] || "bg-calendar-default";
 }
@@ -249,7 +264,7 @@ function renderMonthView() {
 
     html += `
       <div
-        class="${imageClass} p-1 h-24 cursor-pointer hover:bg-gray-50 flex flex-col
+        class="${imageClass} p-1 h-24 cursor-pointer flex flex-col
                ${isToday ? "today-glow" : ""}"
         onclick="onDayClick(${day.getFullYear()}, ${day.getMonth()}, ${day.getDate()})"
       >
@@ -260,21 +275,40 @@ function renderMonthView() {
         </div>
         <div class="flex-1 space-y-1 overflow-hidden">
           ${uniqueEvents
-            .slice(0, 2)
-            .map(
-              (evt) => `
-            <div class="event-title ${evt.color}"
-                 title="${evt.title}">
-              ${evt.title}
-            </div>
-          `
-            )
+            .slice(0, 3)
+            .map((evt) => {
+              // Get department class for consistent styling
+              let deptClass = "";
+              if (evt.department && Array.isArray(evt.department)) {
+                if (evt.department.length > 1) {
+                  deptClass = "multi";
+                } else if (evt.department.length === 1) {
+                  deptClass = evt.department[0].toLowerCase();
+                }
+              }
+
+              // Truncate long titles for better display
+              const displayTitle =
+                evt.title.length > 20
+                  ? evt.title.substring(0, 20) + "..."
+                  : evt.title;
+
+              return `
+                <div class="event-title ${deptClass}"
+                     title="${evt.title} - ${formatTime(evt.startTime)}"
+                     onclick="event.stopPropagation(); showEventModal(${JSON.stringify(
+                       evt
+                     ).replace(/"/g, "&quot;")})">
+                  ${displayTitle}
+                </div>
+              `;
+            })
             .join("")}
           ${
-            uniqueEvents.length > 2
-              ? `<div class="text-xs text-gray-500">+${
-                  uniqueEvents.length - 2
-                } more</div>`
+            uniqueEvents.length > 3
+              ? `<div class="text-xs text-gray-500 font-medium">+${
+                  uniqueEvents.length - 3
+                } more events</div>`
               : ""
           }
         </div>
@@ -335,9 +369,16 @@ function renderWeekView() {
       html += `<div class="hour-slot ${hasEvents ? "has-events" : ""}">`;
 
       dayEvents.forEach((event) => {
-        const deptClass = event.department
-          ? event.department.toLowerCase()
-          : "";
+        // Get the first department for CSS class (or use 'multi' if multiple)
+        let deptClass = "";
+        if (event.department && Array.isArray(event.department)) {
+          if (event.department.length > 1) {
+            deptClass = "multi";
+          } else if (event.department.length === 1) {
+            deptClass = event.department[0].toLowerCase();
+          }
+        }
+
         html += `<div class="event-item ${deptClass}" 
                  onclick="showEventModal(${JSON.stringify(event).replace(
                    /"/g,
@@ -380,7 +421,22 @@ function renderDayView() {
       <div class="events-container">`;
 
     hourEvents.forEach((event) => {
-      const deptClass = event.department ? event.department.toLowerCase() : "";
+      // Get the first department for CSS class (or use 'multi' if multiple)
+      let deptClass = "";
+      if (event.department && Array.isArray(event.department)) {
+        if (event.department.length > 1) {
+          deptClass = "multi";
+        } else if (event.department.length === 1) {
+          deptClass = event.department[0].toLowerCase();
+        }
+      }
+
+      // Format departments for display
+      const deptDisplay =
+        event.department && Array.isArray(event.department)
+          ? event.department.join(", ")
+          : "";
+
       html += `<div class="event-card ${deptClass}" onclick="showEventModal(${JSON.stringify(
         event
       ).replace(/"/g, "&quot;")})">
@@ -395,7 +451,7 @@ function renderDayView() {
           </div>
           <div class="event-detail">
             <i class="fas fa-users"></i>
-            <span>${event.department}</span>
+            <span>${deptDisplay}</span>
           </div>
         </div>
       </div>`;
@@ -467,7 +523,15 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("departmentFilter").onchange = (e) =>
     changeDepartmentFilter(e.target.value);
 
-  renderCalendar();
+  // Fetch events from database and then render calendar
+  fetchEvents()
+    .then(() => {
+      renderCalendar();
+    })
+    .catch((error) => {
+      console.error("Failed to fetch events:", error);
+      renderCalendar(); // Render with empty events
+    });
 });
 
 // Modal Functions
