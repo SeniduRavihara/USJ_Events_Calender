@@ -1,30 +1,42 @@
 <?php
-
 /**
- * MIT License
- * For full license information, please view the LICENSE file that was distributed with this source code.
+ * Phinx
+ *
+ * (The MIT license)
+ * Copyright (c) 2015 Rob Morgan
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated * documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ *
+ * @author     Richard Quadling
+ * @package    Phinx
+ * @subpackage Phinx\Console
  */
-
 namespace Phinx\Console\Command;
 
-use InvalidArgumentException;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'breakpoint')]
 class Breakpoint extends AbstractCommand
 {
     /**
-     * @var string
-     */
-    protected static $defaultName = 'breakpoint';
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return void
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -32,7 +44,8 @@ class Breakpoint extends AbstractCommand
 
         $this->addOption('--environment', '-e', InputOption::VALUE_REQUIRED, 'The target environment.');
 
-        $this->setDescription('Manage breakpoints')
+        $this->setName($this->getName() ?: 'breakpoint')
+            ->setDescription('Manage breakpoints')
             ->addOption('--target', '-t', InputOption::VALUE_REQUIRED, 'The version number to target for the breakpoint')
             ->addOption('--set', '-s', InputOption::VALUE_NONE, 'Set the breakpoint')
             ->addOption('--unset', '-u', InputOption::VALUE_NONE, 'Unset the breakpoint')
@@ -53,40 +66,33 @@ EOT
     /**
      * Toggle the breakpoint.
      *
-     * @param \Symfony\Component\Console\Input\InputInterface $input Input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output Output
-     * @throws \InvalidArgumentException
-     * @return int integer 0 on success, or an error code.
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->bootstrap($input, $output);
 
         $environment = $input->getOption('environment');
-        $version = (int)$input->getOption('target') ?: null;
+        $version = $input->getOption('target');
         $removeAll = $input->getOption('remove-all');
         $set = $input->getOption('set');
         $unset = $input->getOption('unset');
 
         if ($environment === null) {
             $environment = $this->getConfig()->getDefaultEnvironment();
-            $output->writeln('<comment>warning</comment> no environment specified, defaulting to: ' . $environment, $this->verbosityLevel);
+            $output->writeln('<comment>warning</comment> no environment specified, defaulting to: ' . $environment);
         } else {
-            $output->writeln('<info>using environment</info> ' . $environment, $this->verbosityLevel);
-        }
-
-        if (!$this->getConfig()->hasEnvironment($environment)) {
-            $output->writeln(sprintf('<error>The environment "%s" does not exist</error>', $environment));
-
-            return self::CODE_ERROR;
+            $output->writeln('<info>using environment</info> ' . $environment);
         }
 
         if ($version && $removeAll) {
-            throw new InvalidArgumentException('Cannot toggle a breakpoint and remove all breakpoints at the same time.');
+            throw new \InvalidArgumentException('Cannot toggle a breakpoint and remove all breakpoints at the same time.');
         }
 
         if (($set && $unset) || ($set && $removeAll) || ($unset && $removeAll)) {
-            throw new InvalidArgumentException('Cannot use more than one of --set, --unset, or --remove-all at the same time.');
+            throw new \InvalidArgumentException('Cannot use more than one of --set, --clear, or --remove-all at the same time.');
         }
 
         if ($removeAll) {
@@ -102,7 +108,5 @@ EOT
             // Toggle the breakpoint.
             $this->getManager()->toggleBreakpoint($environment, $version);
         }
-
-        return self::CODE_SUCCESS;
     }
 }

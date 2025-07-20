@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,15 +14,15 @@ declare(strict_types=1);
  */
 namespace Cake\Datasource\Exception;
 
-use Cake\Core\Exception\CakeException;
+use Cake\Core\Exception\Exception;
 
 /**
  * Used when a model cannot be found.
  */
-class MissingModelException extends CakeException
+class MissingModelException extends Exception
 {
     /**
-     * @var string
+     * @inheritDoc
      */
     protected $_messageTemplate = 'Model class "%s" of type "%s" could not be found.';
 }

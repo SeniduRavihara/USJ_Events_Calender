@@ -1,10 +1,5 @@
 <?php
 
-/**
- * MIT License
- * For full license information, please view the LICENSE file that was distributed with this source code.
- */
-
 namespace Phinx\Util;
 
 class Expression
@@ -12,7 +7,7 @@ class Expression
     /**
      * @var string The expression
      */
-    protected $value;
+    private $value;
 
     /**
      * @param string $value The expression
@@ -32,6 +27,7 @@ class Expression
 
     /**
      * @param string $value The expression
+     *
      * @return self
      */
     public static function from($value)

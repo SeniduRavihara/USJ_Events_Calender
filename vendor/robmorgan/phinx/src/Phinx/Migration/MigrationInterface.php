@@ -1,10 +1,31 @@
 <?php
-
 /**
- * MIT License
- * For full license information, please view the LICENSE file that was distributed with this source code.
+ * Phinx
+ *
+ * (The MIT license)
+ * Copyright (c) 2015 Rob Morgan
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated * documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ *
+ * @package    Phinx
+ * @subpackage Phinx\Migration
  */
-
 namespace Phinx\Migration;
 
 use Phinx\Db\Adapter\AdapterInterface;
@@ -21,22 +42,17 @@ interface MigrationInterface
     /**
      * @var string
      */
-    public const CHANGE = 'change';
+    const CHANGE = 'change';
 
     /**
      * @var string
      */
-    public const UP = 'up';
+    const UP = 'up';
 
     /**
      * @var string
      */
-    public const DOWN = 'down';
-
-    /**
-     * @var string
-     */
-    public const INIT = 'init';
+    const DOWN = 'down';
 
     /**
      * Sets the database adapter.
@@ -56,7 +72,7 @@ interface MigrationInterface
     /**
      * Sets the input object to be used in migration object
      *
-     * @param \Symfony\Component\Console\Input\InputInterface $input Input
+     * @param \Symfony\Component\Console\Input\InputInterface $input
      * @return \Phinx\Migration\MigrationInterface
      */
     public function setInput(InputInterface $input);
@@ -71,7 +87,7 @@ interface MigrationInterface
     /**
      * Sets the output object to be used in migration object
      *
-     * @param \Symfony\Component\Console\Output\OutputInterface $output Output
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return \Phinx\Migration\MigrationInterface
      */
     public function setOutput(OutputInterface $output);
@@ -100,7 +116,7 @@ interface MigrationInterface
     /**
      * Sets the migration version number.
      *
-     * @param int $version Version
+     * @param float $version Version
      * @return \Phinx\Migration\MigrationInterface
      */
     public function setVersion($version);
@@ -108,7 +124,7 @@ interface MigrationInterface
     /**
      * Gets the migration version number.
      *
-     * @return int
+     * @return float
      */
     public function getVersion();
 
@@ -137,15 +153,10 @@ interface MigrationInterface
     public function execute($sql);
 
     /**
-     * Executes a SQL statement.
-     *
-     * The return type depends on the underlying adapter being used. To improve
-     * IDE auto-completion possibility, you can overwrite the query method
-     * phpDoc in your (typically custom abstract parent) migration class, where
-     * you can set the return type by the adapter in your current use.
+     * Executes a SQL statement and returns the result as an array.
      *
      * @param string $sql SQL
-     * @return mixed
+     * @return array
      */
     public function query($sql);
 
@@ -165,7 +176,7 @@ interface MigrationInterface
      * Executes a query and returns only one row as an array.
      *
      * @param string $sql SQL
-     * @return array|false
+     * @return array
      */
     public function fetchRow($sql);
 
@@ -181,8 +192,9 @@ interface MigrationInterface
      * Insert data into a table.
      *
      * @deprecated since 0.10.0. Use $this->table($tableName)->insert($data)->save() instead.
-     * @param string $tableName Table name
-     * @param array $data Data
+     *
+     * @param string $tableName
+     * @param array $data
      * @return void
      */
     public function insert($tableName, $data);
@@ -207,7 +219,7 @@ interface MigrationInterface
     /**
      * Checks to see if a table exists.
      *
-     * @param string $tableName Table name
+     * @param string $tableName Table Name
      * @return bool
      */
     public function hasTable($tableName);
@@ -217,7 +229,7 @@ interface MigrationInterface
      *
      * You can use this class to create and manipulate tables.
      *
-     * @param string $tableName Table name
+     * @param string $tableName Table Name
      * @param array $options Options
      * @return \Phinx\Db\Table
      */
@@ -227,7 +239,8 @@ interface MigrationInterface
      * Perform checks on the migration, print a warning
      * if there are potential problems.
      *
-     * @param string|null $direction Direction
+     * @param string|null $direction
+     *
      * @return void
      */
     public function preFlightCheck($direction = null);
@@ -238,6 +251,7 @@ interface MigrationInterface
      * Right now, the only check is whether all changes were committed
      *
      * @param string|null $direction direction of migration
+     *
      * @return void
      */
     public function postFlightCheck($direction = null);

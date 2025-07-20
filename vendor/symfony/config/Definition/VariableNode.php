@@ -27,21 +27,24 @@ class VariableNode extends BaseNode implements PrototypeNodeInterface
     protected $defaultValue;
     protected $allowEmptyValue = true;
 
-    /**
-     * @return void
-     */
-    public function setDefaultValue(mixed $value)
+    public function setDefaultValue($value)
     {
         $this->defaultValueSet = true;
         $this->defaultValue = $value;
     }
 
-    public function hasDefaultValue(): bool
+    /**
+     * {@inheritdoc}
+     */
+    public function hasDefaultValue()
     {
         return $this->defaultValueSet;
     }
 
-    public function getDefaultValue(): mixed
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultValue()
     {
         $v = $this->defaultValue;
 
@@ -52,41 +55,43 @@ class VariableNode extends BaseNode implements PrototypeNodeInterface
      * Sets if this node is allowed to have an empty value.
      *
      * @param bool $boolean True if this entity will accept empty values
-     *
-     * @return void
      */
-    public function setAllowEmptyValue(bool $boolean)
+    public function setAllowEmptyValue($boolean)
     {
-        $this->allowEmptyValue = $boolean;
+        $this->allowEmptyValue = (bool) $boolean;
     }
 
     /**
-     * @return void
+     * {@inheritdoc}
      */
-    public function setName(string $name)
+    public function setName($name)
     {
         $this->name = $name;
     }
 
     /**
-     * @return void
+     * {@inheritdoc}
      */
-    protected function validateType(mixed $value)
+    protected function validateType($value)
     {
     }
 
-    protected function finalizeValue(mixed $value): mixed
+    /**
+     * {@inheritdoc}
+     */
+    protected function finalizeValue($value)
     {
         // deny environment variables only when using custom validators
         // this avoids ever passing an empty value to final validation closures
         if (!$this->allowEmptyValue && $this->isHandlingPlaceholder() && $this->finalValidationClosures) {
-            $e = new InvalidConfigurationException(sprintf('The path "%s" cannot contain an environment variable when empty values are not allowed by definition and are validated.', $this->getPath()));
-            if ($hint = $this->getInfo()) {
-                $e->addHint($hint);
-            }
-            $e->setPath($this->getPath());
-
-            throw $e;
+            @trigger_error(sprintf('Setting path "%s" to an environment variable is deprecated since Symfony 4.3. Remove "cannotBeEmpty()", "validate()" or include a prefix/suffix value instead.', $this->getPath()), \E_USER_DEPRECATED);
+//            $e = new InvalidConfigurationException(sprintf('The path "%s" cannot contain an environment variable when empty values are not allowed by definition and are validated.', $this->getPath()));
+//            if ($hint = $this->getInfo()) {
+//                $e->addHint($hint);
+//            }
+//            $e->setPath($this->getPath());
+//
+//            throw $e;
         }
 
         if (!$this->allowEmptyValue && $this->isValueEmpty($value)) {
@@ -102,12 +107,18 @@ class VariableNode extends BaseNode implements PrototypeNodeInterface
         return $value;
     }
 
-    protected function normalizeValue(mixed $value): mixed
+    /**
+     * {@inheritdoc}
+     */
+    protected function normalizeValue($value)
     {
         return $value;
     }
 
-    protected function mergeValues(mixed $leftSide, mixed $rightSide): mixed
+    /**
+     * {@inheritdoc}
+     */
+    protected function mergeValues($leftSide, $rightSide)
     {
         return $rightSide;
     }
@@ -119,9 +130,13 @@ class VariableNode extends BaseNode implements PrototypeNodeInterface
      * method may be overridden by subtypes to better match their understanding
      * of empty data.
      *
+     * @param mixed $value
+     *
+     * @return bool
+     *
      * @see finalizeValue()
      */
-    protected function isValueEmpty(mixed $value): bool
+    protected function isValueEmpty($value)
     {
         return empty($value);
     }

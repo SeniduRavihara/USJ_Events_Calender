@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -17,7 +15,7 @@ namespace Cake\Core\Exception;
 /**
  * Exception raised when a plugin could not be found
  */
-class MissingPluginException extends CakeException
+class MissingPluginException extends Exception
 {
     /**
      * @inheritDoc

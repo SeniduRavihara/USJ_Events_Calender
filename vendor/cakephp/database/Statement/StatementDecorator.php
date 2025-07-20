@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,7 +14,6 @@ declare(strict_types=1);
  */
 namespace Cake\Database\Statement;
 
-use Cake\Database\DriverInterface;
 use Cake\Database\StatementInterface;
 use Cake\Database\TypeConverterTrait;
 use Countable;
@@ -32,7 +29,6 @@ use IteratorAggregate;
  * PDOStatement.
  *
  * @property-read string $queryString
- * @template-implements \IteratorAggregate<string, \Cake\Database\StatementInterface>
  */
 class StatementDecorator implements StatementInterface, Countable, IteratorAggregate
 {
@@ -42,19 +38,19 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
      * Statement instance implementation, such as PDOStatement
      * or any other custom implementation.
      *
-     * @var \Cake\Database\StatementInterface
+     * @var \Cake\Database\StatementInterface|\PDOStatement|null
      */
     protected $_statement;
 
     /**
      * Reference to the driver object associated to this statement.
      *
-     * @var \Cake\Database\DriverInterface
+     * @var \Cake\Database\Driver|null
      */
     protected $_driver;
 
     /**
-     * Whether this statement has already been executed
+     * Whether or not this statement has already been executed
      *
      * @var bool
      */
@@ -63,40 +59,26 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
     /**
      * Constructor
      *
-     * @param \Cake\Database\StatementInterface $statement Statement implementation
-     *  such as PDOStatement.
-     * @param \Cake\Database\DriverInterface $driver Driver instance
+     * @param \Cake\Database\StatementInterface|\PDOStatement|null $statement Statement implementation such as PDOStatement
+     * @param \Cake\Database\Driver|null $driver Driver instance
      */
-    public function __construct(StatementInterface $statement, DriverInterface $driver)
+    public function __construct($statement = null, $driver = null)
     {
         $this->_statement = $statement;
         $this->_driver = $driver;
     }
 
     /**
-     * Returns the connection driver.
-     *
-     * @return \Cake\Database\DriverInterface
-     */
-    protected function getDriver(): DriverInterface
-    {
-        return $this->_driver;
-    }
-
-    /**
      * Magic getter to return $queryString as read-only.
      *
      * @param string $property internal property to get
-     * @return string|null
+     * @return mixed
      */
-    public function __get(string $property)
+    public function __get($property)
     {
         if ($property === 'queryString') {
-            /** @psalm-suppress NoInterfaceProperties */
             return $this->_statement->queryString;
         }
-
-        return null;
     }
 
     /**
@@ -116,10 +98,10 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
      *
      * @param string|int $column name or param position to be bound
      * @param mixed $value The value to bind to variable in query
-     * @param string|int|null $type name of configured Type class
+     * @param string $type name of configured Type class
      * @return void
      */
-    public function bindValue($column, $value, $type = 'string'): void
+    public function bindValue($column, $value, $type = 'string')
     {
         $this->_statement->bindValue($column, $value, $type);
     }
@@ -131,7 +113,7 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
      *
      * @return void
      */
-    public function closeCursor(): void
+    public function closeCursor()
     {
         $this->_statement->closeCursor();
     }
@@ -149,7 +131,7 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
      *
      * @return int
      */
-    public function columnCount(): int
+    public function columnCount()
     {
         return $this->_statement->columnCount();
     }
@@ -157,7 +139,7 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
     /**
      * Returns the error code for the last error that occurred when executing this statement.
      *
-     * @return string|int
+     * @return int|string
      */
     public function errorCode()
     {
@@ -170,7 +152,7 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
      *
      * @return array
      */
-    public function errorInfo(): array
+    public function errorInfo()
     {
         return $this->_statement->errorInfo();
     }
@@ -184,7 +166,7 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
      * @param array|null $params list of values to be bound to query
      * @return bool true on success, false otherwise
      */
-    public function execute(?array $params = null): bool
+    public function execute($params = null)
     {
         $this->_hasExecuted = true;
 
@@ -204,8 +186,8 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
      * print_r($statement->fetch('assoc')); // will show ['id' => 1, 'title' => 'a title']
      * ```
      *
-     * @param string|int $type 'num' for positional columns, assoc for named columns
-     * @return mixed Result array containing columns and values or false if no results
+     * @param string $type 'num' for positional columns, assoc for named columns
+     * @return array|false Result array containing columns and values or false if no results
      * are left
      */
     public function fetch($type = self::FETCH_TYPE_NUM)
@@ -215,11 +197,11 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
 
     /**
      * Returns the next row in a result set as an associative array. Calling this function is the same as calling
-     * $statement->fetch(StatementDecorator::FETCH_TYPE_ASSOC). If no results are found an empty array is returned.
+     * $statement->fetch(StatementDecorator::FETCH_TYPE_ASSOC). If no results are found false is returned.
      *
-     * @return array
+     * @return array Result array containing columns and values an an associative array or an empty array if no results
      */
-    public function fetchAssoc(): array
+    public function fetchAssoc()
     {
         $result = $this->fetch(static::FETCH_TYPE_ASSOC);
 
@@ -232,10 +214,10 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
      * @param int $position The numeric position of the column to retrieve in the result
      * @return mixed Returns the specific value of the column designated at $position
      */
-    public function fetchColumn(int $position)
+    public function fetchColumn($position)
     {
         $result = $this->fetch(static::FETCH_TYPE_NUM);
-        if ($result && isset($result[$position])) {
+        if (isset($result[$position])) {
             return $result[$position];
         }
 
@@ -253,8 +235,8 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
      * print_r($statement->fetchAll('assoc')); // will show [0 => ['id' => 1, 'title' => 'a title']]
      * ```
      *
-     * @param string|int $type num for fetching columns as positional keys or assoc for column names as keys
-     * @return array|false List of all results from database for this statement. False on failure.
+     * @param string $type num for fetching columns as positional keys or assoc for column names as keys
+     * @return array List of all results from database for this statement
      */
     public function fetchAll($type = self::FETCH_TYPE_NUM)
     {
@@ -274,7 +256,7 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
      *
      * @return int
      */
-    public function rowCount(): int
+    public function rowCount()
     {
         return $this->_statement->rowCount();
     }
@@ -292,10 +274,8 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
      * }
      * ```
      *
-     * @return \Cake\Database\StatementInterface
-     * @psalm-suppress ImplementedReturnTypeMismatch
+     * @return \Cake\Database\StatementInterface|\PDOStatement
      */
-    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         if (!$this->_hasExecuted) {
@@ -311,7 +291,7 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
      *
      * @return int
      */
-    public function count(): int
+    public function count()
     {
         return $this->rowCount();
     }
@@ -323,18 +303,20 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
      * @param array $types list of types to be used, keys should match those in $params
      * @return void
      */
-    public function bind(array $params, array $types): void
+    public function bind($params, $types)
     {
         if (empty($params)) {
             return;
         }
 
-        $anonymousParams = is_int(key($params));
+        $anonymousParams = is_int(key($params)) ? true : false;
         $offset = 1;
         foreach ($params as $index => $value) {
-            $type = $types[$index] ?? null;
+            $type = null;
+            if (isset($types[$index])) {
+                $type = $types[$index];
+            }
             if ($anonymousParams) {
-                /** @psalm-suppress InvalidOperand */
                 $index += $offset;
             }
             $this->bindValue($index, $value, $type);
@@ -348,14 +330,14 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
      * @param string|null $column the name of the column representing the primary key
      * @return string|int
      */
-    public function lastInsertId(?string $table = null, ?string $column = null)
+    public function lastInsertId($table = null, $column = null)
     {
+        $row = null;
         if ($column && $this->columnCount()) {
             $row = $this->fetch(static::FETCH_TYPE_ASSOC);
-
-            if ($row && isset($row[$column])) {
-                return $row[$column];
-            }
+        }
+        if (isset($row[$column])) {
+            return $row[$column];
         }
 
         return $this->_driver->lastInsertId($table, $column);
@@ -364,7 +346,7 @@ class StatementDecorator implements StatementInterface, Countable, IteratorAggre
     /**
      * Returns the statement object that was decorated by this class.
      *
-     * @return \Cake\Database\StatementInterface
+     * @return \Cake\Database\StatementInterface|\PDOStatement
      */
     public function getInnerStatement()
     {

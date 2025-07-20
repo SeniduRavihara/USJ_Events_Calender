@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright 2005-2011, Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,14 +13,14 @@ declare(strict_types=1);
  */
 namespace Cake\Core;
 
-use Cake\Http\MiddlewareQueue;
-use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * An interface defining the methods that the
  * http server depend on.
  */
-interface HttpApplicationInterface extends RequestHandlerInterface
+interface HttpApplicationInterface
 {
     /**
      * Load all the application configuration and bootstrap logic.
@@ -31,13 +29,33 @@ interface HttpApplicationInterface extends RequestHandlerInterface
      *
      * @return void
      */
-    public function bootstrap(): void;
+    public function bootstrap();
+
+    /**
+     * Define the routes for an application.
+     *
+     * Use the provided RouteBuilder to define an application's routing.
+     *
+     * @param \Cake\Routing\RouteBuilder $routes A route builder to add routes into.
+     * @return void
+     */
+    public function routes($routes);
 
     /**
      * Define the HTTP middleware layers for an application.
      *
-     * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue to set in your App Class
+     * @param \Cake\Http\MiddlewareQueue $middleware The middleware queue to set in your App Class
      * @return \Cake\Http\MiddlewareQueue
      */
-    public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue;
+    public function middleware($middleware);
+
+    /**
+     * Invoke the application.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @param \Psr\Http\Message\ResponseInterface $response The response
+     * @param callable $next The next middleware
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next);
 }

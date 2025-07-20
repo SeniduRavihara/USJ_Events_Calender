@@ -1,8 +1,28 @@
 <?php
-
 /**
- * MIT License
- * For full license information, please view the LICENSE file that was distributed with this source code.
+ * Phinx
+ *
+ * (The MIT license)
+ * Copyright (c) 2015 Rob Morgan
+ * Copyright (c) 2015 Woody Gilk
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated * documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
  */
 
 namespace Phinx\Wrapper;
@@ -22,21 +42,21 @@ class TextWrapper
     /**
      * @var \Phinx\Console\PhinxApplication
      */
-    protected $app;
+    private $app;
 
     /**
      * @var array
      */
-    protected $options;
+    private $options = [];
 
     /**
-     * @var int
+     * @var integer
      */
-    protected $exitCode;
+    private $exit_code;
 
     /**
-     * @param \Phinx\Console\PhinxApplication $app Application
-     * @param array $options Options
+     * @param \Phinx\Console\PhinxApplication $app
+     * @param array $options
      */
     public function __construct(PhinxApplication $app, array $options = [])
     {
@@ -56,24 +76,22 @@ class TextWrapper
 
     /**
      * Returns the exit code from the last run command.
-     *
      * @return int
      */
     public function getExitCode()
     {
-        return $this->exitCode;
+        return $this->exit_code;
     }
 
     /**
      * Returns the output from running the "status" command.
-     *
-     * @param string|null $env environment name (optional)
+     * @param  string $env environment name (optional)
      * @return string
      */
     public function getStatus($env = null)
     {
         $command = ['status'];
-        if ($this->hasEnvValue($env)) {
+        if ($env ?: $this->hasOption('environment')) {
             $command += ['-e' => $env ?: $this->getOption('environment')];
         }
         if ($this->hasOption('configuration')) {
@@ -82,33 +100,20 @@ class TextWrapper
         if ($this->hasOption('parser')) {
             $command += ['-p' => $this->getOption('parser')];
         }
-        if ($this->hasOption('format')) {
-            $command += ['-f' => $this->getOption('format')];
-        }
 
         return $this->executeRun($command);
     }
 
     /**
-     * @param string|null $env environment name
-     * @return bool
-     */
-    private function hasEnvValue($env): bool
-    {
-        return $env || $this->hasOption('environment');
-    }
-
-    /**
      * Returns the output from running the "migrate" command.
-     *
-     * @param string|null $env environment name (optional)
-     * @param string|null $target target version (optional)
+     * @param  string $env environment name (optional)
+     * @param  string $target target version (optional)
      * @return string
      */
     public function getMigrate($env = null, $target = null)
     {
         $command = ['migrate'];
-        if ($this->hasEnvValue($env)) {
+        if ($env ?: $this->hasOption('environment')) {
             $command += ['-e' => $env ?: $this->getOption('environment')];
         }
         if ($this->hasOption('configuration')) {
@@ -126,16 +131,15 @@ class TextWrapper
 
     /**
      * Returns the output from running the "seed:run" command.
-     *
-     * @param string|null $env Environment name
-     * @param string|null $target Target version
-     * @param string[]|string|null $seed Array of seed names or seed name
+     * @param  string|null       $env environment name
+     * @param  string|null       $target target version
+     * @param  array|string|null $seed array of seed names or seed name
      * @return string
      */
     public function getSeed($env = null, $target = null, $seed = null)
     {
         $command = ['seed:run'];
-        if ($this->hasEnvValue($env)) {
+        if ($env ?: $this->hasOption('environment')) {
             $command += ['-e' => $env ?: $this->getOption('environment')];
         }
         if ($this->hasOption('configuration')) {
@@ -157,15 +161,14 @@ class TextWrapper
 
     /**
      * Returns the output from running the "rollback" command.
-     *
-     * @param string|null $env Environment name (optional)
-     * @param mixed $target Target version, or 0 (zero) fully revert (optional)
+     * @param  string $env environment name (optional)
+     * @param  mixed $target target version, or 0 (zero) fully revert (optional)
      * @return string
      */
     public function getRollback($env = null, $target = null)
     {
         $command = ['rollback'];
-        if ($this->hasEnvValue($env)) {
+        if ($env ?: $this->hasOption('environment')) {
             $command += ['-e' => $env ?: $this->getOption('environment')];
         }
         if ($this->hasOption('configuration')) {
@@ -176,7 +179,7 @@ class TextWrapper
         }
         if (isset($target)) {
             // Need to use isset() with rollback, because -t0 is a valid option!
-            // See https://book.cakephp.org/phinx/0/en/commands.html#the-rollback-command
+            // See http://docs.phinx.org/en/latest/commands.html#the-rollback-command
             $command += ['-t' => $target];
         }
 
@@ -186,7 +189,7 @@ class TextWrapper
     /**
      * Check option from options array
      *
-     * @param string $key Key
+     * @param  string $key
      * @return bool
      */
     protected function hasOption($key)
@@ -197,7 +200,7 @@ class TextWrapper
     /**
      * Get option from options array
      *
-     * @param string $key Key
+     * @param  string $key
      * @return string|null
      */
     protected function getOption($key)
@@ -212,9 +215,9 @@ class TextWrapper
     /**
      * Set option in options array
      *
-     * @param string $key Key
-     * @param string $value Value
-     * @return $this
+     * @param  string $key
+     * @param  string $value
+     * @return object
      */
     public function setOption($key, $value)
     {
@@ -226,7 +229,7 @@ class TextWrapper
     /**
      * Execute a command, capturing output and storing the exit code.
      *
-     * @param array $command Command
+     * @param  array $command
      * @return string
      */
     protected function executeRun(array $command)
@@ -237,7 +240,7 @@ class TextWrapper
 
         // Execute the command, capturing the output in the temporary stream
         // and storing the exit code for debugging purposes.
-        $this->exitCode = $this->app->doRun(new ArrayInput($command), new StreamOutput($stream));
+        $this->exit_code = $this->app->doRun(new ArrayInput($command), new StreamOutput($stream));
 
         // Get the output of the command and close the stream, which will
         // destroy the temporary file.

@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,16 +14,15 @@ declare(strict_types=1);
  */
 namespace Cake\Database\Exception;
 
-use Cake\Core\Exception\CakeException;
+use Cake\Core\Exception\Exception;
 
 /**
  * Class MissingExtensionException
  */
-class MissingExtensionException extends CakeException
+class MissingExtensionException extends Exception
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    // phpcs:ignore Generic.Files.LineLength
-    protected $_messageTemplate = 'Database driver %s cannot be used due to a missing PHP extension or unmet dependency. Requested by connection "%s"';
+    protected $_messageTemplate = 'Database driver %s cannot be used due to a missing PHP extension or unmet dependency';
 }

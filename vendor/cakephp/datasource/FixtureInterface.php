@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -24,50 +22,66 @@ interface FixtureInterface
     /**
      * Create the fixture schema/mapping/definition
      *
-     * @param \Cake\Datasource\ConnectionInterface $connection An instance of the connection the fixture should be created on.
+     * @param \Cake\Datasource\ConnectionInterface $db An instance of the connection the fixture should be created on.
      * @return bool True on success, false on failure.
      */
-    public function create(ConnectionInterface $connection): bool;
+    public function create(ConnectionInterface $db);
 
     /**
      * Run after all tests executed, should remove the table/collection from the connection.
      *
-     * @param \Cake\Datasource\ConnectionInterface $connection An instance of the connection the fixture should be removed from.
+     * @param \Cake\Datasource\ConnectionInterface $db An instance of the connection the fixture should be removed from.
      * @return bool True on success, false on failure.
      */
-    public function drop(ConnectionInterface $connection): bool;
+    public function drop(ConnectionInterface $db);
 
     /**
      * Run before each test is executed.
      *
      * Should insert all the records into the test database.
      *
-     * @param \Cake\Datasource\ConnectionInterface $connection An instance of the connection
-     *   into which the records will be inserted.
-     * @return \Cake\Database\StatementInterface|bool on success or if there are no records to insert,
-     *  or false on failure.
+     * @param \Cake\Datasource\ConnectionInterface $db An instance of the connection into which the records will be inserted.
+     * @return \Cake\Database\StatementInterface|bool on success or if there are no records to insert, or false on failure.
      */
-    public function insert(ConnectionInterface $connection);
+    public function insert(ConnectionInterface $db);
+
+    /**
+     * Build and execute SQL queries necessary to create the constraints for the
+     * fixture
+     *
+     * @param \Cake\Datasource\ConnectionInterface $db An instance of the database into which the constraints will be created
+     * @return bool on success or if there are no constraints to create, or false on failure
+     */
+    public function createConstraints(ConnectionInterface $db);
+
+    /**
+     * Build and execute SQL queries necessary to drop the constraints for the
+     * fixture
+     *
+     * @param \Cake\Datasource\ConnectionInterface $db An instance of the database into which the constraints will be dropped
+     * @return bool on success or if there are no constraints to drop, or false on failure
+     */
+    public function dropConstraints(ConnectionInterface $db);
 
     /**
      * Truncates the current fixture.
      *
-     * @param \Cake\Datasource\ConnectionInterface $connection A reference to a db instance
+     * @param \Cake\Datasource\ConnectionInterface $db A reference to a db instance
      * @return bool
      */
-    public function truncate(ConnectionInterface $connection): bool;
+    public function truncate(ConnectionInterface $db);
 
     /**
      * Get the connection name this fixture should be inserted into.
      *
      * @return string
      */
-    public function connection(): string;
+    public function connection();
 
     /**
      * Get the table/collection name for this fixture.
      *
      * @return string
      */
-    public function sourceName(): string;
+    public function sourceName();
 }

@@ -21,7 +21,7 @@ interface PrototypeNodeInterface extends NodeInterface
     /**
      * Sets the name of the node.
      *
-     * @return void
+     * @param string $name The name of the node
      */
-    public function setName(string $name);
+    public function setName($name);
 }

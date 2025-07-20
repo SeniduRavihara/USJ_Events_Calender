@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,15 +14,15 @@ declare(strict_types=1);
  */
 namespace Cake\Database\Exception;
 
-use Cake\Core\Exception\CakeException;
+use Cake\Core\Exception\Exception;
 
 /**
  * Class MissingConnectionException
  */
-class MissingConnectionException extends CakeException
+class MissingConnectionException extends Exception
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    protected $_messageTemplate = 'Connection to %s could not be established: %s';
+    protected $_messageTemplate = 'Connection to database could not be established: %s';
 }

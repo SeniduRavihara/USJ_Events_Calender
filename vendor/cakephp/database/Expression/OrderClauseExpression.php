@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -17,9 +15,7 @@ declare(strict_types=1);
 namespace Cake\Database\Expression;
 
 use Cake\Database\ExpressionInterface;
-use Cake\Database\Query;
 use Cake\Database\ValueBinder;
-use Closure;
 
 /**
  * An expression object for complex ORDER BY clauses
@@ -48,32 +44,27 @@ class OrderClauseExpression implements ExpressionInterface, FieldInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function sql(ValueBinder $binder): string
+    public function sql(ValueBinder $generator)
     {
-        /** @var \Cake\Database\ExpressionInterface|string $field */
         $field = $this->_field;
-        if ($field instanceof Query) {
-            $field = sprintf('(%s)', $field->sql($binder));
-        } elseif ($field instanceof ExpressionInterface) {
-            $field = $field->sql($binder);
+        if ($field instanceof ExpressionInterface) {
+            $field = $field->sql($generator);
         }
 
         return sprintf('%s %s', $field, $this->_direction);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function traverse(Closure $callback)
+    public function traverse(callable $visitor)
     {
         if ($this->_field instanceof ExpressionInterface) {
-            $callback($this->_field);
-            $this->_field->traverse($callback);
+            $visitor($this->_field);
+            $this->_field->traverse($visitor);
         }
-
-        return $this;
     }
 
     /**

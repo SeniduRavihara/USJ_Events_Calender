@@ -1,33 +1,52 @@
 <?php
-
 /**
- * MIT License
- * For full license information, please view the LICENSE file that was distributed with this source code.
+ * Phinx
+ *
+ * (The MIT license)
+ * Copyright (c) 2015 Rob Morgan
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated * documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ *
+ * @package    Phinx
+ * @subpackage Phinx\Db
  */
-
 namespace Phinx\Db\Table;
-
-use RuntimeException;
 
 class Index
 {
     /**
      * @var string
      */
-    public const UNIQUE = 'unique';
+    const UNIQUE = 'unique';
 
     /**
      * @var string
      */
-    public const INDEX = 'index';
+    const INDEX = 'index';
 
     /**
      * @var string
      */
-    public const FULLTEXT = 'fulltext';
+    const FULLTEXT = 'fulltext';
 
     /**
-     * @var string[]
+     * @var array
      */
     protected $columns;
 
@@ -39,28 +58,18 @@ class Index
     /**
      * @var string|null
      */
-    protected $name;
+    protected $name = null;
 
     /**
-     * @var int|array|null
+     * @var integer|array|null
      */
-    protected $limit;
-
-    /**
-     * @var string[]
-     */
-    protected $order;
-
-    /**
-     * @var string[]
-     */
-    protected $includedColumns;
+    protected $limit = null;
 
     /**
      * Sets the index columns.
      *
-     * @param string[] $columns Columns
-     * @return $this
+     * @param array $columns
+     * @return \Phinx\Db\Table\Index
      */
     public function setColumns($columns)
     {
@@ -72,7 +81,7 @@ class Index
     /**
      * Gets the index columns.
      *
-     * @return string[]
+     * @return array
      */
     public function getColumns()
     {
@@ -82,8 +91,8 @@ class Index
     /**
      * Sets the index type.
      *
-     * @param string $type Type
-     * @return $this
+     * @param string $type
+     * @return \Phinx\Db\Table\Index
      */
     public function setType($type)
     {
@@ -105,8 +114,8 @@ class Index
     /**
      * Sets the index name.
      *
-     * @param string $name Name
-     * @return $this
+     * @param string $name
+     * @return \Phinx\Db\Table\Index
      */
     public function setName($name)
     {
@@ -129,7 +138,7 @@ class Index
      * Sets the index limit.
      *
      * @param int|array $limit limit value or array of limit value
-     * @return $this
+     * @return \Phinx\Db\Table\Index
      */
     public function setLimit($limit)
     {
@@ -149,65 +158,19 @@ class Index
     }
 
     /**
-     * Sets the index columns sort order.
-     *
-     * @param string[] $order column name sort order key value pair
-     * @return $this
-     */
-    public function setOrder($order)
-    {
-        $this->order = $order;
-
-        return $this;
-    }
-
-    /**
-     * Gets the index columns sort order.
-     *
-     * @return string[]
-     */
-    public function getOrder()
-    {
-        return $this->order;
-    }
-
-    /**
-     * Sets the index included columns.
-     *
-     * @param string[] $includedColumns Columns
-     * @return $this
-     */
-    public function setInclude($includedColumns)
-    {
-        $this->includedColumns = $includedColumns;
-
-        return $this;
-    }
-
-    /**
-     * Gets the index included columns.
-     *
-     * @return string[]
-     */
-    public function getInclude()
-    {
-        return $this->includedColumns;
-    }
-
-    /**
      * Utility method that maps an array of index options to this objects methods.
      *
      * @param array $options Options
      * @throws \RuntimeException
-     * @return $this
+     * @return \Phinx\Db\Table\Index
      */
     public function setOptions($options)
     {
         // Valid Options
-        $validOptions = ['type', 'unique', 'name', 'limit', 'order', 'include'];
+        $validOptions = ['type', 'unique', 'name', 'limit'];
         foreach ($options as $option => $value) {
             if (!in_array($option, $validOptions, true)) {
-                throw new RuntimeException(sprintf('"%s" is not a valid index option.', $option));
+                throw new \RuntimeException(sprintf('"%s" is not a valid index option.', $option));
             }
 
             // handle $options['unique']

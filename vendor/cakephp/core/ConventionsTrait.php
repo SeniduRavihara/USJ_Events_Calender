@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -29,7 +27,7 @@ trait ConventionsTrait
      * @param string $name Model class name
      * @return string Singular model key
      */
-    protected function _fixtureName(string $name): string
+    protected function _fixtureName($name)
     {
         return Inflector::camelize($name);
     }
@@ -40,7 +38,7 @@ trait ConventionsTrait
      * @param string $name Name
      * @return string Camelized and plural model name
      */
-    protected function _entityName(string $name): string
+    protected function _entityName($name)
     {
         return Inflector::singularize(Inflector::camelize($name));
     }
@@ -53,9 +51,9 @@ trait ConventionsTrait
      * @param string $name Model class name
      * @return string Singular model key
      */
-    protected function _modelKey(string $name): string
+    protected function _modelKey($name)
     {
-        [, $name] = pluginSplit($name);
+        list(, $name) = pluginSplit($name);
 
         return Inflector::underscore(Inflector::singularize($name)) . '_id';
     }
@@ -66,7 +64,7 @@ trait ConventionsTrait
      * @param string $key Foreign key
      * @return string Model name
      */
-    protected function _modelNameFromKey(string $key): string
+    protected function _modelNameFromKey($key)
     {
         $key = str_replace('_id', '', $key);
 
@@ -79,7 +77,7 @@ trait ConventionsTrait
      * @param string $name Name to use
      * @return string Variable name
      */
-    protected function _singularName(string $name): string
+    protected function _singularName($name)
     {
         return Inflector::variable(Inflector::singularize($name));
     }
@@ -90,7 +88,7 @@ trait ConventionsTrait
      * @param string $name Name to use
      * @return string Plural name for views
      */
-    protected function _variableName(string $name): string
+    protected function _variableName($name)
     {
         return Inflector::variable($name);
     }
@@ -101,7 +99,7 @@ trait ConventionsTrait
      * @param string $name Controller name
      * @return string Singular human name
      */
-    protected function _singularHumanName(string $name): string
+    protected function _singularHumanName($name)
     {
         return Inflector::humanize(Inflector::underscore(Inflector::singularize($name)));
     }
@@ -112,7 +110,7 @@ trait ConventionsTrait
      * @param string $name name
      * @return string Camelized name
      */
-    protected function _camelize(string $name): string
+    protected function _camelize($name)
     {
         return Inflector::camelize($name);
     }
@@ -123,7 +121,7 @@ trait ConventionsTrait
      * @param string $name Controller name
      * @return string Plural human name
      */
-    protected function _pluralHumanName(string $name): string
+    protected function _pluralHumanName($name)
     {
         return Inflector::humanize(Inflector::underscore($name));
     }
@@ -134,13 +132,13 @@ trait ConventionsTrait
      * @param string $pluginName Name of the plugin you want ie. DebugKit
      * @return string path path to the correct plugin.
      */
-    protected function _pluginPath(string $pluginName): string
+    protected function _pluginPath($pluginName)
     {
         if (Plugin::isLoaded($pluginName)) {
             return Plugin::path($pluginName);
         }
 
-        return current(App::path('plugins')) . $pluginName . DIRECTORY_SEPARATOR;
+        return current(App::path('Plugin')) . $pluginName . DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -149,7 +147,7 @@ trait ConventionsTrait
      * @param string $pluginName Plugin name
      * @return string Plugin's namespace
      */
-    protected function _pluginNamespace(string $pluginName): string
+    protected function _pluginNamespace($pluginName)
     {
         return str_replace('/', '\\', $pluginName);
     }

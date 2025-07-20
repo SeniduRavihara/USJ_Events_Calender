@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,9 +14,8 @@ declare(strict_types=1);
  */
 namespace Cake\Core\Configure;
 
-use Cake\Core\Exception\CakeException;
+use Cake\Core\Exception\Exception;
 use Cake\Core\Plugin;
-use function Cake\Core\pluginSplit;
 
 /**
  * Trait providing utility methods for file based config engines.
@@ -39,16 +36,16 @@ trait FileConfigTrait
      *  as a plugin prefix.
      * @param bool $checkExists Whether to check if file exists. Defaults to false.
      * @return string Full file path
-     * @throws \Cake\Core\Exception\CakeException When files don't exist or when
+     * @throws \Cake\Core\Exception\Exception When files don't exist or when
      *  files contain '..' as this could lead to abusive reads.
      */
-    protected function _getFilePath(string $key, bool $checkExists = false): string
+    protected function _getFilePath($key, $checkExists = false)
     {
         if (strpos($key, '..') !== false) {
-            throw new CakeException('Cannot load/dump configuration files with ../ in them.');
+            throw new Exception('Cannot load/dump configuration files with ../ in them.');
         }
 
-        [$plugin, $key] = pluginSplit($key);
+        list($plugin, $key) = pluginSplit($key);
 
         if ($plugin) {
             $file = Plugin::configPath($plugin) . $key;
@@ -67,6 +64,6 @@ trait FileConfigTrait
             return $realPath;
         }
 
-        throw new CakeException(sprintf('Could not load configuration file: %s', $file));
+        throw new Exception(sprintf('Could not load configuration file: %s', $file));
     }
 }

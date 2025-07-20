@@ -21,7 +21,10 @@ use Symfony\Component\Config\Definition\Exception\InvalidDefinitionException;
  */
 class BooleanNodeDefinition extends ScalarNodeDefinition
 {
-    public function __construct(?string $name, ?NodeParentInterface $parent = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(?string $name, NodeParentInterface $parent = null)
     {
         parent::__construct($name, $parent);
 
@@ -30,16 +33,20 @@ class BooleanNodeDefinition extends ScalarNodeDefinition
 
     /**
      * Instantiate a Node.
+     *
+     * @return BooleanNode The node
      */
-    protected function instantiateNode(): BooleanNode
+    protected function instantiateNode()
     {
         return new BooleanNode($this->name, $this->parent, $this->pathSeparator);
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @throws InvalidDefinitionException
      */
-    public function cannotBeEmpty(): static
+    public function cannotBeEmpty()
     {
         throw new InvalidDefinitionException('->cannotBeEmpty() is not applicable to BooleanNodeDefinition.');
     }

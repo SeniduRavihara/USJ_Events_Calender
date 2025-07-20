@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -18,7 +16,6 @@ namespace Cake\Database\Expression;
 
 use Cake\Database\ExpressionInterface;
 use Cake\Database\ValueBinder;
-use Closure;
 
 /**
  * An expression object that represents an expression with only a single operand.
@@ -30,14 +27,14 @@ class UnaryExpression implements ExpressionInterface
      *
      * @var int
      */
-    public const PREFIX = 0;
+    const PREFIX = 0;
 
     /**
      * Indicates that the operation is in post-order
      *
      * @var int
      */
-    public const POSTFIX = 1;
+    const POSTFIX = 1;
 
     /**
      * The operator this unary expression represents
@@ -58,33 +55,36 @@ class UnaryExpression implements ExpressionInterface
      *
      * @var int
      */
-    protected $position;
+    protected $_mode;
 
     /**
      * Constructor
      *
      * @param string $operator The operator to used for the expression
      * @param mixed $value the value to use as the operand for the expression
-     * @param int $position either UnaryExpression::PREFIX or UnaryExpression::POSTFIX
+     * @param int $mode either UnaryExpression::PREFIX or UnaryExpression::POSTFIX
      */
-    public function __construct(string $operator, $value, $position = self::PREFIX)
+    public function __construct($operator, $value, $mode = self::PREFIX)
     {
         $this->_operator = $operator;
         $this->_value = $value;
-        $this->position = $position;
+        $this->_mode = $mode;
     }
 
     /**
-     * @inheritDoc
+     * Converts the expression to its string representation
+     *
+     * @param \Cake\Database\ValueBinder $generator Placeholder generator object
+     * @return string
      */
-    public function sql(ValueBinder $binder): string
+    public function sql(ValueBinder $generator)
     {
         $operand = $this->_value;
         if ($operand instanceof ExpressionInterface) {
-            $operand = $operand->sql($binder);
+            $operand = $operand->sql($generator);
         }
 
-        if ($this->position === self::POSTFIX) {
+        if ($this->_mode === self::POSTFIX) {
             return '(' . $operand . ') ' . $this->_operator;
         }
 
@@ -92,16 +92,14 @@ class UnaryExpression implements ExpressionInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function traverse(Closure $callback)
+    public function traverse(callable $visitor)
     {
         if ($this->_value instanceof ExpressionInterface) {
-            $callback($this->_value);
-            $this->_value->traverse($callback);
+            $visitor($this->_value);
+            $this->_value->traverse($visitor);
         }
-
-        return $this;
     }
 
     /**

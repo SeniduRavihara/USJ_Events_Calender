@@ -16,12 +16,12 @@ namespace Symfony\Component\Config\Resource;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  *
- * @final
+ * @final since Symfony 4.3
  */
 class DirectoryResource implements SelfCheckingResourceInterface
 {
-    private string $resource;
-    private ?string $pattern;
+    private $resource;
+    private $pattern;
 
     /**
      * @param string      $resource The file path to the resource
@@ -29,34 +29,43 @@ class DirectoryResource implements SelfCheckingResourceInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(string $resource, ?string $pattern = null)
+    public function __construct(string $resource, string $pattern = null)
     {
-        $resolvedResource = realpath($resource) ?: (file_exists($resource) ? $resource : false);
+        $this->resource = realpath($resource) ?: (file_exists($resource) ? $resource : false);
         $this->pattern = $pattern;
 
-        if (false === $resolvedResource || !is_dir($resolvedResource)) {
+        if (false === $this->resource || !is_dir($this->resource)) {
             throw new \InvalidArgumentException(sprintf('The directory "%s" does not exist.', $resource));
         }
-
-        $this->resource = $resolvedResource;
     }
 
-    public function __toString(): string
+    public function __toString()
     {
-        return hash('xxh128', serialize([$this->resource, $this->pattern]));
+        return md5(serialize([$this->resource, $this->pattern]));
     }
 
-    public function getResource(): string
+    /**
+     * @return string The file path to the resource
+     */
+    public function getResource()
     {
         return $this->resource;
     }
 
-    public function getPattern(): ?string
+    /**
+     * Returns the pattern to restrict monitored files.
+     *
+     * @return string|null
+     */
+    public function getPattern()
     {
         return $this->pattern;
     }
 
-    public function isFresh(int $timestamp): bool
+    /**
+     * {@inheritdoc}
+     */
+    public function isFresh($timestamp)
     {
         if (!is_dir($this->resource)) {
             return false;
@@ -81,7 +90,7 @@ class DirectoryResource implements SelfCheckingResourceInterface
             // for broken links
             try {
                 $fileMTime = $file->getMTime();
-            } catch (\RuntimeException) {
+            } catch (\RuntimeException $e) {
                 continue;
             }
 

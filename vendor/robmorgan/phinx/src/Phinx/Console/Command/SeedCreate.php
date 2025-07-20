@@ -1,18 +1,35 @@
 <?php
-
 /**
- * MIT License
- * For full license information, please view the LICENSE file that was distributed with this source code.
+ * Phinx
+ *
+ * (The MIT license)
+ * Copyright (c) 2015 Rob Morgan
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated * documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ *
+ * @package    Phinx
+ * @subpackage Phinx\Console
  */
-
 namespace Phinx\Console\Command;
 
-use Exception;
-use InvalidArgumentException;
 use Phinx\Config\NamespaceAwareInterface;
 use Phinx\Util\Util;
-use RuntimeException;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,24 +37,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-#[AsCommand(name: 'seed:create')]
 class SeedCreate extends AbstractCommand
 {
     /**
-     * @var string
-     */
-    protected static $defaultName = 'seed:create';
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return void
+     * {@inheritdoc}
      */
     protected function configure()
     {
         parent::configure();
 
-        $this->setDescription('Create a new database seeder')
+        $this->setName($this->getName() ?: 'seed:create')
+            ->setDescription('Create a new database seeder')
             ->addArgument('name', InputArgument::REQUIRED, 'What is the name of the seeder?')
             ->addOption('path', null, InputOption::VALUE_REQUIRED, 'Specify the path in which to create this seeder')
             ->setHelp(sprintf(
@@ -45,9 +55,6 @@ class SeedCreate extends AbstractCommand
                 PHP_EOL,
                 PHP_EOL
             ));
-
-        // An alternative template.
-        $this->addOption('template', 't', InputOption::VALUE_REQUIRED, 'Use an alternative template');
     }
 
     /**
@@ -64,7 +71,7 @@ class SeedCreate extends AbstractCommand
     /**
      * Get the question that allows the user to select which seed path to use.
      *
-     * @param string[] $paths Paths
+     * @param string[] $paths
      * @return \Symfony\Component\Console\Question\ChoiceQuestion
      */
     protected function getSelectSeedPathQuestion(array $paths)
@@ -75,10 +82,10 @@ class SeedCreate extends AbstractCommand
     /**
      * Returns the seed path to create the seeder in.
      *
-     * @param \Symfony\Component\Console\Input\InputInterface $input Input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output Output
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return mixed
      * @throws \Exception
-     * @return string
      */
     protected function getSeedPath(InputInterface $input, OutputInterface $output)
     {
@@ -93,13 +100,13 @@ class SeedCreate extends AbstractCommand
 
         // No paths? That's a problem.
         if (empty($paths)) {
-            throw new Exception('No seed paths set in your Phinx configuration file.');
+            throw new \Exception('No seed paths set in your Phinx configuration file.');
         }
 
         $paths = Util::globAll($paths);
 
         if (empty($paths)) {
-            throw new Exception(
+            throw new \Exception(
                 'You probably used curly braces to define seed path in your Phinx configuration file, ' .
                 'but no directories have been matched using this pattern. ' .
                 'You need to create a seed directory manually.'
@@ -107,11 +114,11 @@ class SeedCreate extends AbstractCommand
         }
 
         // Only one path set, so select that:
-        if (count($paths) === 1) {
+        if (1 === count($paths)) {
             return array_shift($paths);
         }
 
-        /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
+        // Ask the user which of their defined paths they'd like to use:
         $helper = $this->getHelper('question');
         $question = $this->getSelectSeedPathQuestion($paths);
 
@@ -121,11 +128,11 @@ class SeedCreate extends AbstractCommand
     /**
      * Create the new seeder.
      *
-     * @param \Symfony\Component\Console\Input\InputInterface $input Input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output Output
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
-     * @return int 0 on success
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -135,7 +142,6 @@ class SeedCreate extends AbstractCommand
         $path = $this->getSeedPath($input, $output);
 
         if (!file_exists($path)) {
-            /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
             $helper = $this->getHelper('question');
             $question = $this->getCreateSeedDirectoryQuestion();
 
@@ -150,7 +156,7 @@ class SeedCreate extends AbstractCommand
         $className = $input->getArgument('name');
 
         if (!Util::isValidPhinxClassName($className)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new \InvalidArgumentException(sprintf(
                 'The seed class name "%s" is invalid. Please use CamelCase format',
                 $className
             ));
@@ -160,48 +166,34 @@ class SeedCreate extends AbstractCommand
         $filePath = $path . DIRECTORY_SEPARATOR . $className . '.php';
 
         if (is_file($filePath)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new \InvalidArgumentException(sprintf(
                 'The file "%s" already exists',
                 basename($filePath)
             ));
         }
 
-        // Get the alternative template option from the command line.
-        $altTemplate = $input->getOption('template');
-
-        // Verify the alternative template file's existence.
-        if ($altTemplate && !is_file($altTemplate)) {
-            throw new InvalidArgumentException(sprintf(
-                'The template file "%s" does not exist',
-                $altTemplate
-            ));
-        }
-
-        // Determine the appropriate mechanism to get the template
-        // Load the alternative template if it is defined.
-        $contents = file_get_contents($altTemplate ?: $this->getSeedTemplateFilename());
+        // inject the class names appropriate to this seeder
+        $contents = file_get_contents($this->getSeedTemplateFilename());
 
         $config = $this->getConfig();
         $namespace = $config instanceof NamespaceAwareInterface ? $config->getSeedNamespaceByPath($path) : null;
         $classes = [
             '$namespaceDefinition' => $namespace !== null ? ('namespace ' . $namespace . ';') : '',
             '$namespace' => $namespace,
-            '$useClassName' => $config->getSeedBaseClassName(false),
+            '$useClassName' => 'Phinx\Seed\AbstractSeed',
             '$className' => $className,
-            '$baseClassName' => $config->getSeedBaseClassName(true),
+            '$baseClassName' => 'AbstractSeed',
         ];
         $contents = strtr($contents, $classes);
 
         if (file_put_contents($filePath, $contents) === false) {
-            throw new RuntimeException(sprintf(
+            throw new \RuntimeException(sprintf(
                 'The file "%s" could not be written to',
                 $path
             ));
         }
 
-        $output->writeln('<info>using seed base class</info> ' . $classes['$useClassName'], $this->verbosityLevel);
-        $output->writeln('<info>created</info> ' . Util::relativePath($filePath), $this->verbosityLevel);
-
-        return self::CODE_SUCCESS;
+        $output->writeln('<info>using seed base class</info> ' . $classes['$useClassName']);
+        $output->writeln('<info>created</info> .' . str_replace(getcwd(), '', $filePath));
     }
 }

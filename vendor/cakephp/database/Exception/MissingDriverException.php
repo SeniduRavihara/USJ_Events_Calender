@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,15 +14,15 @@ declare(strict_types=1);
  */
 namespace Cake\Database\Exception;
 
-use Cake\Core\Exception\CakeException;
+use Cake\Core\Exception\Exception;
 
 /**
  * Class MissingDriverException
  */
-class MissingDriverException extends CakeException
+class MissingDriverException extends Exception
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    protected $_messageTemplate = 'Could not find driver `%s` for connection `%s`.';
+    protected $_messageTemplate = 'Database driver %s could not be found.';
 }

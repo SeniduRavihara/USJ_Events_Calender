@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -18,7 +16,6 @@ namespace Cake\Database\Expression;
 
 use Cake\Database\ExpressionInterface;
 use Cake\Database\ValueBinder;
-use Closure;
 
 /**
  * Represents a single identifier name in the database.
@@ -38,20 +35,13 @@ class IdentifierExpression implements ExpressionInterface
     protected $_identifier;
 
     /**
-     * @var string|null
-     */
-    protected $collation;
-
-    /**
      * Constructor
      *
      * @param string $identifier The identifier this expression represents
-     * @param string|null $collation The identifier collation
      */
-    public function __construct(string $identifier, ?string $collation = null)
+    public function __construct($identifier)
     {
         $this->_identifier = $identifier;
-        $this->collation = $collation;
     }
 
     /**
@@ -60,7 +50,7 @@ class IdentifierExpression implements ExpressionInterface
      * @param string $identifier The identifier
      * @return void
      */
-    public function setIdentifier(string $identifier): void
+    public function setIdentifier($identifier)
     {
         $this->_identifier = $identifier;
     }
@@ -70,50 +60,26 @@ class IdentifierExpression implements ExpressionInterface
      *
      * @return string
      */
-    public function getIdentifier(): string
+    public function getIdentifier()
     {
         return $this->_identifier;
     }
 
     /**
-     * Sets the collation.
+     * Converts the expression to its string representation
      *
-     * @param string $collation Identifier collation
-     * @return void
+     * @param \Cake\Database\ValueBinder $generator Placeholder generator object
+     * @return string
      */
-    public function setCollation(string $collation): void
+    public function sql(ValueBinder $generator)
     {
-        $this->collation = $collation;
-    }
-
-    /**
-     * Returns the collation.
-     *
-     * @return string|null
-     */
-    public function getCollation(): ?string
-    {
-        return $this->collation;
+        return $this->_identifier;
     }
 
     /**
      * @inheritDoc
      */
-    public function sql(ValueBinder $binder): string
+    public function traverse(callable $visitor)
     {
-        $sql = $this->_identifier;
-        if ($this->collation) {
-            $sql .= ' COLLATE ' . $this->collation;
-        }
-
-        return $sql;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function traverse(Closure $callback)
-    {
-        return $this;
     }
 }

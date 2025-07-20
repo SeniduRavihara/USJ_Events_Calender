@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,9 +13,6 @@ declare(strict_types=1);
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database\Statement;
-
-use Cake\Database\DriverInterface;
-use Cake\Database\StatementInterface;
 
 /**
  * Wraps a statement in a callback that allows row results
@@ -38,10 +33,10 @@ class CallbackStatement extends StatementDecorator
      * Constructor
      *
      * @param \Cake\Database\StatementInterface $statement The statement to decorate.
-     * @param \Cake\Database\DriverInterface $driver The driver instance used by the statement.
+     * @param \Cake\Database\Driver $driver The driver instance used by the statement.
      * @param callable $callback The callback to apply to results before they are returned.
      */
-    public function __construct(StatementInterface $statement, DriverInterface $driver, callable $callback)
+    public function __construct($statement, $driver, $callback)
     {
         parent::__construct($statement, $driver);
         $this->_callback = $callback;
@@ -64,14 +59,15 @@ class CallbackStatement extends StatementDecorator
     }
 
     /**
-     * {@inheritDoc}
+     * Fetch all rows from the statement.
      *
      * Each row in the result will be processed by the callback when it is not `false.
+     *
+     * @param string|int $type Either 'num' or 'assoc' to indicate the result format you would like.
+     * @return array
      */
     public function fetchAll($type = parent::FETCH_TYPE_NUM)
     {
-        $results = $this->_statement->fetchAll($type);
-
-        return $results !== false ? array_map($this->_callback, $results) : false;
+        return array_map($this->_callback, $this->_statement->fetchAll($type));
     }
 }

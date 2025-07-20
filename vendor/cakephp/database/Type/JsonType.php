@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,63 +14,77 @@ declare(strict_types=1);
  */
 namespace Cake\Database\Type;
 
-use Cake\Database\DriverInterface;
+use Cake\Database\Driver;
+use Cake\Database\Type;
+use Cake\Database\TypeInterface;
+use Cake\Database\Type\BatchCastingInterface;
 use InvalidArgumentException;
 use PDO;
 
 /**
- * JSON type converter.
+ * Json type converter.
  *
- * Use to convert JSON data between PHP and the database types.
+ * Use to convert json data between PHP and the database types.
  */
-class JsonType extends BaseType implements BatchCastingInterface
+class JsonType extends Type implements TypeInterface, BatchCastingInterface
 {
     /**
-     * @var int
+     * Identifier name for this type.
+     *
+     * (This property is declared here again so that the inheritance from
+     * Cake\Database\Type can be removed in the future.)
+     *
+     * @var string|null
      */
-    protected $_encodingOptions = 0;
+    protected $_name;
+
+    /**
+     * Constructor.
+     *
+     * (This method is declared here again so that the inheritance from
+     * Cake\Database\Type can be removed in the future.)
+     *
+     * @param string|null $name The name identifying this type
+     */
+    public function __construct($name = null)
+    {
+        $this->_name = $name;
+    }
 
     /**
      * Convert a value data into a JSON string
      *
      * @param mixed $value The value to convert.
-     * @param \Cake\Database\DriverInterface $driver The driver instance to convert with.
+     * @param \Cake\Database\Driver $driver The driver instance to convert with.
      * @return string|null
-     * @throws \InvalidArgumentException
      */
-    public function toDatabase($value, DriverInterface $driver): ?string
+    public function toDatabase($value, Driver $driver)
     {
         if (is_resource($value)) {
             throw new InvalidArgumentException('Cannot convert a resource value to JSON');
         }
 
-        if ($value === null) {
-            return null;
-        }
+        return json_encode($value);
+    }
 
-        return json_encode($value, $this->_encodingOptions);
+    /**
+     * Convert string values to PHP arrays.
+     *
+     * @param mixed $value The value to convert.
+     * @param \Cake\Database\Driver $driver The driver instance to convert with.
+     * @return string|array|null
+     */
+    public function toPHP($value, Driver $driver)
+    {
+        return json_decode($value, true);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @param mixed $value The value to convert.
-     * @param \Cake\Database\DriverInterface $driver The driver instance to convert with.
-     * @return array|string|null
+     * @return array
      */
-    public function toPHP($value, DriverInterface $driver)
-    {
-        if (!is_string($value)) {
-            return null;
-        }
-
-        return json_decode($value, true);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function manyToPHP(array $values, array $fields, DriverInterface $driver): array
+    public function manyToPHP(array $values, array $fields, Driver $driver)
     {
         foreach ($fields as $field) {
             if (!isset($values[$field])) {
@@ -89,10 +101,10 @@ class JsonType extends BaseType implements BatchCastingInterface
      * Get the correct PDO binding type for string data.
      *
      * @param mixed $value The value being bound.
-     * @param \Cake\Database\DriverInterface $driver The driver.
+     * @param \Cake\Database\Driver $driver The driver.
      * @return int
      */
-    public function toStatement($value, DriverInterface $driver): int
+    public function toStatement($value, Driver $driver)
     {
         return PDO::PARAM_STR;
     }
@@ -106,19 +118,5 @@ class JsonType extends BaseType implements BatchCastingInterface
     public function marshal($value)
     {
         return $value;
-    }
-
-    /**
-     * Set json_encode options.
-     *
-     * @param int $options Encoding flags. Use JSON_* flags. Set `0` to reset.
-     * @return $this
-     * @see https://www.php.net/manual/en/function.json-encode.php
-     */
-    public function setEncodingOptions(int $options)
-    {
-        $this->_encodingOptions = $options;
-
-        return $this;
     }
 }

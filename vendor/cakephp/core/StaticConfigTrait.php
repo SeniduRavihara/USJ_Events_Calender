@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -32,7 +30,7 @@ trait StaticConfigTrait
     /**
      * Configuration sets.
      *
-     * @var array<string, mixed>
+     * @var array
      */
     protected static $_config = [];
 
@@ -67,13 +65,13 @@ trait StaticConfigTrait
      * Cache::setConfig($arrayOfConfig);
      * ```
      *
-     * @param array<string, mixed>|string $key The name of the configuration, or an array of multiple configs.
-     * @param mixed $config Configuration value. Generally an array of name => configuration data for adapter.
+     * @param string|array $key The name of the configuration, or an array of multiple configs.
+     * @param array|object|null $config An array of name => configuration data for adapter.
      * @throws \BadMethodCallException When trying to modify an existing config.
      * @throws \LogicException When trying to store an invalid structured config array.
      * @return void
      */
-    public static function setConfig($key, $config = null): void
+    public static function setConfig($key, $config = null)
     {
         if ($config === null) {
             if (!is_array($key)) {
@@ -87,7 +85,6 @@ trait StaticConfigTrait
         }
 
         if (isset(static::$_config[$key])) {
-            /** @psalm-suppress PossiblyInvalidArgument */
             throw new BadMethodCallException(sprintf('Cannot reconfigure existing key "%s"', $key));
         }
 
@@ -95,7 +92,7 @@ trait StaticConfigTrait
             $config = ['className' => $config];
         }
 
-        if (is_array($config) && isset($config['url'])) {
+        if (isset($config['url'])) {
             $parsed = static::parseDsn($config['url']);
             unset($config['url']);
             $config = $parsed + $config;
@@ -105,7 +102,6 @@ trait StaticConfigTrait
             $config['className'] = $config['engine'];
             unset($config['engine']);
         }
-        /** @psalm-suppress InvalidPropertyAssignmentValue */
         static::$_config[$key] = $config;
     }
 
@@ -115,9 +111,69 @@ trait StaticConfigTrait
      * @param string $key The name of the configuration.
      * @return mixed|null Configuration data at the named key or null if the key does not exist.
      */
-    public static function getConfig(string $key)
+    public static function getConfig($key)
     {
-        return static::$_config[$key] ?? null;
+        return isset(static::$_config[$key]) ? static::$_config[$key] : null;
+    }
+
+    /**
+     * This method can be used to define configuration adapters for an application
+     * or read existing configuration.
+     *
+     * To change an adapter's configuration at runtime, first drop the adapter and then
+     * reconfigure it.
+     *
+     * Adapters will not be constructed until the first operation is done.
+     *
+     * ### Usage
+     *
+     * Assuming that the class' name is `Cache` the following scenarios
+     * are supported:
+     *
+     * Reading config data back:
+     *
+     * ```
+     * Cache::config('default');
+     * ```
+     *
+     * Setting a cache engine up.
+     *
+     * ```
+     * Cache::config('default', $settings);
+     * ```
+     *
+     * Injecting a constructed adapter in:
+     *
+     * ```
+     * Cache::config('default', $instance);
+     * ```
+     *
+     * Configure multiple adapters at once:
+     *
+     * ```
+     * Cache::config($arrayOfConfig);
+     * ```
+     *
+     * @deprecated 3.4.0 Use setConfig()/getConfig() instead.
+     * @param string|array $key The name of the configuration, or an array of multiple configs.
+     * @param array|null $config An array of name => configuration data for adapter.
+     * @return array|null Null when adding configuration or an array of configuration data when reading.
+     * @throws \BadMethodCallException When trying to modify an existing config.
+     */
+    public static function config($key, $config = null)
+    {
+        deprecationWarning(
+            get_called_class() . '::config() is deprecated. ' .
+            'Use setConfig()/getConfig() instead.'
+        );
+
+        if ($config !== null || is_array($key)) {
+            static::setConfig($key, $config);
+
+            return null;
+        }
+
+        return static::getConfig($key);
     }
 
     /**
@@ -125,12 +181,15 @@ trait StaticConfigTrait
      *
      * The config value for this key must exist, it can never be null.
      *
-     * @param string $key The name of the configuration.
+     * @param string|null $key The name of the configuration.
      * @return mixed Configuration data at the named key.
      * @throws \InvalidArgumentException If value does not exist.
      */
-    public static function getConfigOrFail(string $key)
+    public static function getConfigOrFail($key)
     {
+        if (!isset($key)) {
+            throw new InvalidArgumentException('$key must not be null.');
+        }
         if (!isset(static::$_config[$key])) {
             throw new InvalidArgumentException(sprintf('Expected configuration `%s` not found.', $key));
         }
@@ -150,12 +209,11 @@ trait StaticConfigTrait
      * @param string $config An existing configuration you wish to remove.
      * @return bool Success of the removal, returns false when the config does not exist.
      */
-    public static function drop(string $config): bool
+    public static function drop($config)
     {
         if (!isset(static::$_config[$config])) {
             return false;
         }
-        /** @psalm-suppress RedundantPropertyInitializationCheck */
         if (isset(static::$_registry)) {
             static::$_registry->unload($config);
         }
@@ -167,15 +225,11 @@ trait StaticConfigTrait
     /**
      * Returns an array containing the named configurations
      *
-     * @return array<string> Array of configurations.
+     * @return string[] Array of configurations.
      */
-    public static function configured(): array
+    public static function configured()
     {
-        $configurations = array_keys(static::$_config);
-
-        return array_map(function ($key) {
-            return (string)$key;
-        }, $configurations);
+        return array_keys(static::$_config);
     }
 
     /**
@@ -207,13 +261,17 @@ trait StaticConfigTrait
      * Note that querystring arguments are also parsed and set as values in the returned configuration.
      *
      * @param string $dsn The DSN string to convert to a configuration array
-     * @return array<string, mixed> The configuration array to be stored after parsing the DSN
+     * @return array The configuration array to be stored after parsing the DSN
      * @throws \InvalidArgumentException If not passed a string, or passed an invalid string
      */
-    public static function parseDsn(string $dsn): array
+    public static function parseDsn($dsn)
     {
         if (empty($dsn)) {
             return [];
+        }
+
+        if (!is_string($dsn)) {
+            throw new InvalidArgumentException('Only strings can be passed to parseDsn');
         }
 
         $pattern = <<<'REGEXP'
@@ -292,7 +350,6 @@ REGEXP;
 
             $parsed['className'] = $parsed['scheme'];
             if (isset($classMap[$parsed['scheme']])) {
-                /** @psalm-suppress PossiblyNullArrayOffset */
                 $parsed['className'] = $classMap[$parsed['scheme']];
             }
         }
@@ -303,11 +360,10 @@ REGEXP;
     /**
      * Updates the DSN class map for this class.
      *
-     * @param array<string, string> $map Additions/edits to the class map to apply.
+     * @param string[] $map Additions/edits to the class map to apply.
      * @return void
-     * @psalm-param array<string, class-string> $map
      */
-    public static function setDsnClassMap(array $map): void
+    public static function setDsnClassMap(array $map)
     {
         static::$_dsnClassMap = $map + static::$_dsnClassMap;
     }
@@ -315,11 +371,31 @@ REGEXP;
     /**
      * Returns the DSN class map for this class.
      *
-     * @return array<string, string>
-     * @psalm-return array<string, class-string>
+     * @return string[]
      */
-    public static function getDsnClassMap(): array
+    public static function getDsnClassMap()
     {
         return static::$_dsnClassMap;
+    }
+
+    /**
+     * Returns or updates the DSN class map for this class.
+     *
+     * @deprecated 3.4.0 Use setDsnClassMap()/getDsnClassMap() instead.
+     * @param string[]|null $map Additions/edits to the class map to apply.
+     * @return string[]
+     */
+    public static function dsnClassMap(array $map = null)
+    {
+        deprecationWarning(
+            get_called_class() . '::setDsnClassMap() is deprecated. ' .
+            'Use setDsnClassMap()/getDsnClassMap() instead.'
+        );
+
+        if ($map !== null) {
+            static::setDsnClassMap($map);
+        }
+
+        return static::getDsnClassMap();
     }
 }

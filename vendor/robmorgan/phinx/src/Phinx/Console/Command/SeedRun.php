@@ -1,29 +1,41 @@
 <?php
-
 /**
- * MIT License
- * For full license information, please view the LICENSE file that was distributed with this source code.
+ * Phinx
+ *
+ * (The MIT license)
+ * Copyright (c) 2015 Rob Morgan
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated * documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ *
+ * @package    Phinx
+ * @subpackage Phinx\Console
  */
-
 namespace Phinx\Console\Command;
 
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'seed:run')]
 class SeedRun extends AbstractCommand
 {
     /**
-     * @var string
-     */
-    protected static $defaultName = 'seed:run';
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return void
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -31,7 +43,8 @@ class SeedRun extends AbstractCommand
 
         $this->addOption('--environment', '-e', InputOption::VALUE_REQUIRED, 'The target environment');
 
-        $this->setDescription('Run database seeders')
+        $this->setName($this->getName() ?: 'seed:run')
+            ->setDescription('Run database seeders')
             ->addOption('--seed', '-s', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'What is the name of the seeder?')
             ->setHelp(
                 <<<EOT
@@ -49,9 +62,9 @@ EOT
     /**
      * Run database seeders.
      *
-     * @param \Symfony\Component\Console\Input\InputInterface $input Input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output Output
-     * @return int integer 0 on success, or an error code.
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -62,39 +75,33 @@ EOT
 
         if ($environment === null) {
             $environment = $this->getConfig()->getDefaultEnvironment();
-            $output->writeln('<comment>warning</comment> no environment specified, defaulting to: ' . $environment, $this->verbosityLevel);
+            $output->writeln('<comment>warning</comment> no environment specified, defaulting to: ' . $environment);
         } else {
-            $output->writeln('<info>using environment</info> ' . $environment, $this->verbosityLevel);
-        }
-
-        if (!$this->getConfig()->hasEnvironment($environment)) {
-            $output->writeln(sprintf('<error>The environment "%s" does not exist</error>', $environment));
-
-            return self::CODE_ERROR;
+            $output->writeln('<info>using environment</info> ' . $environment);
         }
 
         $envOptions = $this->getConfig()->getEnvironment($environment);
         if (isset($envOptions['adapter'])) {
-            $output->writeln('<info>using adapter</info> ' . $envOptions['adapter'], $this->verbosityLevel);
+            $output->writeln('<info>using adapter</info> ' . $envOptions['adapter']);
         }
 
         if (isset($envOptions['wrapper'])) {
-            $output->writeln('<info>using wrapper</info> ' . $envOptions['wrapper'], $this->verbosityLevel);
+            $output->writeln('<info>using wrapper</info> ' . $envOptions['wrapper']);
         }
 
         if (isset($envOptions['name'])) {
-            $output->writeln('<info>using database</info> ' . $envOptions['name'], $this->verbosityLevel);
+            $output->writeln('<info>using database</info> ' . $envOptions['name']);
         } else {
             $output->writeln('<error>Could not determine database name! Please specify a database name in your config file.</error>');
 
-            return self::CODE_ERROR;
+            return;
         }
 
         if (isset($envOptions['table_prefix'])) {
-            $output->writeln('<info>using table prefix</info> ' . $envOptions['table_prefix'], $this->verbosityLevel);
+            $output->writeln('<info>using table prefix</info> ' . $envOptions['table_prefix']);
         }
         if (isset($envOptions['table_suffix'])) {
-            $output->writeln('<info>using table suffix</info> ' . $envOptions['table_suffix'], $this->verbosityLevel);
+            $output->writeln('<info>using table suffix</info> ' . $envOptions['table_suffix']);
         }
 
         $start = microtime(true);
@@ -111,9 +118,7 @@ EOT
 
         $end = microtime(true);
 
-        $output->writeln('', $this->verbosityLevel);
-        $output->writeln('<comment>All Done. Took ' . sprintf('%.4fs', $end - $start) . '</comment>', $this->verbosityLevel);
-
-        return self::CODE_SUCCESS;
+        $output->writeln('');
+        $output->writeln('<comment>All Done. Took ' . sprintf('%.4fs', $end - $start) . '</comment>');
     }
 }

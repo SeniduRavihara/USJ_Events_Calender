@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,7 +14,6 @@ declare(strict_types=1);
  */
 namespace Cake\Database\Log;
 
-use Cake\Log\Engine\BaseLog;
 use Cake\Log\Log;
 
 /**
@@ -25,33 +22,72 @@ use Cake\Log\Log;
  *
  * @internal
  */
-class QueryLogger extends BaseLog
+class QueryLogger
 {
     /**
-     * Constructor.
+     * Writes a LoggedQuery into a log
      *
-     * @param array<string, mixed> $config Configuration array
+     * @param \Cake\Database\Log\LoggedQuery $query to be written in log
+     * @return void
      */
-    public function __construct(array $config = [])
+    public function log(LoggedQuery $query)
     {
-        $this->_defaultConfig['scopes'] = ['queriesLog'];
-        $this->_defaultConfig['connection'] = '';
-
-        parent::__construct($config);
+        if (!empty($query->params)) {
+            $query->query = $this->_interpolate($query);
+        }
+        $this->_log($query);
     }
 
     /**
-     * @inheritDoc
+     * Wrapper function for the logger object, useful for unit testing
+     * or for overriding in subclasses.
+     *
+     * @param \Cake\Database\Log\LoggedQuery $query to be written in log
+     * @return void
      */
-    public function log($level, $message, array $context = [])
+    protected function _log($query)
     {
-        $context['scope'] = $this->scopes() ?: ['queriesLog'];
-        $context['connection'] = $this->getConfig('connection');
+        Log::write('debug', $query, ['queriesLog']);
+    }
 
-        if ($context['query'] instanceof LoggedQuery) {
-            $context = $context['query']->getContext() + $context;
-            $message = 'connection={connection} role={role} duration={took} rows={numRows} ' . $message;
+    /**
+     * Helper function used to replace query placeholders by the real
+     * params used to execute the query
+     *
+     * @param \Cake\Database\Log\LoggedQuery $query The query to log
+     * @return string
+     */
+    protected function _interpolate($query)
+    {
+        $params = array_map(function ($p) {
+            if ($p === null) {
+                return 'NULL';
+            }
+            if (is_bool($p)) {
+                return $p ? '1' : '0';
+            }
+
+            if (is_string($p)) {
+                $replacements = [
+                    '$' => '\\$',
+                    '\\' => '\\\\\\\\',
+                    "'" => "''",
+                ];
+
+                $p = strtr($p, $replacements);
+
+                return "'$p'";
+            }
+
+            return $p;
+        }, $query->params);
+
+        $keys = [];
+        $limit = is_int(key($params)) ? 1 : -1;
+        foreach ($params as $key => $param) {
+            $keys[] = is_string($key) ? "/:$key\b/" : '/[?]/';
         }
-        Log::write('debug', (string)$message, $context);
+
+        return preg_replace($keys, $params, $query->query, $limit);
     }
 }

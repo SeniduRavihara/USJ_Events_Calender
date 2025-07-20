@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,14 +14,12 @@ declare(strict_types=1);
  */
 namespace Cake\Database\Expression;
 
-use Cake\Database\Exception\DatabaseException;
+use Cake\Database\Exception;
 use Cake\Database\ExpressionInterface;
 use Cake\Database\Query;
-use Cake\Database\Type\ExpressionTypeCasterTrait;
-use Cake\Database\TypeMap;
 use Cake\Database\TypeMapTrait;
+use Cake\Database\Type\ExpressionTypeCasterTrait;
 use Cake\Database\ValueBinder;
-use Closure;
 
 /**
  * An expression object to contain values being inserted.
@@ -58,7 +54,7 @@ class ValuesExpression implements ExpressionInterface
     protected $_query;
 
     /**
-     * Whether values have been casted to expressions
+     * Whether or not values have been casted to expressions
      * already.
      *
      * @var bool
@@ -71,7 +67,7 @@ class ValuesExpression implements ExpressionInterface
      * @param array $columns The list of columns that are going to be part of the values.
      * @param \Cake\Database\TypeMap $typeMap A dictionary of column -> type names
      */
-    public function __construct(array $columns, TypeMap $typeMap)
+    public function __construct(array $columns, $typeMap)
     {
         $this->_columns = $columns;
         $this->setTypeMap($typeMap);
@@ -80,45 +76,39 @@ class ValuesExpression implements ExpressionInterface
     /**
      * Add a row of data to be inserted.
      *
-     * @param \Cake\Database\Query|array $values Array of data to append into the insert, or
+     * @param array|\Cake\Database\Query $data Array of data to append into the insert, or
      *   a query for doing INSERT INTO .. SELECT style commands
      * @return void
-     * @throws \Cake\Database\Exception\DatabaseException When mixing array + Query data types.
+     * @throws \Cake\Database\Exception When mixing array + Query data types.
      */
-    public function add($values): void
+    public function add($data)
     {
         if (
-            (
-                count($this->_values) &&
-                $values instanceof Query
-            ) ||
-            (
-                $this->_query &&
-                is_array($values)
-            )
+            (count($this->_values) && $data instanceof Query) ||
+            ($this->_query && is_array($data))
         ) {
-            throw new DatabaseException(
-                'You cannot mix subqueries and array values in inserts.'
+            throw new Exception(
+                'You cannot mix subqueries and array data in inserts.'
             );
         }
-        if ($values instanceof Query) {
-            $this->setQuery($values);
+        if ($data instanceof Query) {
+            $this->setQuery($data);
 
             return;
         }
-        $this->_values[] = $values;
+        $this->_values[] = $data;
         $this->_castedExpressions = false;
     }
 
     /**
      * Sets the columns to be inserted.
      *
-     * @param array $columns Array with columns to be inserted.
+     * @param array $cols Array with columns to be inserted.
      * @return $this
      */
-    public function setColumns(array $columns)
+    public function setColumns($cols)
     {
-        $this->_columns = $columns;
+        $this->_columns = $cols;
         $this->_castedExpressions = false;
 
         return $this;
@@ -129,9 +119,30 @@ class ValuesExpression implements ExpressionInterface
      *
      * @return array
      */
-    public function getColumns(): array
+    public function getColumns()
     {
         return $this->_columns;
+    }
+
+    /**
+     * Sets the columns to be inserted. If no params are passed, then it returns
+     * the currently stored columns.
+     *
+     * @deprecated 3.4.0 Use setColumns()/getColumns() instead.
+     * @param array|null $cols Array with columns to be inserted.
+     * @return array|$this
+     */
+    public function columns($cols = null)
+    {
+        deprecationWarning(
+            'ValuesExpression::columns() is deprecated. ' .
+            'Use ValuesExpression::setColumns()/getColumns() instead.'
+        );
+        if ($cols !== null) {
+            return $this->setColumns($cols);
+        }
+
+        return $this->getColumns();
     }
 
     /**
@@ -142,7 +153,7 @@ class ValuesExpression implements ExpressionInterface
      *
      * @return array
      */
-    protected function _columnNames(): array
+    protected function _columnNames()
     {
         $columns = [];
         foreach ($this->_columns as $col) {
@@ -161,7 +172,7 @@ class ValuesExpression implements ExpressionInterface
      * @param array $values Array with values to be inserted.
      * @return $this
      */
-    public function setValues(array $values)
+    public function setValues($values)
     {
         $this->_values = $values;
         $this->_castedExpressions = false;
@@ -174,13 +185,34 @@ class ValuesExpression implements ExpressionInterface
      *
      * @return array
      */
-    public function getValues(): array
+    public function getValues()
     {
         if (!$this->_castedExpressions) {
             $this->_processExpressions();
         }
 
         return $this->_values;
+    }
+
+    /**
+     * Sets the values to be inserted. If no params are passed, then it returns
+     * the currently stored values
+     *
+     * @deprecated 3.4.0 Use setValues()/getValues() instead.
+     * @param array|null $values Array with values to be inserted.
+     * @return array|$this
+     */
+    public function values($values = null)
+    {
+        deprecationWarning(
+            'ValuesExpression::values() is deprecated. ' .
+            'Use ValuesExpression::setValues()/getValues() instead.'
+        );
+        if ($values !== null) {
+            return $this->setValues($values);
+        }
+
+        return $this->getValues();
     }
 
     /**
@@ -203,15 +235,40 @@ class ValuesExpression implements ExpressionInterface
      *
      * @return \Cake\Database\Query|null
      */
-    public function getQuery(): ?Query
+    public function getQuery()
     {
         return $this->_query;
     }
 
     /**
-     * @inheritDoc
+     * Sets the query object to be used as the values expression to be evaluated
+     * to insert records in the table. If no params are passed, then it returns
+     * the currently stored query
+     *
+     * @deprecated 3.4.0 Use setQuery()/getQuery() instead.
+     * @param \Cake\Database\Query|null $query The query to set
+     * @return \Cake\Database\Query|null|$this
      */
-    public function sql(ValueBinder $binder): string
+    public function query(Query $query = null)
+    {
+        deprecationWarning(
+            'ValuesExpression::query() is deprecated. ' .
+            'Use ValuesExpression::setQuery()/getQuery() instead.'
+        );
+        if ($query !== null) {
+            return $this->setQuery($query);
+        }
+
+        return $this->getQuery();
+    }
+
+    /**
+     * Convert the values into a SQL string with placeholders.
+     *
+     * @param \Cake\Database\ValueBinder $generator Placeholder generator object
+     * @return string
+     */
+    public function sql(ValueBinder $generator)
     {
         if (empty($this->_values) && empty($this->_query)) {
             return '';
@@ -239,33 +296,38 @@ class ValuesExpression implements ExpressionInterface
                 $value = $row[$column];
 
                 if ($value instanceof ExpressionInterface) {
-                    $rowPlaceholders[] = '(' . $value->sql($binder) . ')';
+                    $rowPlaceholders[] = '(' . $value->sql($generator) . ')';
                     continue;
                 }
 
-                $placeholder = $binder->placeholder('c');
+                $placeholder = $generator->placeholder('c');
                 $rowPlaceholders[] = $placeholder;
-                $binder->bind($placeholder, $value, $types[$column]);
+                $generator->bind($placeholder, $value, $types[$column]);
             }
 
             $placeholders[] = implode(', ', $rowPlaceholders);
         }
 
-        $query = $this->getQuery();
-        if ($query) {
-            return ' ' . $query->sql($binder);
+        if ($this->getQuery()) {
+            return ' ' . $this->getQuery()->sql($generator);
         }
 
         return sprintf(' VALUES (%s)', implode('), (', $placeholders));
     }
 
     /**
-     * @inheritDoc
+     * Traverse the values expression.
+     *
+     * This method will also traverse any queries that are to be used in the INSERT
+     * values.
+     *
+     * @param callable $visitor The visitor to traverse the expression with.
+     * @return void
      */
-    public function traverse(Closure $callback)
+    public function traverse(callable $visitor)
     {
         if ($this->_query) {
-            return $this;
+            return;
         }
 
         if (!$this->_castedExpressions) {
@@ -274,20 +336,18 @@ class ValuesExpression implements ExpressionInterface
 
         foreach ($this->_values as $v) {
             if ($v instanceof ExpressionInterface) {
-                $v->traverse($callback);
+                $v->traverse($visitor);
             }
             if (!is_array($v)) {
                 continue;
             }
-            foreach ($v as $field) {
+            foreach ($v as $column => $field) {
                 if ($field instanceof ExpressionInterface) {
-                    $callback($field);
-                    $field->traverse($callback);
+                    $visitor($field);
+                    $field->traverse($visitor);
                 }
             }
         }
-
-        return $this;
     }
 
     /**
@@ -295,14 +355,14 @@ class ValuesExpression implements ExpressionInterface
      *
      * @return void
      */
-    protected function _processExpressions(): void
+    protected function _processExpressions()
     {
         $types = [];
         $typeMap = $this->getTypeMap();
 
         $columns = $this->_columnNames();
         foreach ($columns as $c) {
-            if (!is_string($c) && !is_int($c)) {
+            if (!is_scalar($c)) {
                 continue;
             }
             $types[$c] = $typeMap->type($c);

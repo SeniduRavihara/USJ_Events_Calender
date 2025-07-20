@@ -1,10 +1,31 @@
 <?php
-declare(strict_types=1);
+/**
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @since         3.5.0
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ */
+namespace Cake\Datasource\Exception;
 
-use function Cake\Core\deprecationWarning;
+use Cake\Core\Exception\Exception;
 
-deprecationWarning(
-    'Since 4.2.0: Cake\Datasource\Exception\PageOutOfBoundsException is deprecated. ' .
-    'Use Cake\Datasource\Paging\Exception\PageOutOfBoundsException instead.'
-);
-class_exists('Cake\Datasource\Paging\Exception\PageOutOfBoundsException');
+/**
+ * Exception raised when requested page number does not exist.
+ */
+class PageOutOfBoundsException extends Exception
+{
+    /**
+     * {@inheritDoc}
+     */
+    protected $_messageTemplate = 'Page number %s could not be found.';
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_defaultCode = 404;
+}

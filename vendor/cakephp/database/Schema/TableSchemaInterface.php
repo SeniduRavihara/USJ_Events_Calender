@@ -1,18 +1,16 @@
 <?php
-declare(strict_types=1);
-
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.5.0
- * @license       https://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database\Schema;
 
@@ -28,177 +26,149 @@ interface TableSchemaInterface extends SchemaInterface
      *
      * @var string
      */
-    public const TYPE_BINARY = 'binary';
+    const TYPE_BINARY = 'binary';
 
     /**
      * Binary UUID column type
      *
      * @var string
      */
-    public const TYPE_BINARY_UUID = 'binaryuuid';
+    const TYPE_BINARY_UUID = 'binaryuuid';
 
     /**
      * Date column type
      *
      * @var string
      */
-    public const TYPE_DATE = 'date';
+    const TYPE_DATE = 'date';
 
     /**
      * Datetime column type
      *
      * @var string
      */
-    public const TYPE_DATETIME = 'datetime';
-
-    /**
-     * Datetime with fractional seconds column type
-     *
-     * @var string
-     */
-    public const TYPE_DATETIME_FRACTIONAL = 'datetimefractional';
+    const TYPE_DATETIME = 'datetime';
 
     /**
      * Time column type
      *
      * @var string
      */
-    public const TYPE_TIME = 'time';
+    const TYPE_TIME = 'time';
 
     /**
      * Timestamp column type
      *
      * @var string
      */
-    public const TYPE_TIMESTAMP = 'timestamp';
-
-    /**
-     * Timestamp with fractional seconds column type
-     *
-     * @var string
-     */
-    public const TYPE_TIMESTAMP_FRACTIONAL = 'timestampfractional';
-
-    /**
-     * Timestamp with time zone column type
-     *
-     * @var string
-     */
-    public const TYPE_TIMESTAMP_TIMEZONE = 'timestamptimezone';
+    const TYPE_TIMESTAMP = 'timestamp';
 
     /**
      * JSON column type
      *
      * @var string
      */
-    public const TYPE_JSON = 'json';
+    const TYPE_JSON = 'json';
 
     /**
      * String column type
      *
      * @var string
      */
-    public const TYPE_STRING = 'string';
-
-    /**
-     * Char column type
-     *
-     * @var string
-     */
-    public const TYPE_CHAR = 'char';
+    const TYPE_STRING = 'string';
 
     /**
      * Text column type
      *
      * @var string
      */
-    public const TYPE_TEXT = 'text';
+    const TYPE_TEXT = 'text';
 
     /**
      * Tiny Integer column type
      *
      * @var string
      */
-    public const TYPE_TINYINTEGER = 'tinyinteger';
+    const TYPE_TINYINTEGER = 'tinyinteger';
 
     /**
      * Small Integer column type
      *
      * @var string
      */
-    public const TYPE_SMALLINTEGER = 'smallinteger';
+    const TYPE_SMALLINTEGER = 'smallinteger';
 
     /**
      * Integer column type
      *
      * @var string
      */
-    public const TYPE_INTEGER = 'integer';
+    const TYPE_INTEGER = 'integer';
 
     /**
      * Big Integer column type
      *
      * @var string
      */
-    public const TYPE_BIGINTEGER = 'biginteger';
+    const TYPE_BIGINTEGER = 'biginteger';
 
     /**
      * Float column type
      *
      * @var string
      */
-    public const TYPE_FLOAT = 'float';
+    const TYPE_FLOAT = 'float';
 
     /**
      * Decimal column type
      *
      * @var string
      */
-    public const TYPE_DECIMAL = 'decimal';
+    const TYPE_DECIMAL = 'decimal';
 
     /**
      * Boolean column type
      *
      * @var string
      */
-    public const TYPE_BOOLEAN = 'boolean';
+    const TYPE_BOOLEAN = 'boolean';
 
     /**
      * UUID column type
      *
      * @var string
      */
-    public const TYPE_UUID = 'uuid';
+    const TYPE_UUID = 'uuid';
 
     /**
-     * Check whether a table has an autoIncrement column defined.
+     * Check whether or not a table has an autoIncrement column defined.
      *
      * @return bool
      */
-    public function hasAutoincrement(): bool;
+    public function hasAutoincrement();
 
     /**
      * Sets whether the table is temporary in the database.
      *
-     * @param bool $temporary Whether the table is to be temporary.
+     * @param bool $temporary Whether or not the table is to be temporary.
      * @return $this
      */
-    public function setTemporary(bool $temporary);
+    public function setTemporary($temporary);
 
     /**
      * Gets whether the table is temporary in the database.
      *
      * @return bool The current temporary setting.
      */
-    public function isTemporary(): bool;
+    public function isTemporary();
 
     /**
      * Get the column(s) used for the primary key.
      *
-     * @return array<string> Column name(s) for the primary key. An
+     * @return array Column name(s) for the primary key. An
      *   empty list will be returned when the table has no primary key.
      */
-    public function getPrimaryKey(): array;
+    public function primaryKey();
 
     /**
      * Add an index.
@@ -212,27 +182,25 @@ interface TableSchemaInterface extends SchemaInterface
      * - `columns` The columns in the index.
      *
      * @param string $name The name of the index.
-     * @param array<string, mixed>|string $attrs The attributes for the index.
-     *   If string it will be used as `type`.
+     * @param array $attrs The attributes for the index.
      * @return $this
-     * @throws \Cake\Database\Exception\DatabaseException
      */
-    public function addIndex(string $name, $attrs);
+    public function addIndex($name, $attrs);
 
     /**
      * Read information about an index based on name.
      *
      * @param string $name The name of the index.
-     * @return array<string, mixed>|null Array of index data, or null
+     * @return array|null Array of index data, or null
      */
-    public function getIndex(string $name): ?array;
+    public function getIndex($name);
 
     /**
      * Get the names of all the indexes in the table.
      *
-     * @return array<string>
+     * @return string[]
      */
-    public function indexes(): array;
+    public function indexes();
 
     /**
      * Add a constraint.
@@ -251,20 +219,18 @@ interface TableSchemaInterface extends SchemaInterface
      * The default for 'update' & 'delete' is 'cascade'.
      *
      * @param string $name The name of the constraint.
-     * @param array<string, mixed>|string $attrs The attributes for the constraint.
-     *   If string it will be used as `type`.
+     * @param array $attrs The attributes for the constraint.
      * @return $this
-     * @throws \Cake\Database\Exception\DatabaseException
      */
-    public function addConstraint(string $name, $attrs);
+    public function addConstraint($name, $attrs);
 
     /**
      * Read information about a constraint based on name.
      *
      * @param string $name The name of the constraint.
-     * @return array<string, mixed>|null Array of constraint data, or null
+     * @return array|null Array of constraint data, or null
      */
-    public function getConstraint(string $name): ?array;
+    public function getConstraint($name);
 
     /**
      * Remove a constraint.
@@ -272,12 +238,12 @@ interface TableSchemaInterface extends SchemaInterface
      * @param string $name Name of the constraint to remove
      * @return $this
      */
-    public function dropConstraint(string $name);
+    public function dropConstraint($name);
 
     /**
      * Get the names of all the constraints in the table.
      *
-     * @return array<string>
+     * @return string[]
      */
-    public function constraints(): array;
+    public function constraints();
 }

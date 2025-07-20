@@ -1,18 +1,16 @@
 <?php
-declare(strict_types=1);
-
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.5.0
- * @license       https://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Datasource;
 
@@ -26,7 +24,7 @@ interface SchemaInterface
      *
      * @return string
      */
-    public function name(): string;
+    public function name();
 
     /**
      * Add a column to the table.
@@ -41,10 +39,10 @@ interface SchemaInterface
      * - `precision` The number of decimal places to store
      *   for float and decimal types.
      * - `default` The default value of the column.
-     * - `null` Whether the column can hold nulls.
-     * - `fixed` Whether the column is a fixed length column.
+     * - `null` Whether or not the column can hold nulls.
+     * - `fixed` Whether or not the column is a fixed length column.
      *   This is only present/valid with string columns.
-     * - `unsigned` Whether the column is an unsigned column.
+     * - `unsigned` Whether or not the column is an unsigned column.
      *   This is only present/valid for integer, decimal, float columns.
      *
      * In addition to the above keys, the following keys are
@@ -53,18 +51,18 @@ interface SchemaInterface
      * - `comment` The comment for the column.
      *
      * @param string $name The name of the column
-     * @param array<string, mixed>|string $attrs The attributes for the column or the type name.
+     * @param array|string $attrs The attributes for the column.
      * @return $this
      */
-    public function addColumn(string $name, $attrs);
+    public function addColumn($name, $attrs);
 
     /**
      * Get column data in the table.
      *
      * @param string $name The column name.
-     * @return array<string, mixed>|null Column data or null.
+     * @return array|null Column data or null.
      */
-    public function getColumn(string $name): ?array;
+    public function getColumn($name);
 
     /**
      * Returns true if a column exists in the schema.
@@ -72,7 +70,7 @@ interface SchemaInterface
      * @param string $name Column name.
      * @return bool
      */
-    public function hasColumn(string $name): bool;
+    public function hasColumn($name);
 
     /**
      * Remove a column from the table schema.
@@ -82,14 +80,14 @@ interface SchemaInterface
      * @param string $name The name of the column
      * @return $this
      */
-    public function removeColumn(string $name);
+    public function removeColumn($name);
 
     /**
      * Get the column names in the table.
      *
-     * @return array<string>
+     * @return string[]
      */
-    public function columns(): array;
+    public function columns();
 
     /**
      * Returns column type or null if a column does not exist.
@@ -97,7 +95,7 @@ interface SchemaInterface
      * @param string $name The column to get the type of.
      * @return string|null
      */
-    public function getColumnType(string $name): ?string;
+    public function getColumnType($name);
 
     /**
      * Sets the type of a column.
@@ -106,7 +104,7 @@ interface SchemaInterface
      * @param string $type The type to set the column to.
      * @return $this
      */
-    public function setColumnType(string $name, string $type);
+    public function setColumnType($name, $type);
 
     /**
      * Returns the base type name for the provided column.
@@ -116,32 +114,32 @@ interface SchemaInterface
      * @param string $column The column name to get the base type from
      * @return string|null The base type name
      */
-    public function baseColumnType(string $column): ?string;
+    public function baseColumnType($column);
 
     /**
-     * Check whether a field is nullable
+     * Check whether or not a field is nullable
      *
      * Missing columns are nullable.
      *
      * @param string $name The column to get the type of.
-     * @return bool Whether the field is nullable.
+     * @return bool Whether or not the field is nullable.
      */
-    public function isNullable(string $name): bool;
+    public function isNullable($name);
 
     /**
      * Returns an array where the keys are the column names in the schema
      * and the values the database type they have.
      *
-     * @return array<string, string>
+     * @return array
      */
-    public function typeMap(): array;
+    public function typeMap();
 
     /**
      * Get a hash of columns and their default values.
      *
-     * @return array<string, mixed>
+     * @return array
      */
-    public function defaultValues(): array;
+    public function defaultValues();
 
     /**
      * Sets the options for a table.
@@ -149,10 +147,10 @@ interface SchemaInterface
      * Table options allow you to set platform specific table level options.
      * For example the engine type in MySQL.
      *
-     * @param array<string, mixed> $options The options to set, or null to read options.
+     * @param array $options The options to set, or null to read options.
      * @return $this
      */
-    public function setOptions(array $options);
+    public function setOptions($options);
 
     /**
      * Gets the options for a table.
@@ -160,7 +158,7 @@ interface SchemaInterface
      * Table options allow you to set platform specific table level options.
      * For example the engine type in MySQL.
      *
-     * @return array<string, mixed> An array of options.
+     * @return array An array of options.
      */
-    public function getOptions(): array;
+    public function getOptions();
 }

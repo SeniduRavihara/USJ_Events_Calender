@@ -1,10 +1,31 @@
 <?php
-
 /**
- * MIT License
- * For full license information, please view the LICENSE file that was distributed with this source code.
+ * Phinx
+ *
+ * (The MIT license)
+ * Copyright (c) 2015 Rob Morgan
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated * documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ *
+ * @package    Phinx
+ * @subpackage Phinx\Seed
  */
-
 namespace Phinx\Seed;
 
 use Phinx\Db\Adapter\AdapterInterface;
@@ -40,14 +61,34 @@ abstract class AbstractSeed implements SeedInterface
     protected $output;
 
     /**
-     * Override to specify dependencies for dependency injection from the configured PSR-11 container
+     * Class Constructor.
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
      */
-    public function __construct()
+    final public function __construct(InputInterface $input = null, OutputInterface $output = null)
+    {
+        if (!is_null($input)) {
+            $this->setInput($input);
+        }
+        if (!is_null($output)) {
+            $this->setOutput($output);
+        }
+
+        $this->init();
+    }
+
+    /**
+     * Initialize method.
+     *
+     * @return void
+     */
+    protected function init()
     {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function run()
     {
@@ -64,7 +105,7 @@ abstract class AbstractSeed implements SeedInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function setAdapter(AdapterInterface $adapter)
     {
@@ -74,7 +115,7 @@ abstract class AbstractSeed implements SeedInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getAdapter()
     {
@@ -82,7 +123,7 @@ abstract class AbstractSeed implements SeedInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function setInput(InputInterface $input)
     {
@@ -92,7 +133,7 @@ abstract class AbstractSeed implements SeedInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getInput()
     {
@@ -100,7 +141,7 @@ abstract class AbstractSeed implements SeedInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function setOutput(OutputInterface $output)
     {
@@ -110,7 +151,7 @@ abstract class AbstractSeed implements SeedInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getOutput()
     {
@@ -118,15 +159,15 @@ abstract class AbstractSeed implements SeedInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getName()
     {
-        return static::class;
+        return get_class($this);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function execute($sql)
     {
@@ -134,7 +175,7 @@ abstract class AbstractSeed implements SeedInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function query($sql)
     {
@@ -142,7 +183,7 @@ abstract class AbstractSeed implements SeedInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function fetchRow($sql)
     {
@@ -150,7 +191,7 @@ abstract class AbstractSeed implements SeedInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function fetchAll($sql)
     {
@@ -158,7 +199,7 @@ abstract class AbstractSeed implements SeedInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function insert($table, $data)
     {
@@ -170,7 +211,7 @@ abstract class AbstractSeed implements SeedInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function hasTable($tableName)
     {
@@ -178,7 +219,7 @@ abstract class AbstractSeed implements SeedInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function table($tableName, $options = [])
     {

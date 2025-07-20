@@ -1,10 +1,31 @@
 <?php
-
 /**
- * MIT License
- * For full license information, please view the LICENSE file that was distributed with this source code.
+ * Phinx
+ *
+ * (The MIT license)
+ * Copyright (c) 2015 Rob Morgan
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated * documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ *
+ * @package    Phinx
+ * @subpackage Phinx\Seed
  */
-
 namespace Phinx\Seed;
 
 use Phinx\Db\Adapter\AdapterInterface;
@@ -21,12 +42,7 @@ interface SeedInterface
     /**
      * @var string
      */
-    public const RUN = 'run';
-
-    /**
-     * @var string
-     */
-    public const INIT = 'init';
+    const RUN = 'run';
 
     /**
      * Run the seeder.
@@ -53,7 +69,7 @@ interface SeedInterface
     /**
      * Sets the input object to be used in migration object
      *
-     * @param \Symfony\Component\Console\Input\InputInterface $input Input
+     * @param \Symfony\Component\Console\Input\InputInterface $input
      * @return \Phinx\Seed\SeedInterface
      */
     public function setInput(InputInterface $input);
@@ -68,7 +84,7 @@ interface SeedInterface
     /**
      * Sets the output object to be used in migration object
      *
-     * @param \Symfony\Component\Console\Output\OutputInterface $output Output
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return \Phinx\Seed\SeedInterface
      */
     public function setOutput(OutputInterface $output);
@@ -96,15 +112,10 @@ interface SeedInterface
     public function execute($sql);
 
     /**
-     * Executes a SQL statement.
-     *
-     * The return type depends on the underlying adapter being used. To improve
-     * IDE auto-completion possibility, you can overwrite the query method
-     * phpDoc in your (typically custom abstract parent) seed class, where
-     * you can set the return type by the adapter in your current use.
+     * Executes a SQL statement and returns the result as an array.
      *
      * @param string $sql SQL
-     * @return mixed
+     * @return array
      */
     public function query($sql);
 
@@ -112,7 +123,7 @@ interface SeedInterface
      * Executes a query and returns only one row as an array.
      *
      * @param string $sql SQL
-     * @return array|false
+     * @return array
      */
     public function fetchRow($sql);
 
@@ -127,8 +138,8 @@ interface SeedInterface
     /**
      * Insert data into a table.
      *
-     * @param string $tableName Table name
-     * @param array $data Data
+     * @param string $tableName
+     * @param array $data
      * @return void
      */
     public function insert($tableName, $data);
@@ -136,7 +147,7 @@ interface SeedInterface
     /**
      * Checks to see if a table exists.
      *
-     * @param string $tableName Table name
+     * @param string $tableName Table Name
      * @return bool
      */
     public function hasTable($tableName);
@@ -146,7 +157,7 @@ interface SeedInterface
      *
      * You can use this class to create and manipulate tables.
      *
-     * @param string $tableName Table name
+     * @param string $tableName Table Name
      * @param array $options Options
      * @return \Phinx\Db\Table
      */

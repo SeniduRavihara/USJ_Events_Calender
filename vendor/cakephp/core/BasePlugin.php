@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright 2005-2011, Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,18 +13,14 @@ declare(strict_types=1);
  */
 namespace Cake\Core;
 
-use Cake\Console\CommandCollection;
-use Cake\Http\MiddlewareQueue;
-use Cake\Routing\RouteBuilder;
-use Closure;
 use InvalidArgumentException;
 use ReflectionClass;
 
 /**
  * Base Plugin Class
  *
- * Every plugin should extend from this class or implement the interfaces and
- * include a plugin class in its src root folder.
+ * Every plugin should extends from this class or implement the interfaces and
+ * include a plugin class in it's src root folder.
  */
 class BasePlugin implements PluginInterface
 {
@@ -38,11 +32,11 @@ class BasePlugin implements PluginInterface
     protected $bootstrapEnabled = true;
 
     /**
-     * Console middleware
+     * Load routes or not
      *
      * @var bool
      */
-    protected $consoleEnabled = true;
+    protected $routesEnabled = true;
 
     /**
      * Enable middleware
@@ -52,18 +46,11 @@ class BasePlugin implements PluginInterface
     protected $middlewareEnabled = true;
 
     /**
-     * Register container services
+     * Console middleware
      *
      * @var bool
      */
-    protected $servicesEnabled = true;
-
-    /**
-     * Load routes or not
-     *
-     * @var bool
-     */
-    protected $routesEnabled = true;
+    protected $consoleEnabled = true;
 
     /**
      * The path to this plugin.
@@ -87,13 +74,6 @@ class BasePlugin implements PluginInterface
     protected $configPath;
 
     /**
-     * The templates path for this plugin.
-     *
-     * @var string
-     */
-    protected $templatePath;
-
-    /**
      * The name of this plugin
      *
      * @var string
@@ -103,7 +83,7 @@ class BasePlugin implements PluginInterface
     /**
      * Constructor
      *
-     * @param array<string, mixed> $options Options
+     * @param array $options Options
      */
     public function __construct(array $options = [])
     {
@@ -112,7 +92,7 @@ class BasePlugin implements PluginInterface
                 $this->{"{$key}Enabled"} = (bool)$options[$key];
             }
         }
-        foreach (['name', 'path', 'classPath', 'configPath', 'templatePath'] as $path) {
+        foreach (['name', 'path', 'classPath', 'configPath'] as $path) {
             if (isset($options[$path])) {
                 $this->{$path} = $options[$path];
             }
@@ -122,23 +102,21 @@ class BasePlugin implements PluginInterface
     }
 
     /**
-     * Initialization hook called from constructor.
-     *
-     * @return void
+     * {@inheritdoc}
      */
-    public function initialize(): void
+    public function initialize()
     {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getName(): string
+    public function getName()
     {
         if ($this->name) {
             return $this->name;
         }
-        $parts = explode('\\', static::class);
+        $parts = explode('\\', get_class($this));
         array_pop($parts);
         $this->name = implode('/', $parts);
 
@@ -146,9 +124,9 @@ class BasePlugin implements PluginInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getPath(): string
+    public function getPath()
     {
         if ($this->path) {
             return $this->path;
@@ -166,9 +144,9 @@ class BasePlugin implements PluginInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getConfigPath(): string
+    public function getConfigPath()
     {
         if ($this->configPath) {
             return $this->configPath;
@@ -179,9 +157,9 @@ class BasePlugin implements PluginInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getClassPath(): string
+    public function getClassPath()
     {
         if ($this->classPath) {
             return $this->classPath;
@@ -192,33 +170,20 @@ class BasePlugin implements PluginInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
-    public function getTemplatePath(): string
-    {
-        if ($this->templatePath) {
-            return $this->templatePath;
-        }
-        $path = $this->getPath();
-
-        return $this->templatePath = $path . 'templates' . DIRECTORY_SEPARATOR;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function enable(string $hook)
+    public function enable($hook)
     {
         $this->checkHook($hook);
-        $this->{"{$hook}Enabled"} = true;
+        $this->{"{$hook}Enabled}"} = true;
 
         return $this;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
-    public function disable(string $hook)
+    public function disable($hook)
     {
         $this->checkHook($hook);
         $this->{"{$hook}Enabled"} = false;
@@ -227,9 +192,9 @@ class BasePlugin implements PluginInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
-    public function isEnabled(string $hook): bool
+    public function isEnabled($hook)
     {
         $this->checkHook($hook);
 
@@ -243,9 +208,9 @@ class BasePlugin implements PluginInterface
      * @throws \InvalidArgumentException on invalid hooks
      * @return void
      */
-    protected function checkHook(string $hook): void
+    protected function checkHook($hook)
     {
-        if (!in_array($hook, static::VALID_HOOKS, true)) {
+        if (!in_array($hook, static::VALID_HOOKS)) {
             throw new InvalidArgumentException(
                 "`$hook` is not a valid hook name. Must be one of " . implode(', ', static::VALID_HOOKS)
             );
@@ -253,53 +218,40 @@ class BasePlugin implements PluginInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
-    public function routes(RouteBuilder $routes): void
+    public function routes($routes)
     {
         $path = $this->getConfigPath() . 'routes.php';
-        if (is_file($path)) {
-            $return = require $path;
-            if ($return instanceof Closure) {
-                $return($routes);
-            }
+        if (file_exists($path)) {
+            require $path;
         }
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
-    public function bootstrap(PluginApplicationInterface $app): void
+    public function bootstrap(PluginApplicationInterface $app)
     {
         $bootstrap = $this->getConfigPath() . 'bootstrap.php';
-        if (is_file($bootstrap)) {
+        if (file_exists($bootstrap)) {
             require $bootstrap;
         }
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
-    public function console(CommandCollection $commands): CommandCollection
+    public function console($commands)
     {
         return $commands->addMany($commands->discoverPlugin($this->getName()));
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
-    public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+    public function middleware($middleware)
     {
-        return $middlewareQueue;
-    }
-
-    /**
-     * Register container services for this plugin.
-     *
-     * @param \Cake\Core\ContainerInterface $container The container to add services to.
-     * @return void
-     */
-    public function services(ContainerInterface $container): void
-    {
+        return $middleware;
     }
 }

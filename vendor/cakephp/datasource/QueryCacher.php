@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -17,17 +15,15 @@ declare(strict_types=1);
 namespace Cake\Datasource;
 
 use Cake\Cache\Cache;
-use Closure;
-use Psr\SimpleCache\CacheInterface;
+use Cake\Cache\CacheEngine;
 use RuntimeException;
 use Traversable;
 
 /**
  * Handles caching queries and loading results from the cache.
  *
- * Used by {@link \Cake\Datasource\QueryTrait} internally.
+ * Used by Cake\Datasource\QueryTrait internally.
  *
- * @internal
  * @see \Cake\Datasource\QueryTrait::cache() for the public interface.
  */
 class QueryCacher
@@ -35,33 +31,33 @@ class QueryCacher
     /**
      * The key or function to generate a key.
      *
-     * @var \Closure|string
+     * @var string|callable
      */
     protected $_key;
 
     /**
      * Config for cache engine.
      *
-     * @var \Psr\SimpleCache\CacheInterface|string
+     * @var string|\Cake\Cache\CacheEngine
      */
     protected $_config;
 
     /**
      * Constructor.
      *
-     * @param \Closure|string $key The key or function to generate a key.
-     * @param \Psr\SimpleCache\CacheInterface|string $config The cache config name or cache engine instance.
+     * @param string|\Closure $key The key or function to generate a key.
+     * @param string|\Cake\Cache\CacheEngine $config The cache config name or cache engine instance.
      * @throws \RuntimeException
      */
     public function __construct($key, $config)
     {
-        if (!is_string($key) && !($key instanceof Closure)) {
+        if (!is_string($key) && !is_callable($key)) {
             throw new RuntimeException('Cache keys must be strings or callables.');
         }
         $this->_key = $key;
 
-        if (!is_string($config) && !($config instanceof CacheInterface)) {
-            throw new RuntimeException('Cache configs must be strings or \Psr\SimpleCache\CacheInterface instances.');
+        if (!is_string($config) && !($config instanceof CacheEngine)) {
+            throw new RuntimeException('Cache configs must be strings or CacheEngine instances.');
         }
         $this->_config = $config;
     }
@@ -70,13 +66,13 @@ class QueryCacher
      * Load the cached results from the cache or run the query.
      *
      * @param object $query The query the cache read is for.
-     * @return mixed|null Either the cached results or null.
+     * @return \Cake\Datasource\ResultSetInterface|null Either the cached results or null.
      */
-    public function fetch(object $query)
+    public function fetch($query)
     {
         $key = $this->_resolveKey($query);
         $storage = $this->_resolveCacher();
-        $result = $storage->get($key);
+        $result = $storage->read($key);
         if (empty($result)) {
             return null;
         }
@@ -91,12 +87,12 @@ class QueryCacher
      * @param \Traversable $results The result set to store.
      * @return bool True if the data was successfully cached, false on failure
      */
-    public function store(object $query, Traversable $results): bool
+    public function store($query, Traversable $results)
     {
         $key = $this->_resolveKey($query);
         $storage = $this->_resolveCacher();
 
-        return $storage->set($key, $results);
+        return $storage->write($key, $results);
     }
 
     /**
@@ -106,7 +102,7 @@ class QueryCacher
      * @return string
      * @throws \RuntimeException
      */
-    protected function _resolveKey(object $query): string
+    protected function _resolveKey($query)
     {
         if (is_string($this->_key)) {
             return $this->_key;
@@ -124,12 +120,12 @@ class QueryCacher
     /**
      * Get the cache engine.
      *
-     * @return \Psr\SimpleCache\CacheInterface
+     * @return \Cake\Cache\CacheEngine
      */
     protected function _resolveCacher()
     {
         if (is_string($this->_config)) {
-            return Cache::pool($this->_config);
+            return Cache::engine($this->_config);
         }
 
         return $this->_config;

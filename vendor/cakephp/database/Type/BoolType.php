@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,26 +14,51 @@ declare(strict_types=1);
  */
 namespace Cake\Database\Type;
 
-use Cake\Database\DriverInterface;
+use Cake\Database\Driver;
+use Cake\Database\Type;
+use Cake\Database\TypeInterface;
+use Cake\Database\Type\BatchCastingInterface;
 use InvalidArgumentException;
 use PDO;
-use function Cake\Core\getTypeName;
 
 /**
  * Bool type converter.
  *
  * Use to convert bool data between PHP and the database types.
  */
-class BoolType extends BaseType implements BatchCastingInterface
+class BoolType extends Type implements TypeInterface, BatchCastingInterface
 {
+    /**
+     * Identifier name for this type.
+     *
+     * (This property is declared here again so that the inheritance from
+     * Cake\Database\Type can be removed in the future.)
+     *
+     * @var string|null
+     */
+    protected $_name;
+
+    /**
+     * Constructor.
+     *
+     * (This method is declared here again so that the inheritance from
+     * Cake\Database\Type can be removed in the future.)
+     *
+     * @param string|null $name The name identifying this type
+     */
+    public function __construct($name = null)
+    {
+        $this->_name = $name;
+    }
+
     /**
      * Convert bool data into the database format.
      *
      * @param mixed $value The value to convert.
-     * @param \Cake\Database\DriverInterface $driver The driver instance to convert with.
+     * @param \Cake\Database\Driver $driver The driver instance to convert with.
      * @return bool|null
      */
-    public function toDatabase($value, DriverInterface $driver): ?bool
+    public function toDatabase($value, Driver $driver)
     {
         if ($value === true || $value === false || $value === null) {
             return $value;
@@ -55,12 +78,12 @@ class BoolType extends BaseType implements BatchCastingInterface
      * Convert bool values to PHP booleans
      *
      * @param mixed $value The value to convert.
-     * @param \Cake\Database\DriverInterface $driver The driver instance to convert with.
+     * @param \Cake\Database\Driver $driver The driver instance to convert with.
      * @return bool|null
      */
-    public function toPHP($value, DriverInterface $driver): ?bool
+    public function toPHP($value, Driver $driver)
     {
-        if ($value === null || is_bool($value)) {
+        if ($value === null || $value === true || $value === false) {
             return $value;
         }
 
@@ -72,16 +95,28 @@ class BoolType extends BaseType implements BatchCastingInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @return array
      */
-    public function manyToPHP(array $values, array $fields, DriverInterface $driver): array
+    public function manyToPHP(array $values, array $fields, Driver $driver)
     {
         foreach ($fields as $field) {
-            $value = $values[$field] ?? null;
-            if ($value === null || is_bool($value)) {
+            if (!isset($values[$field]) || $values[$field] === true || $values[$field] === false) {
                 continue;
             }
 
+            if ($values[$field] === '1') {
+                $values[$field] = true;
+                continue;
+            }
+
+            if ($values[$field] === '0') {
+                $values[$field] = false;
+                continue;
+            }
+
+            $value = $values[$field];
             if (!is_numeric($value)) {
                 $values[$field] = strtolower($value) === 'true';
                 continue;
@@ -97,10 +132,10 @@ class BoolType extends BaseType implements BatchCastingInterface
      * Get the correct PDO binding type for bool data.
      *
      * @param mixed $value The value being bound.
-     * @param \Cake\Database\DriverInterface $driver The driver.
+     * @param \Cake\Database\Driver $driver The driver.
      * @return int
      */
-    public function toStatement($value, DriverInterface $driver): int
+    public function toStatement($value, Driver $driver)
     {
         if ($value === null) {
             return PDO::PARAM_NULL;
@@ -115,12 +150,21 @@ class BoolType extends BaseType implements BatchCastingInterface
      * @param mixed $value The value to convert.
      * @return bool|null Converted value.
      */
-    public function marshal($value): ?bool
+    public function marshal($value)
     {
-        if ($value === null || $value === '') {
+        if ($value === null) {
+            return null;
+        }
+        if ($value === 'true') {
+            return true;
+        }
+        if ($value === 'false') {
+            return false;
+        }
+        if (!is_scalar($value)) {
             return null;
         }
 
-        return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        return !empty($value);
     }
 }

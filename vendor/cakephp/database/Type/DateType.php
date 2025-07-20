@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,14 +14,7 @@ declare(strict_types=1);
  */
 namespace Cake\Database\Type;
 
-use Cake\I18n\Date;
-use Cake\I18n\FrozenDate;
-use Cake\I18n\I18nDateTimeInterface;
 use DateTime;
-use DateTimeImmutable;
-use DateTimeInterface;
-use Exception;
-use function Cake\Core\deprecationWarning;
 
 /**
  * Class DateType
@@ -31,16 +22,22 @@ use function Cake\Core\deprecationWarning;
 class DateType extends DateTimeType
 {
     /**
-     * @inheritDoc
+     * The class to use for representing date objects
+     *
+     * This property can only be used before an instance of this type
+     * class is constructed. After that use `useMutable()` or `useImmutable()` instead.
+     *
+     * @var string
+     * @deprecated 3.2.0 Use DateType::useMutable() or DateType::useImmutable() instead.
      */
-    protected $_format = 'Y-m-d';
+    public static $dateTimeClass = 'Cake\I18n\Date';
 
     /**
-     * @inheritDoc
+     * Date format for DateTime object
+     *
+     * @var string|array
      */
-    protected $_marshalFormats = [
-        'Y-m-d',
-    ];
+    protected $_format = 'Y-m-d';
 
     /**
      * In this class we want Date objects to  have their time
@@ -51,29 +48,13 @@ class DateType extends DateTimeType
     protected $setToDateStart = true;
 
     /**
-     * @inheritDoc
-     */
-    public function __construct(?string $name = null)
-    {
-        parent::__construct($name);
-
-        $this->_setClassName(FrozenDate::class, DateTimeImmutable::class);
-    }
-
-    /**
      * Change the preferred class name to the FrozenDate implementation.
      *
      * @return $this
-     * @deprecated 4.3.0 This method is no longer needed as using immutable datetime class is the default behavior.
      */
     public function useImmutable()
     {
-        deprecationWarning(
-            'Configuring immutable or mutable classes is deprecated and immutable'
-            . ' classes will be the permanent configuration in 5.0. Calling `useImmutable()` is unnecessary.'
-        );
-
-        $this->_setClassName(FrozenDate::class, DateTimeImmutable::class);
+        $this->_setClassName('Cake\I18n\FrozenDate', 'DateTimeImmutable');
 
         return $this;
     }
@@ -82,16 +63,10 @@ class DateType extends DateTimeType
      * Change the preferred class name to the mutable Date implementation.
      *
      * @return $this
-     * @deprecated 4.3.0 Using mutable datetime objects is deprecated.
      */
     public function useMutable()
     {
-        deprecationWarning(
-            'Configuring immutable or mutable classes is deprecated and immutable'
-            . ' classes will be the permanent configuration in 5.0. Calling `useImmutable()` is unnecessary.'
-        );
-
-        $this->_setClassName(Date::class, DateTime::class);
+        $this->_setClassName('Cake\I18n\Date', 'DateTime');
 
         return $this;
     }
@@ -100,75 +75,26 @@ class DateType extends DateTimeType
      * Convert request data into a datetime object.
      *
      * @param mixed $value Request data
-     * @return \DateTimeInterface|null
+     * @return \DateTimeInterface
      */
-    public function marshal($value): ?DateTimeInterface
+    public function marshal($value)
     {
-        if ($value instanceof DateTimeInterface) {
-            return new FrozenDate($value);
+        $date = parent::marshal($value);
+        if ($date instanceof DateTime) {
+            $date->setTime(0, 0, 0);
         }
 
-        /** @var class-string<\Cake\Chronos\ChronosDate> $class */
-        $class = $this->_className;
-        try {
-            if ($value === '' || $value === null || is_bool($value)) {
-                return null;
-            }
-
-            if (is_int($value) || (is_string($value) && ctype_digit($value))) {
-                /** @var \Cake\I18n\FrozenDate|\DateTimeImmutable $dateTime */
-                $dateTime = new $class('@' . $value);
-
-                return $dateTime;
-            }
-
-            if (is_string($value)) {
-                if ($this->_useLocaleMarshal) {
-                    $dateTime = $this->_parseLocaleValue($value);
-                } else {
-                    $dateTime = $this->_parseValue($value);
-                }
-
-                return $dateTime;
-            }
-        } catch (Exception $e) {
-            return null;
-        }
-
-        if (is_array($value) && implode('', $value) === '') {
-            return null;
-        }
-        $format = '';
-        if (
-            isset($value['year'], $value['month'], $value['day']) &&
-            (
-                is_numeric($value['year']) &&
-                is_numeric($value['month']) &&
-                is_numeric($value['day'])
-            )
-        ) {
-            $format .= sprintf('%d-%02d-%02d', $value['year'], $value['month'], $value['day']);
-        }
-
-        if (empty($format)) {
-            // Invalid array format.
-            return null;
-        }
-
-        /** @var \Cake\I18n\FrozenDate|\DateTimeImmutable $dateTime */
-        $dateTime = new $class($format);
-
-        return $dateTime;
+        return $date;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    protected function _parseLocaleValue(string $value): ?I18nDateTimeInterface
+    protected function _parseValue($value)
     {
-        /** @psalm-var class-string<\Cake\I18n\I18nDateTimeInterface> $class */
+        /** @var \Cake\I18n\Time $class */
         $class = $this->_className;
 
-        return $class::parseDate($value, $this->_localeMarshalFormat);
+        return $class::parseDate($value, $this->_localeFormat);
     }
 }

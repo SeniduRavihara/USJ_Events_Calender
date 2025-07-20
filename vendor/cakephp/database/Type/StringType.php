@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,26 +14,27 @@ declare(strict_types=1);
  */
 namespace Cake\Database\Type;
 
-use Cake\Database\DriverInterface;
+use Cake\Database\Driver;
+use Cake\Database\Type;
+use Cake\Database\TypeInterface;
 use InvalidArgumentException;
 use PDO;
-use function Cake\Core\getTypeName;
 
 /**
  * String type converter.
  *
  * Use to convert string data between PHP and the database types.
  */
-class StringType extends BaseType implements OptionalConvertInterface
+class StringType extends Type implements OptionalConvertInterface, TypeInterface
 {
     /**
      * Convert string data into the database format.
      *
      * @param mixed $value The value to convert.
-     * @param \Cake\Database\DriverInterface $driver The driver instance to convert with.
+     * @param \Cake\Database\Driver $driver The driver instance to convert with.
      * @return string|null
      */
-    public function toDatabase($value, DriverInterface $driver): ?string
+    public function toDatabase($value, Driver $driver)
     {
         if ($value === null || is_string($value)) {
             return $value;
@@ -59,10 +58,10 @@ class StringType extends BaseType implements OptionalConvertInterface
      * Convert string values to PHP strings.
      *
      * @param mixed $value The value to convert.
-     * @param \Cake\Database\DriverInterface $driver The driver instance to convert with.
+     * @param \Cake\Database\Driver $driver The driver instance to convert with.
      * @return string|null
      */
-    public function toPHP($value, DriverInterface $driver): ?string
+    public function toPHP($value, Driver $driver)
     {
         if ($value === null) {
             return null;
@@ -75,10 +74,10 @@ class StringType extends BaseType implements OptionalConvertInterface
      * Get the correct PDO binding type for string data.
      *
      * @param mixed $value The value being bound.
-     * @param \Cake\Database\DriverInterface $driver The driver.
+     * @param \Cake\Database\Driver $driver The driver.
      * @return int
      */
-    public function toStatement($value, DriverInterface $driver): int
+    public function toStatement($value, Driver $driver)
     {
         return PDO::PARAM_STR;
     }
@@ -89,10 +88,13 @@ class StringType extends BaseType implements OptionalConvertInterface
      * @param mixed $value The value to convert.
      * @return string|null Converted value.
      */
-    public function marshal($value): ?string
+    public function marshal($value)
     {
-        if ($value === null || is_array($value)) {
+        if ($value === null) {
             return null;
+        }
+        if (is_array($value)) {
+            return '';
         }
 
         return (string)$value;
@@ -103,7 +105,7 @@ class StringType extends BaseType implements OptionalConvertInterface
      *
      * @return bool False as database results are returned already as strings
      */
-    public function requiresToPhpCast(): bool
+    public function requiresToPhpCast()
     {
         return false;
     }

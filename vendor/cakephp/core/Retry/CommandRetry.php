@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -22,7 +20,7 @@ use Exception;
  * Allows any action to be retried in case of an exception.
  *
  * This class can be parametrized with a strategy, which will be followed
- * to determine whether the action should be retried.
+ * to determine whether or not the action should be retried.
  */
 class CommandRetry
 {
@@ -34,25 +32,22 @@ class CommandRetry
     protected $strategy;
 
     /**
+     * The number of retries to perform in case of failure.
+     *
      * @var int
      */
-    protected $maxRetries;
-
-    /**
-     * @var int
-     */
-    protected $numRetries;
+    protected $retries;
 
     /**
      * Creates the CommandRetry object with the given strategy and retry count
      *
      * @param \Cake\Core\Retry\RetryStrategyInterface $strategy The strategy to follow should the action fail
-     * @param int $maxRetries The maximum number of retry attempts allowed
+     * @param int $retries The number of times the action has been already called
      */
-    public function __construct(RetryStrategyInterface $strategy, int $maxRetries = 1)
+    public function __construct(RetryStrategyInterface $strategy, $retries = 1)
     {
         $this->strategy = $strategy;
-        $this->maxRetries = $maxRetries;
+        $this->retries = $retries;
     }
 
     /**
@@ -64,31 +59,22 @@ class CommandRetry
      */
     public function run(callable $action)
     {
-        $this->numRetries = 0;
-        while (true) {
+        $retryCount = 0;
+        $lastException = null;
+
+        do {
             try {
                 return $action();
             } catch (Exception $e) {
-                if (
-                    $this->numRetries < $this->maxRetries &&
-                    $this->strategy->shouldRetry($e, $this->numRetries)
-                ) {
-                    $this->numRetries++;
-                    continue;
+                $lastException = $e;
+                if (!$this->strategy->shouldRetry($e, $retryCount)) {
+                    throw $e;
                 }
-
-                throw $e;
             }
-        }
-    }
+        } while ($this->retries > $retryCount++);
 
-    /**
-     * Returns the last number of retry attemps.
-     *
-     * @return int
-     */
-    public function getRetries(): int
-    {
-        return $this->numRetries;
+        if ($lastException !== null) {
+            throw $lastException;
+        }
     }
 }

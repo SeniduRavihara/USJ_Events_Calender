@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,11 +14,16 @@ declare(strict_types=1);
  */
 namespace Cake\Utility\Crypto;
 
+use LogicException;
+
 /**
  * OpenSSL implementation of crypto features for Cake\Utility\Security
  *
+ * OpenSSL should be favored over mcrypt as it is actively maintained and
+ * more widely available.
+ *
  * This class is not intended to be used directly and should only
- * be used in the context of {@link \Cake\Utility\Security}.
+ * be used in the context of Cake\Utility\Security.
  *
  * @internal
  */
@@ -29,7 +32,21 @@ class OpenSsl
     /**
      * @var string
      */
-    protected const METHOD_AES_256_CBC = 'aes-256-cbc';
+    const METHOD_AES_256_CBC = 'aes-256-cbc';
+
+    /**
+     * Not implemented
+     *
+     * @param string $text Encrypted string to decrypt, normal string to encrypt
+     * @param string $key Key to use as the encryption key for encrypted data.
+     * @param string $operation Operation to perform, encrypt or decrypt
+     * @throws \LogicException Rijndael compatibility does not exist with Openssl.
+     * @return void
+     */
+    public static function rijndael($text, $key, $operation)
+    {
+        throw new LogicException('rijndael is not compatible with OpenSSL. Use mcrypt instead.');
+    }
 
     /**
      * Encrypt a value using AES-256.
@@ -43,7 +60,7 @@ class OpenSsl
      * @return string Encrypted data.
      * @throws \InvalidArgumentException On invalid data or key.
      */
-    public static function encrypt(string $plain, string $key): string
+    public static function encrypt($plain, $key)
     {
         $method = static::METHOD_AES_256_CBC;
         $ivSize = openssl_cipher_iv_length($method);
@@ -61,19 +78,15 @@ class OpenSsl
      * @return string Decrypted data. Any trailing null bytes will be removed.
      * @throws \InvalidArgumentException On invalid data or key.
      */
-    public static function decrypt(string $cipher, string $key): ?string
+    public static function decrypt($cipher, $key)
     {
         $method = static::METHOD_AES_256_CBC;
         $ivSize = openssl_cipher_iv_length($method);
 
         $iv = mb_substr($cipher, 0, $ivSize, '8bit');
+
         $cipher = mb_substr($cipher, $ivSize, null, '8bit');
 
-        $value = openssl_decrypt($cipher, $method, $key, OPENSSL_RAW_DATA, $iv);
-        if ($value === false) {
-            return null;
-        }
-
-        return $value;
+        return openssl_decrypt($cipher, $method, $key, OPENSSL_RAW_DATA, $iv);
     }
 }
