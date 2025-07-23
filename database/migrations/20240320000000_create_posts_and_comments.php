@@ -22,6 +22,9 @@ class CreatePostsAndComments extends AbstractMigration
             ->addColumn('post_id', 'integer', ['null' => false])
             ->addColumn('content', 'text', ['null' => false])
             ->addColumn('created_at', 'datetime', ['null' => false])
-           
+            ->addColumn('updated_at', 'datetime', ['null' => false])
+            ->addForeignKey('user_id', 'users', 'id', ['delete' => 'CASCADE'])
+            ->addForeignKey('post_id', 'posts', 'id', ['delete' => 'CASCADE'])
+            ->create();
     }
 }
